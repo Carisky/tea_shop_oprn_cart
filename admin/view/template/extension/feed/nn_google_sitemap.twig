@@ -1,0 +1,248 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+          <div class="btn-group">
+          <button type="submit" form="form-feed" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+          <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><i class="fa fa-gear"></i></button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><a href="#" class="nn-import"><i class="fa fa-upload"></i> {{ text_import }}</a></li>
+            <li><a href="#" class="nn-export"><i class="fa fa-download"></i> {{ text_export }}</a></li>
+          </ul>
+        </div>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-feed" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="feed_nn_google_sitemap_status" id="input-status" class="form-control">
+                {% if feed_nn_google_sitemap_status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-login">{{ entry_login }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="feed_nn_google_sitemap_login" value="{{ feed_nn_google_sitemap_login }}" placeholder="{{ entry_login }}" class="form-control" id="input-login">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-password">{{ entry_password }}</label>
+            <div class="col-sm-10">
+              <input type="password" name="feed_nn_google_sitemap_password" value="{{ feed_nn_google_sitemap_password }}" placeholder="{{ entry_password }}" class="form-control" id="input-password">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_product }}</label>
+            <div class="col-sm-10">
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_product" value="1" {{ feed_nn_google_sitemap_product == 1 ? ' checked' }} /> {{ text_yes }}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_product" value="0" {{ feed_nn_google_sitemap_product == 0 ? ' checked' }} /> {{ text_no }}
+              </label>
+            </div>
+          </div>      
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_category }}</label>
+            <div class="col-sm-10">
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_category" value="1" {{ feed_nn_google_sitemap_category == 1 ? ' checked' }} /> {{ text_yes }}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_category" value="0" {{ feed_nn_google_sitemap_category == 0 ? ' checked' }} /> {{ text_no }}
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_manufacturer }}</label>
+            <div class="col-sm-10">
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_manufacturer" value="1" {{ feed_nn_google_sitemap_manufacturer == 1 ? ' checked' }} /> {{ text_yes }}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_manufacturer" value="0" {{ feed_nn_google_sitemap_manufacturer == 0 ? ' checked' }} /> {{ text_no }}
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_information }}</label>
+            <div class="col-sm-10">
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_information" value="1" {{ feed_nn_google_sitemap_information == 1 ? ' checked' }} /> {{ text_yes }}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="feed_nn_google_sitemap_information" value="0" {{ feed_nn_google_sitemap_information == 0 ? ' checked' }} /> {{ text_no }}
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-data-feed-seo">{{ entry_data_feed_seo }}</label>
+            <div class="col-sm-10">
+              <div class="input-group mb-2" style="width: 100%;">
+                <input type="text" readonly value="{{ data_feed_seo }}" id="input-data-feed-seo" class="form-control" style="width: 96%;"/>
+                <button type="button" class="btn btn-success" style="width: 4%;" data-toggle="tooltip" title="{{ help_copy }}" onclick="trackingCopy('input-data-feed-seo');">
+                  <i class="fa fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-data-feed-url">{{ entry_data_feed_url }}</label>
+            <div class="col-sm-10">
+              <div class="input-group mb-2" style="width: 100%;">
+                <input type="text" readonly value="{{ data_feed_url }}" id="input-data-feed-url" class="form-control" style="width: 96%;"/>
+                <button type="button" class="btn btn-success" style="width: 4%;" data-toggle="tooltip" title="{{ help_copy }}" onclick="trackingCopy('input-data-feed-url');">
+                  <i class="fa fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
+  <script type="text/javascript"><!--
+  $('.radio-inline input').on('change', function () {
+    dataUrl();
+  });
+
+  $(function () {
+    dataUrl();
+  });
+
+  $('.nn-import').on('click', function(e) {
+    e.preventDefault();
+    
+    $('#form-upload').remove();
+
+    $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+    $('#form-upload input[name=\'file\']').trigger('click');
+
+    if (typeof timer != 'undefined') {
+      clearInterval(timer);
+    }
+
+    timer = setInterval(function() {
+      if ($('#form-upload input[name=\'file\']').val() != '') {
+        clearInterval(timer);
+
+        $.ajax({
+          url: 'index.php?route=extension/feed/nn_google_sitemap/import&user_token=' + getURLVar('user_token'),
+          type: 'post',
+          dataType: 'json',
+          data: new FormData($('#form-upload')[0]),
+          cache: false,
+          contentType: false,
+          processData: false,
+          beforeSend: function() {
+            $('.nn-settings').button('loading');
+          },
+          complete: function() {
+            $('.nn-settings').button('reset');
+          },
+          success: function(json) {
+            $('.alert-dismissible').remove();
+
+            if (json['error']) {
+              $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json['error'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+            }
+
+            if (json['success']) {
+              $('#alert').prepend('<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json['success'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+              if (confirm('{{ text_reload }}')) location.reload();
+            }
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+          }
+        });
+      }
+    }, 500);
+  });
+
+  $('.nn-export').on('click', function(e) {
+    e.preventDefault();
+
+    location = 'index.php?route=extension/feed/nn_google_sitemap/export&user_token=' + getURLVar('user_token');
+  });
+
+  function dataUrl() {
+    if (
+    ($('input[name="feed_nn_google_sitemap_product"]:checked').val() == '1'
+    && $('input[name="feed_nn_google_sitemap_category"]:checked').val() == '1'
+    && $('input[name="feed_nn_google_sitemap_manufacturer"]:checked').val() == '1'
+    && $('input[name="feed_nn_google_sitemap_information"]:checked').val() == '1') ||
+    ($('input[name="feed_nn_google_sitemap_product"]:checked').val() == '0'
+    && $('input[name="feed_nn_google_sitemap_category"]:checked').val() == '0'
+    && $('input[name="feed_nn_google_sitemap_manufacturer"]:checked').val() == '0'
+    && $('input[name="feed_nn_google_sitemap_information"]:checked').val() == '0')
+    ) {
+     $('#input-data-feed-url').val('{{ data_feed_seo }}'); 
+     $('#input-data-feed-seo').val('{{ data_feed_url }}'); return;
+    }
+
+    var feed_url = [];
+
+    if ($('input[name="feed_nn_google_sitemap_product"]:checked').val() == '1') {
+      feed_url.push('product');
+    }
+    
+    if ($('input[name="feed_nn_google_sitemap_category"]:checked').val() == '1') {
+      feed_url.push('category');
+    }
+    
+    if ($('input[name="feed_nn_google_sitemap_manufacturer"]:checked').val() == '1') {
+      feed_url.push('manufacturer');
+    }
+
+    if ($('input[name="feed_nn_google_sitemap_information"]:checked').val() == '1') {
+      feed_url.push('information');
+    }
+
+    $('#input-data-feed-seo').val('{{ data_feed_seo }}' + '?catalog=' + feed_url.join(','));
+    $('#input-data-feed-url').val('{{ data_feed_url }}' + '&catalog=' + feed_url.join(','));
+  }
+
+  function trackingCopy(_el) {
+    /* Get the text field */
+    var copyText = document.getElementById(_el);
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+  }
+//--></script>

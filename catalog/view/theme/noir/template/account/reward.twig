@@ -1,0 +1,59 @@
+{{ header }}
+<div id="account-reward" class="page-wrapper container page-account">
+	<div class="page-title pannel-trigger df aic" data-pannel-open>
+		<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#user"></use></svg>
+		Moje konto
+	</div>
+	<div class="account-wrapper df">
+		{{ column_left }}
+		<div class="main-column">
+			<h1 class="account-title">Program Lojalnosciowy</h1>
+			<div class="reward-wrapper dif aic jcsb">
+				<div class="reward-total dif aic">
+					<div class="reward-total-total">{{ total }}</div>
+					<div class="reward-total-text">Dostępny<br>punkty</div>
+				</div>
+				<div class="reward-desc">
+					Nagrodę lojalnościową można wykorzystać do opłacenia zamówienia na naszej stronie internetowej lub zamienić na kod kuponu. Zobacz Nagrody, aby uzyskać więcej informacji na temat nagród lojalnościowych, które otrzymałeś(aś.)
+				</div>
+			</div>
+			
+			<div class="reward-info df fww jcc">
+				<div class="reward-info-item">
+					<div class="inner">
+						<div class="reward-info-title">Zasady przyznawania punktów:</div>
+						<div class="reward-info-text">
+							<p>1 zł = 0,05 pkt</p>
+							<p>100 zł = 5 pkt</p>
+							<p>1000 zł = 50 pkt<p>
+						</div>
+					</div>
+				</div>
+				<div class="reward-info-item">
+					<div class="inner">
+						<div class="reward-info-title">Na czym to polega?</div>
+						<div class="reward-info-text">
+							<p>Za każdą wydaną złotówkę w sklepie The Jar otrzymasz 0,05 pkt. Punkty możesz wymieniać na kupony rabatowe.</p>
+							<p>Kupony za punkty nie łączą się z innymi kodami rabatowymi</p>
+						</div>
+					</div>
+				</div>
+				<div class="reward-info-item">
+					<div class="inner">
+						<div class="reward-info-title">Zasady wykorzystywania punktów:</div>
+						<div class="reward-info-text">
+							<p>1 pkt = 1 zł</p>
+							<p>10 pkt = 10 zł</p>
+							<p>100 pkt = 100 zł</p>
+							<p>1000 pkt = 1000 zł</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{ content_top }}
+		</div>
+    </div>
+    {{ content_bottom }}
+    {{ column_right }}
+</div>
+{{ footer }}

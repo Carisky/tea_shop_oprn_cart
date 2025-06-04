@@ -1,0 +1,41 @@
+<div class="slideshow swiper-viewport">
+	<div id="slideshow{{ module }}" class="swiper-container">
+		<div class="swiper-wrapper"> 
+		{% for banner in banners %}
+			{% if banner.link %}
+			<a href="{{ banner.link }}" class="swiper-slide home-slide df">
+			{% else %}
+			<div class="swiper-slide home-slide df">
+			{% endif %}
+				<div class="slide-left df fdc jcc">
+					<div class="slide-title">{{banner.title}}</div>
+					<div class="slide-desc">{{banner.description}}</div>
+				</div>
+				<div class="slide-right df">
+					<img src="{{ banner.image }}" alt="{{ banner.title }}" />
+				</div>
+			{{ banner.link ? '</a>' : '</div>'}}
+		{% endfor %}
+		</div>
+	</div>
+	<div class="swiper-pagination slideshow{{ module }}"></div>
+	<div class="button-next posa df jcc aic"></div>
+	<div class="button-prev posa df jcc aic"></div>
+</div>
+<script><!--
+$(document).ready(function(){
+	$('#slideshow{{ module }}').swiper({
+		mode: 'horizontal',
+		slidesPerView: 1,
+		nextButton: '.slideshow .button-next',
+		prevButton: '.slideshow .button-prev',
+		spaceBetween: 30,
+		autoplay: 3500,
+		speed: 400,
+		autoplayDisableOnInteraction: true,
+		loop: true,
+		pagination: '.slideshow{{ module }}',
+		paginationClickable: true,
+	});
+});
+//--></script>

@@ -1,0 +1,24 @@
+{{ header }}
+<div id="information-information" class="container page-wrap">
+	<div class="breadcrumbs">
+	{% for breadcrumb in breadcrumbs %}
+		{% if loop.last %}
+		<span>{{ breadcrumb.text }}</span>
+		{% else %}
+		<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+		<i>/</i>
+		{% endif %}
+	{% endfor %}
+	</div>
+	<h1 class="page-title">{{ heading_title }}</h1>
+    <div class="content">
+		{{ content_top }}
+		{{ description }}
+		{{ content_bottom }}
+	</div>
+	{{ column_left }}
+	{{ column_right }}
+</div>
+{{ footer }}
+</body>
+</html>

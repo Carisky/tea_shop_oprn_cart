@@ -1,0 +1,73 @@
+{% if payment_methods %}
+  {% for payment_method in payment_methods %}
+    <div class="method posr df aic jcsb">
+      <label class="radio df aic">
+        <input
+          type="radio"
+          name="payment_method"
+          value="{{ payment_method.code }}"
+          {{ (payment_method.code == code or (not code and loop.first)) ? 'checked' : '' }}
+        >
+        <b></b>
+        <span>
+          {{ payment_method.title }}
+          {% if payment_method.terms %}
+            <span>({{ payment_method.terms }})</span>
+          {% endif %}
+        </span>
+      </label>
+
+      {% if payment_method.code != 'bank_transfer' and payment_method.has_logo %}
+        <img src="image/payment/{{ payment_method.code }}.png" style="height: 30px;">
+      {% elseif payment_method.code == 'bank_transfer' %}
+        <button type="button" class="btn js-more-bank-transfer">Więcej</button>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+<div id="bankTransferModal" class="modal-overlay" style="display: none;">
+  <div class="modal-window">
+    <span>Przy wyborze tej metody płatności musisz zrobić przelew tradycyjny przez swój bank.</span>
+  </div>
+</div>
+
+<style>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-window {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+}
+.btn.js-more-bank-transfer {
+  height: 40px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var openBtn = document.querySelector('.js-more-bank-transfer');
+  var overlay = document.getElementById('bankTransferModal');
+
+  openBtn.addEventListener('click', function() {
+    overlay.style.display = 'flex';
+  });
+
+  // закрытие по клику вне modal-window
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.style.display = 'none';
+    }
+  });
+});
+</script>

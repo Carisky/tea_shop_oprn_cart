@@ -1,0 +1,71 @@
+{% if faqs %}
+<div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+  {% for faq in faqs %}
+    <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <div class="faq-question" itemprop="name">{{ faq.question|raw }}</div>
+      <div class="faq-answer-wrapper" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <div class="faq-answer" itemprop="text">
+          {{ faq.answer|raw }}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<style>
+.faq-list {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+.faq-item {
+  border: 1px solid #e0e0e0;
+  border-radius: .5rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: box-shadow .2s ease;
+}
+.faq-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.faq-question {
+  position: relative;
+  padding: 1rem 1.5rem;
+  background: #fafafa;
+  cursor: pointer;
+  font-weight: 600;
+}
+.faq-question::after {
+  content: '+';
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform .2s ease;
+}
+.faq-item.active .faq-question::after {
+  transform: translateY(-50%) rotate(45deg);
+}
+.faq-answer {
+  max-height: 0;
+  padding: 0 1.5rem;
+  color: #555;
+  line-height: 1.5;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+}
+.faq-item.active .faq-answer {
+  padding: 1rem 1.5rem;
+  max-height: 500px; /* достаточно для любых ответов */
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.faq-question').forEach(function(q){
+    q.addEventListener('click', function(){
+      this.parentNode.classList.toggle('active');
+    });
+  });
+});
+</script>
+{% endif %}

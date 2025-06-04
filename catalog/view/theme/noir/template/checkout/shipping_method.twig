@@ -1,0 +1,23 @@
+{% if shipping_methods %}
+{% set i = 0 %}
+{% for shipping_method in shipping_methods %}
+{% if not shipping_method.error %}
+{% for quote in shipping_method.quote %}
+<div class="method posr df aic jcsb">
+	<div class="name">
+		<label class="radio df aic">
+			<input type="radio" name="shipping_method" value="{{ quote.code }}"{{(quote.code == code or (not code and not i)) ? ' checked'}} >
+			<b></b>
+			<span>{{ quote.title }}{{quote.html ? quote.html}}</span>
+		</label>
+	</div>
+	<div class="price">{{ quote.text }}</div>
+</div>
+{% set i = i + 1 %}
+{% endfor %}
+{% else %}
+<div class="method df aic"><span class="method-error">{{ shipping_method.error }}</span></div>
+{% endif %}
+{% endfor %}
+</table>
+{% endif %}

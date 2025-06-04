@@ -1,0 +1,102 @@
+{{ header }}
+<div id="information-contact" class="container page-wrap">
+	<div class="breadcrumbs">
+	{% for breadcrumb in breadcrumbs %}
+		{% if loop.last %}
+		<span>{{ breadcrumb.text }}</span>
+		{% else %}
+		<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+		<i>/</i>
+		{% endif %}
+	{% endfor %}
+	</div>
+	<h1 class="page-title">{{ heading_title }}</h1>
+	{{ content_top }}
+	<div class="contact-row df jcsb fww">
+		<div class="contact-left">
+			<div class="text-contact">{{ text_contact }}</div>
+			<form id="callback">
+				<div class="form-block" data-error="name">
+					<div class="form-block-label">{{ entry_name }}</div>
+					<input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}">
+					<div class="form-error"></div>
+				</div>
+				<div class="form-block" data-error="email">
+					<div class="form-block-label">{{ entry_email }}</div>
+					<input type="email" name="email" value="{{ email }}" placeholder="{{ entry_email }}">
+					<div class="form-error"></div>
+				</div>
+				<div class="form-block textarea" data-error="enquiry">
+					<div class="form-block-label">{{ entry_enquiry }}</div>
+					<textarea name="enquiry" placeholder="{{ entry_enquiry }}" class="form-control">{{ enquiry }}</textarea>
+					<div class="form-error"></div>
+				</div>
+				<div class="form-block agree df jcsb">
+					<div data-error="agree">
+						<label class="checkbox large-box df small-text">
+							<input type="checkbox" name="agree" value="1"{{agree ? ' checked'}}>
+							<b></b>
+							<div>{{text_agree}}</div>
+						</label>
+						<div class="form-error"></div>
+					</div>
+					<button type="button" class="form-btn btn df aic jcc" onclick="sendCallback()">Wysłać</button>
+				</div>
+			</form>
+			
+ 		</div>
+		<div class="contact-right">
+			<h3>{{ text_address }}</h3>
+			<address class="contact-block">{{ address }}</address>
+			<h3>{{ text_telephone }}</h3>
+			<div class="contact-block">{{ telephone }}</div>
+			<h3>Email</h3>
+			<div class="contact-block">{{store_email}}</div>
+			<div class="contact-social  df aic">
+				<a class="df aic jcc" href="{{facebook}}" target="_blank" rel="noopener nofollow noreferrer">
+					<svg width="10" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#fb"></use></svg>
+				</a>
+				<a class="df aic jcc" href="{{instagram}}" target="_blank" rel="noopener nofollow noreferrer">
+					<svg width="19" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#inst"></use></svg>
+				</a>
+			</div>
+		</div>
+	</div>
+	{{ content_bottom }}
+ </div>
+ {{ column_left }}
+{{ column_right }}
+
+				{% if me_fb_events_status and me_fb_events_track_contact %}
+				<script>
+                	fbq('track', 'Contact',{eventID: 'Contact.'+ event_id},{eventID: 'Contact.'+ event_id});
+                	{% if me_fb_events_access_token %}
+    				  fbq_custom("Contact", window.location.href, {event_id: 'Contact.' + event_id});
+    				  {% endif %}
+                </script>
+				{% endif %}
+			
+{{ footer }}
+<script>
+function sendCallback() {
+	$.ajax({
+		url: 'index.php?route=information/contact/send',
+		type: 'post',
+		dataType: 'json',
+		data: $('#callback').serialize(),
+		success: function(json) {
+			checkJson(json);
+			if(json.error) {
+				$.each(json.error, function(i, v){
+					$('[data-error="'+i+'"]').addClass('input-error').find('.form-error').text(v).show();
+				});
+			} else {
+				nrShowMessage(json.success, 1);
+			}
+		},
+		error: function(data) {console.log(data.responseText);}
+	});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<div class="module-last-products"> 
+	<div class="module-top df aic jcsb">
+		<h3 class="module-title">{{ setting.name }}</h3>
+		{% if catlink %}
+		<a href="{{catlink}}" class="btn-transparent df aic ta">
+			Zobacz więcej
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+		</a>
+		{% endif %}	
+	</div>
+	<div class="products-row df fww">
+	{% for product in products %}
+		<div class="product-item">{%include 'noir/template/parts/product-item.twig'%}</div>
+	{% endfor %}
+	</div>
+	{% if catlink %}
+	<div class="mobile-button hidden">
+		<a href="{{catlink}}" class="btn-transparent dif aic ta">
+			Zobacz więcej
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+		</a>
+	</div>
+	{% endif %}
+</div>

@@ -1,0 +1,73 @@
+{{ header }}
+<div class="hero-category posr {{is_main ? 'main-category' : 'child-category'}}">
+	<div class="hero-image df posa pp">
+		<img src="{{ thumb }}" alt="" title="{{ heading_title }}">
+	</div>
+	<div class="container posr">
+		<div class="inner df fdc jcc">
+			<img src="/catalog/view/theme/noir/img/blog{{is_main ? '_main'}}.png" class="hero-label" alt="">
+			<h1>{{ heading_title }}</h1>
+			<div class="desc">{{ description }}</div>
+		</div>
+	</div>
+</div>
+<div class="container blog-category">
+	<div class="breadcrumbs">
+	{% for breadcrumb in breadcrumbs %}
+		{% if loop.last %}
+		<span>{{ breadcrumb.text }}</span>
+		{% else %}
+		<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+		<i>/</i>
+		{% endif %}
+	{% endfor %}
+	</div>
+	<nav class="blog-categories df">
+	{% for category in categories %}
+		<a href="{{category.href}}" class="cat ta{{category.active ? ' active'}}">{{category.name}}</a>
+	{% endfor %}
+	</nav>
+{% if articles %}
+	<div class="blog-row df fww" data-articles>
+		{%include 'noir/template/parts/articles.twig'%}
+	</div>
+	{% if more %}
+	<div class="buttons">
+		<button type="button" onclick="loadArticles(this)" class="btn-transparent df aic ta">
+			Załaduj więcej
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+		</button>
+	</div>
+	{% endif %}
+{% else %}
+	<p>{{ text_empty }}</p>
+{% endif %}
+	{{ content_bottom }}
+</div>
+{{ column_right }}
+{{ column_left }}
+{{ content_top }}
+{{ footer }}
+<script>
+var page = 2,
+	total = {{total}};
+function loadArticles(btn) {
+	$('body').append(loader);
+	$.ajax({
+		url: 'index.php?route=blog/category/load&id='+{{category_id}}+'&page='+page+'&total='+total,
+		dataType: 'json',
+		success: function(json) {
+			$('#loader').remove();
+			if(json.html) $('[data-articles]').append(json.html);
+			page++;
+			if(!json.more) $(btn).hide();
+		},
+		error: function(data) {
+			$('#loader').remove();
+			console.log(data.responseText);
+		}
+	});	
+}
+</script>
+</body>
+</html>

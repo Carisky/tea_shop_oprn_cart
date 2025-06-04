@@ -1,0 +1,148 @@
+{{ header }}
+<div id="product-category" class="container page-wrap">
+	<div class="breadcrumbs">
+		{% for breadcrumb in breadcrumbs %}
+			{% if loop.last %}
+				<span>{{ breadcrumb.text }}</span>
+			{% else %}
+				<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+				<i>/</i>
+			{% endif %}
+		{% endfor %}
+	</div>
+	<h1 class="page-title">{{ heading_title }}</h1>
+	{{ content_top }}
+	{% if carousel_categories %}
+		<div class="category-carousel swiper-container">
+			<div class="swiper-wrapper">
+				{% for cat in carousel_categories %}
+				<div class="swiper-slide carousel-item">
+					<a href="{{ cat.href }}" class="df fdc aic carousel-item-title">
+					<img src="{{ cat.thumb|default('image/placeholder.png') }}"
+						alt="{{ cat.name }}"
+						class="carousel-thumb"/>
+					<span class="carousel-title">{{ cat.name }}</span>
+					</a>
+				</div>
+				{% endfor %}
+
+			</div>
+				<div class="swiper-button-prev"></div>
+  				<div class="swiper-button-next"></div>
+		</div>
+	{% endif %}
+
+	<div class="category-top df {{products ? 'jcsb' : 'jce'}}">
+		{% if products %}
+			<div class="top-filter">
+				<button class="btn-filter df aic" data-filter-toggle>
+					Pokaż filtry
+					<svg width="23" height="17">
+						<use xlink:href="/catalog/view/theme/noir/img/sprite.svg#filter"></use>
+					</svg>
+				</button>
+			</div>
+		{% endif %}
+		<div class="top-sorting">
+			<select id="input-sort" class="form-control select-small white" onchange="location = this.value;" data-nice-select>
+				{% for sorts in sorts %}
+					<option value="{{ sorts.href }}" {{sorts.value == '%s-%s'|format(sort, order) ? ' selected'}}>{{ sorts.text }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="filter-options" data-filter-options>{{filter_selected}}</div>
+	{% if products %}
+		<div class="products-row list df fww" id="load-format-pagination">
+			{% for product in products %}
+				<div class="product-item">{%include 'noir/template/parts/product-item.twig'%}</div>
+			{% endfor %}
+		</div>
+
+		{% if limit < ttl %}
+			<div class="row row-pagination-container">
+				<div class="col-sm-12 pagination-text-justify">
+					<form action="post">
+						<button class="btn-load-pagination" id="custom-pagination-button">
+							<div class="title-button">{{ load_more }}
+								(<span id="number-products">{{ config_catalog_limit }}</span>
+								{{ show_product }}
+								{{ ttl }})</div>
+							<div class="load-pagination">
+								<div class="ring-pagination"></div>
+							</div>
+						</button>
+
+						<input type="hidden" name="load-more-botton" value="{{ config_catalog_limit }}">
+						<input type="hidden" name="more-botton-category" value="{{ category_data }}">
+						<input type="hidden" name="more-botton-urlcategory" value="{{ url_category }}">
+						<input type="hidden" name="more-botton-path" value="{{ path }}">
+						<input type="hidden" name="more-botton-sort" value="{{ sort }}">
+						<input type="hidden" name="more-botton-filter" value="{{ filter }}">
+						<input type="hidden" name="more-botton-order" value="{{ order }}">
+						<input type="hidden" name="more-botton-totalproducts" value="{{ ttl }}">
+						<input type="hidden" name="more-botton-step" id="more-step" value="{{ page }}">
+					</form>
+				</div>
+			</div>
+		{% endif %}
+
+		{{ pagination }}
+	{% else %}
+		<p>{{ text_empty }}</p>
+	{% endif %}
+		{% if faq %}
+			{{ faq|raw }}
+		{% endif %}
+	{% if description %}
+		{% if title %}
+			<div class="description-title">{{ title }}</div>
+		{% endif %}
+		<div class="category-description">{{ description }}</div>
+	{% endif %}
+	{{ content_bottom }}
+</div>
+{{ column_left }}
+{{ column_right }}
+{{ footer }}
+
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Swiper('.category-carousel', {
+      loop: true,
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+		240: {
+        	slidesPerView: 1,
+        	spaceBetween: 10,
+        },
+        480: {
+          slidesPerView: 2,
+          spaceBetween: 15,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 25,
+        }
+      }
+    });
+  });
+</script>
+
+
+</body></html>

@@ -1,0 +1,67 @@
+{{ header }}
+<div id="account-return" class="page-wrapper page-account">
+	<div class="container">
+		<div class="page-title pannel-trigger df aic" data-pannel-open>
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#user"></use></svg>
+			Moje konto
+		</div>
+		<div class="account-wrapper df">
+			{{ column_left }}
+			<div class="main-column">
+				<h1 class="account-title">{{ heading_title }}</h1>
+				<div class="return-list">
+				{% if returns %}
+					<table>
+						<thead>
+							<tr class="orders-head">
+								<td class="column">Produkt</td>
+								<td class="column">Zamówienia</td>
+								<td class="column">Ilość</td>
+								<td class="column">Dodany</td>
+								<td class="column">Status</td>
+							</tr>
+						</thead>
+						<tbody class="return-product">
+						{% for return in returns %}
+							<tr class="return-item">
+								<td class="column">
+									<div class="df aic">
+									<img src="{{return.thumb}}" alt="">
+									<span>{{return.product}}</span>
+									</div>
+								</td>
+								<td class="column">
+									<label>Zamówienia</label>
+									<span>№ {{ return.order_id }}</span>
+								</td>
+								<td class="column">
+									<label>Ilość</label>
+									<span>{{ return.quantity }}</span>
+								</td>
+								<td class="column">
+									<label>Dodany</label>
+									<span>{{ return.date_added }}</span>
+								</td>
+								<td class="column status">
+									<label>Status</label>
+									<a class="dif aic jcc bgs{{return.return_status_id}}" href="{{ return.href }}">{{ return.status }}</a>
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					<p>{{ text_empty }}</p>
+				{% endif %}
+				</div>
+				{% if returns %}{{ pagination }}{% endif %}
+				{{ content_top }}
+			</div>
+		</div>
+		{{ content_bottom }}
+		{{ column_right }}
+	</div>
+</div>
+{{ footer }}
+</body>
+</html>

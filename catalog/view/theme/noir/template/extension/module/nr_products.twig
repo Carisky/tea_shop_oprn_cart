@@ -1,0 +1,31 @@
+<div class="nr-products posr">
+	<div class="nr-products-title posa">
+		<div class="cursive-title">Super</div>
+		<div class="block-title">oferta</div>
+	</div>
+	<div class="swiper-container" data-products-slider>
+		<div class="swiper-wrapper"> 
+		{% for product in products %}
+			<div class="swiper-slide df posr products-slide ta">
+				<div class="left df fdc jcc">
+					<div class="counter">{{product.number}}/{{total}}</div>
+					<div class="name">{{product.name}}</div>
+					<div class="intro">{{product.short_desc}}</div>
+				</div>
+				<div class="image df aic">
+					<img src="{{product.image}}" alt="">
+				</div>
+				<div class="right df fdc jcc ais">
+					<div class="description">{{product.description}}</div>
+					<a href="{{product.href}}" class="btn btn-gold dif aic jcc">
+						Sprawdź szczegóły
+						<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+					</a>
+				</div>
+			</div>
+		{% endfor %}
+		</div>
+	</div>
+	<div class="button-next posa df jcc aic"></div>
+	<div class="button-prev posa df jcc aic"></div>
+</div>

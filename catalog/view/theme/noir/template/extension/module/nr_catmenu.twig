@@ -1,0 +1,14 @@
+{% if categories %}
+<div class="nr-module module-nr-catmenu">
+	<div class="module-title">Kategorie</div>
+	<div class="nr-catmenu df fww jcc">
+		{% for category in categories %}
+		<div class="category-menu-item posr">
+			<img src="/image/{{category.image}}" alt="{{category.name}}">
+			<div class="category-menu-item-name">{{category.name}}</div>
+			<a href="{{category.href}}" class="posa pp"></a>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}

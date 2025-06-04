@@ -1,0 +1,60 @@
+{% if reviews %}
+	{% if page == 1 %}
+	<div class="rewiews-row df fww">
+	{% endif %}
+		{% for review in reviews %}
+		<div class="review-item">
+			<div class="review-item-top df aic jcsb">
+				<div class="name">{{ review.author }}</div>
+				<div class="date">{{ review.date_added }}</div>
+			</div>
+			<div class="review-item-rating">
+				<div class="rating-input df aic jcsb">
+					<div class="label">Ocena produktu: *</div>
+					<div class="review-rating df">
+						{% for i in 1..5 %}
+						<div class="rating-star {{review.rating < i ? 'empty' : 'full'}}">
+							<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#rating-star"></use></svg>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="rating-input df aic jcsb">
+					<div class="label">Ocena sklepu: *</div>
+					<div class="review-rating df">
+						{% for i in 1..5 %}
+						<div class="rating-star {{review.rating1 < i ? 'empty' : 'full'}}">
+							<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#rating-star"></use></svg>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+				<div class="rating-input df aic jcsb">
+					<div class="label">Ocena dostawy: *</div>
+					<div class="review-rating df">
+						{% for i in 1..5 %}
+						<div class="rating-star {{review.rating2 < i ? 'empty' : 'full'}}">
+							<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#rating-star"></use></svg>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			<div class="label">Dodatkowy komentarz:</div>
+			<div class="review-text">{{ review.text }}</div>
+		</div>
+		{% endfor %}
+	{% if page == 1 %}
+	</div>
+	{% if more %}
+	<div class="buttons">
+		<button type="button" class="btn-transparent df aic ta" data-add-reviews>
+			Załaduj więcej
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+		</button>
+	</div>
+	{% endif %}
+	{% endif %}
+{% elseif page == 1 %}
+<p>{{ text_no_reviews }}</p>
+{% endif %}

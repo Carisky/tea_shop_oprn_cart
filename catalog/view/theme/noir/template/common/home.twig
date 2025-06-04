@@ -1,0 +1,25 @@
+{{ header }}
+<div id="common-home" class="container">
+	{{ column_left }}
+    {{ column_right }}
+	{{ content_top }}
+	{{ content_bottom }}
+</div>
+{{ footer }}
+<script>
+if($('[data-products-slider]').length) {
+	$('[data-products-slider]').swiper({
+		mode: 'horizontal',
+		slidesPerView: 1,
+		nextButton: '.nr-products .button-next',
+		prevButton: '.nr-products .button-prev',
+		spaceBetween: 30,
+		//autoplay: 3500,
+		speed: 400,
+		autoplayDisableOnInteraction: true,
+		loop: true
+	});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<div class="nr-mail-discount df aic" data-mail-discount>
+	<div class="module-left">
+		<img src="/catalog/view/theme/noir/img/mod_discount.png" class="hero-label" alt="">
+	</div>
+	<div class="module-right">
+		<div class="discount-title">
+			<div class="cursive-title">Newsletter</div>
+			<div class="block-title">& {{discount}} zniżka</div>
+		</div>
+		<div class="text">{{text}}</div>
+		<input type="email" name="discount-email" value="">
+		<div class="form-error"></div>
+		<button type="button" class="btn btn-gold" data-mail-discount-submit>
+			zapisz się
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+		</button>
+	</div>
+</div>
+<div class="hidden">
+	<div class="popup mail-coupon-success" id="mail-coupon-success">
+		<div class="inner">
+			<div class="popup-text">Twój kod rabatowy</div>
+		</div>
+		<button type="button" class="btn btn-gold" onclick="navigator.clipboard.writeText($(this).parent().find('[data-coupon-code]').text());">
+			Kopiować
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+		</button>
+	</div>
+</div>

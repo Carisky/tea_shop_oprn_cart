@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<!--[if IE 8 ]><html dir="{{ direction }}" lang="{{ lang }}" class="ie8"><![endif]-->
+<!--[if IE 9 ]><html dir="{{ direction }}" lang="{{ lang }}" class="ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html dir="{{ direction }}" lang="{{ lang }}">
+<!--<![endif]-->
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>{{ title }}</title>
+
+{% if noindex %}
+<!-- OCFilter Start -->
+<meta name="robots" content="noindex,nofollow" />
+<!-- OCFilter End -->
+{% endif %}
+      
+	{% if robots %}
+	<meta name="robots" content="{{ robots }}" />
+	{% endif %}
+	<base href="{{ base }}" />
+	{% if description %}
+	<meta name="description" content="{{ description }}" />
+	{% endif %}
+	{% if keywords %}
+	<meta name="keywords" content="{{ keywords }}" />
+	{% endif %}
+	<meta property="og:title" content="{{ title }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="{{ og_url }}" />
+	{% if og_image %}
+	<meta property="og:image" content="{{ og_image }}" />
+	{% else %}
+	<meta property="og:image" content="{{ logo }}" />
+	{% endif %}
+	<meta property="og:site_name" content="{{ name }}" />
+	<link href="catalog/view/theme/noir/css/fancybox.css" rel="stylesheet">
+	<link href="catalog/view/theme/noir/css/stylesheet.css" rel="stylesheet">
+	<script src="catalog/view/theme/noir/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+	
+	{% for style in styles %}
+	<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
+	{% endfor %}
+	{% for script in scripts %}
+	<script src="{{ script }}" type="text/javascript"></script>
+	{% endfor %}
+	{% for link in links %}
+	<link href="{{ link.href }}" rel="{{ link.rel }}" />
+	{% endfor %}
+	{% for analytic in analytics %}
+	{{ analytic }}
+	{% endfor %}
+</head>
+<body class="{{ home == og_url ? 'home' : 'page'}}">
+	{{ cart_pannel }}
+	<header class="header">
+		<div class="inner posr df aic jcsb">
+			<div class="header-left df aic">
+				{% if home == og_url %}
+				<div class="logo df aic"><img class="ta" src="/catalog/view/theme/noir/img/logo.png" alt=""></div>
+				{% else %}
+				<a href="{{ home }}" class="logo df aic"><img class="ta" src="/catalog/view/theme/noir/img/logo.png" alt=""></a>
+				{% endif %}
+				<div class="main-menu df aic">
+					{{ menu }}
+					{{ search }}
+				</div>
+			</div>
+			<div class="header-right df aic">
+				<div class="icon-wrap search df posr aic jcc" data-get-search>
+					<svg width="19" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#search"></use></svg>
+				</div>
+				{{ currency }}
+				<a href="{{ wishlist }}" class="icon-wrap header-wishlist posr df aic jcc ta2">
+					<svg width="21" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#heart"></use></svg>
+					<span id="wishlist-total" class="df jcc posa{{text_wishlist ? '' : ' hidden'}}">{{text_wishlist}}</span>
+				</a>
+				{{ cart }}
+				{% if logged %}
+				<a class="icon-wrap account-icon df aic jcc ta2" href="{{account}}" data-account>
+				{% else %}
+				<a class="icon-wrap account-icon df aic jcc ta2" href="#sign-in" data-fancybox>
+				{% endif %}
+					<svg width="21" height="21"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#user"></use></svg>
+				</a>
+				<div class="icon-wrap hamburger-box posr" data-menu-toggle>
+					<span class="hamburger-inner posa ta2"></span>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="site-wrapper posr">
+

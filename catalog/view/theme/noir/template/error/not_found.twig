@@ -1,0 +1,25 @@
+{{ header }}
+<div id="error-not-found" class="container page-wrap">
+	<div class="breadcrumbs">
+	{% for breadcrumb in breadcrumbs %}
+		{% if loop.last %}
+		<span>{{ breadcrumb.text }}</span>
+		{% else %}
+		<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+		<i>/</i>
+		{% endif %}
+	{% endfor %}
+	</div>
+	{{ content_top }}
+	<img src="/catalog/view/theme/noir/img/not-found.png" alt="">
+	{{ content_bottom }}
+	<div class="content">
+		<h1 class="not-found-title">Ojej! Coś poszło nie tak.</h1>
+		<p>Nie znaleziono żądanej strony lub strona nie istnieje. Prosimy użyć menu lub opcji wyszukiwania w portalu.</p>
+	</div>
+	{{ column_left }}
+	{{ column_right }}
+</div>
+{{ footer }}
+</body>
+</html>

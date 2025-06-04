@@ -1,0 +1,9 @@
+{% for article in articles %}
+<div class="article-item">
+	<div class="inner posr">
+		<img src="{{ article.thumb }}" alt="">
+		<div class="article-item-title">{{ article.name }}</div>
+		<a class="posa pp" href="{{ article.href }}"></a>
+	</div>
+</div>
+{% endfor %}

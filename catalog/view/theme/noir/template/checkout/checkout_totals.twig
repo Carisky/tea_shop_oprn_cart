@@ -1,0 +1,10 @@
+{% for total in totals %}
+<div class="total-row  df jcsb">
+	<div class="total-item">{{total.title}}:</div>
+	{% if total.code == total %}
+	<div class="total-price total-price-small">{{total.value}}</div>
+	{% else %}
+	<span class="total-price">{{total.value}}</span>
+	{% endif %}
+</div>
+{% endfor %}

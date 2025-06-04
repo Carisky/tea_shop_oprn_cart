@@ -1,0 +1,19 @@
+<div class="nr-about df aic">
+	<div class="module-left">
+		<img src="/catalog/view/theme/noir/img/mod_about.png" class="hero-label" alt="">
+	</div>
+	<div class="module-right">
+		<div class="about-title">
+			<div class="cursive-title">Dlaczego</div>
+			<div class="block-title">My?</div>
+		</div>
+		<div class="about-row df fww jcsb">
+		{% for row in rows %}
+			<div class="about-item">
+				<div class="title">{{row.title}}</div>
+				<div class="text">{{row.desc}}</div>
+			</div>
+		{% endfor %}
+		</div>
+	</div>
+</div>

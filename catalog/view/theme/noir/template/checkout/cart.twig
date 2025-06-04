@@ -1,0 +1,34 @@
+{% for product in products %}
+	<tr class="checkout-cart-item" data-cart-item>
+		<div class="cart-image-mobile hidden">
+			<a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}"></a>
+		</div>
+		<td class="cart-name">
+			<a href="{{ product.href }}" class="df aic">
+				<img src="{{ product.thumb }}" alt="{{ product.name }}">
+				<span>{{ product.name }}
+					{% if product.option[0].value %}
+						-{{ product.option[0].value }}
+					{% endif %}
+				</span>
+
+			</a>
+		</td>
+		<td class="cart-quantity-cell">
+			<div class="cart-quantity df" data-quantity data-min="{{ product.minimum }}" data-max="{{product.stock}}" data-cart="{{product.cart_id}}">
+				<div class="gnt-btn df jcc aic" data-qnt-btn="0">-</div>
+				<input type="number" name="quantity" value="{{ product.quantity }}" data-input-quantity class="form-control cnt">
+				<div class="gnt-btn df jcc aic" data-qnt-btn="1">+</div>
+			</div>
+		</td>
+		<td class="cart-price">{{ product.price }}</td>
+		<td class="cart-sum">{{ product.total }}</td>
+		<td class="cart-remove">
+			<button type="button" class="btn-hidden" onclick="cart.remove({{ product.cart_id }});">
+				<svg width="20" height="28">
+					<use xlink:href="/catalog/view/theme/noir/img/sprite.svg#trash"></use>
+				</svg>
+			</button>
+		</td>
+	</tr>
+{% endfor %}

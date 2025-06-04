@@ -1,0 +1,30 @@
+<div class="pannel-close posa" data-pannel-close>
+	<svg width="16" height="16"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#cross"></use></svg>
+</div>
+<div class="page-title">Moje konto</div>
+<div class="list-group">
+	<a href="{{ edit }}" class="list-group-item df aic{{ route == 'account/edit' ? ' active'}}">
+		<span class="list-icon df aic jcc"><svg width="19" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#user"></use></svg></span>
+		{{ text_edit }}
+	</a> 
+	<a href="{{ address }}" class="list-group-item df aic{{ route == 'account/address' ? ' active'}}">
+		<span class="list-icon df aic jcc"><svg width="14" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#marker"></use></svg></span>
+		{{ text_address }}
+	</a>
+	<a href="{{ order }}" class="list-group-item df aic{{ route == 'account/order' ? ' active'}}">
+		<span class="list-icon df aic jcc"><svg width="16" height="16"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#history"></use></svg></span>
+		{{ text_order }}
+	</a> 
+	<a href="{{ reward }}" class="list-group-item df aic{{ route == 'account/reward' ? ' active'}}">
+		<span class="list-icon df aic jcc"><svg width="17" height="17"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#ticket"></use></svg></span>
+		{{ text_reward }}
+	</a> 
+	<a href="{{ return }}" class="list-group-item df aic{{ route == 'account/return' ? ' active'}}">
+		<span class="list-icon df aic jcc"><svg width="17" height="16"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#back"></use></svg></span>
+		{{ text_return }}
+	</a> 
+	<a href="{{ logout }}" class="list-group-item df aic">
+		<span class="list-icon df aic jcc"><svg width="17" height="16"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#exit"></use></svg></span>
+		{{ text_logout }}
+	</a>
+ </div>

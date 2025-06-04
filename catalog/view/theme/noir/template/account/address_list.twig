@@ -1,0 +1,69 @@
+{{ header }}
+<div id="account" class="page-wrapper page-account posr">
+	<div class="container">
+		<div class="page-title pannel-trigger df aic" data-pannel-open>
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#user"></use></svg>
+			Moje konto
+		</div>
+		<div class="account-wrapper df">
+			{{ column_left }}
+			<div class="main-column">
+				<div class="account-title df aic jcsb">
+					<h1>Adres wysyłki</h1>
+					<button type="button" class="btn df aic jcc" onclick="getAddress()">
+						dodaj adres
+						<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#plus"></use></svg>
+					</button>
+				</div>
+				{% if addresses %}
+				<div class="addresses df fww jcc">
+					{% for key, result in addresses %}
+					<div class="address-block">
+						<div class="inner posr">
+							<div class="top df aic">
+								<div class="address-ordering cnt">{{key < 9 ? '0'}}{{key + 1}}</div>
+								<div class="address-title">Moj Adres</div>
+							</div>
+							<div class="address-line">{{result.address.firstname}}</div>
+							<div class="address-line">{{result.address.lastname}}</div>
+							{% if result.address.company %}
+							<div class="address-line">{{result.address.company}}</div>
+							{% endif %}
+							<div class="address-line">{{result.address.address_1}}</div>
+							{% if result.address.postcode %}
+							<div class="address-line">{{result.address.postcode}}</div>
+							{% endif %}
+							<div class="address-line">{{result.address.city}}</div>
+							{% if result.address.custom_field %}
+							<div class="address-line">{{result.address.custom_field[4]}}</div>
+							{% endif %}
+							<div class="buttons posa df aic">
+								<button type="button" class="button btn-edit df aic jcc ta" onclick="getAddress({{result.address_id}})">
+									<svg width="15" height="15"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#pencil"></use></svg>
+								</button>
+								<a href = "/index.php?route=account/address/nr_delete&address_id={{ result.address_id }}" class="button btn-delete df aic jcc ta">
+									<svg width="16" height="20"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#trash"></use></svg>
+								</a>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+				{% endif %}
+				
+			</div>
+		</div>
+		{{ content_top }}
+		{{ content_bottom }}
+		{{ column_right }}
+	</div>
+</div>
+<div class="hidden">
+	<div class="popup" id="address"></div>
+</div>
+<script>
+	var empty_zone_option = 'Brak opcji';
+</script>
+{{ footer }}
+</body>
+</html>

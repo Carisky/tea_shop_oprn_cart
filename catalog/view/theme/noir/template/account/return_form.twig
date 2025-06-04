@@ -1,0 +1,132 @@
+{{ header }}
+<div id="account-return" class="page-wrapper container">
+	<div class="container">
+		<div class="page-title pannel-trigger df aic" data-pannel-open>
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#user"></use></svg>
+			Moje konto
+		</div>
+		<div class="account-wrapper df">
+			{{ column_left }}
+			<div class="main-column">
+				<h1 class="account-title">{{ heading_title }}</h1>
+				<p>{{ text_description }}</p>
+				<form id="return-form" class="return-form">
+					<input type="hidden" name="order_id" value="{{ order_info.order_id }}">
+					<input type="hidden" name="date_ordered" value="{{ date_ordered }}">
+					<input type="hidden" name="product_id" value="{{ product_info.product_id }}">
+					<input type="hidden" name="model" value="{{ product_info.model }}" />
+					<input type="hidden" name="image" value="{{ product_info.image }}" />
+					<div class="form-block df">
+						<div class="form-block-label">{{ entry_firstname }}</div>
+						<div class="form-block-box" data-error="firstname">
+							<input type="text" name="firstname" value="{{ order_info.firstname }}" placeholder="{{ entry_firstname }}"/>
+							<div class="form-error"></div>
+						</div>
+					</div>
+					<div class="form-block df">
+						<div class="form-block-label">{{ entry_lastname }}</div>
+						<div class="form-block-box" data-error="lastname">
+							<input type="text" name="lastname" value="{{ order_info.lastname }}" placeholder="{{ entry_lastname }}"/>
+							<div class="form-error"></div>
+						</div>
+					</div>
+					<div class="form-block df">
+						<div class="form-block-label">{{ entry_email }}</div>
+						<div class="form-block-box" data-error="email">
+							<input type="text" name="email" value="{{ order_info.email }}" placeholder="{{ entry_email }}"/>
+							<div class="form-error"></div>
+						</div>
+					</div>
+					<div class="form-block df">
+						<div class="form-block-label">{{ entry_telephone }}</div>
+						<div class="form-block-box" data-error="telephone">
+							<input type="text" name="telephone" value="{{ order_info.telephone }}" placeholder="{{ entry_telephone }}"/>
+							<div class="form-error"></div>
+						</div>
+					</div>
+					<div class="form-block df">
+						<div class="form-block-label">{{ entry_product }}</div>
+						<div class="form-block-box">
+							<input type="text" readonly name="product" value="{{ product_info.name }}">
+						</div>
+					</div> 
+					<div class="form-block df">
+						<div class="form-block-label">{{ entry_quantity }}</div>
+						<div class="form-block-box" data-error="quantity">
+							<input type="text" name="quantity" value="1" placeholder="{{ entry_quantity }}">
+							<div class="form-error"></div>
+						</div>
+					</div> 
+					<div class="return-form-radio">
+						<h3>{{ entry_reason }}</h3>
+						<div class="form-block-box">
+							{% for key, return_reason in return_reasons %}
+							<div class="form-block">
+								<label class="checkbox df aic">
+									<input type="radio" name="return_reason_id" value="{{ return_reason.return_reason_id }}"{{key ? '' : ' checked'}}>
+									<b></b>
+									<span>{{ return_reason.name }}</span>
+								</label>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+					<h3>{{ entry_fault_detail }}</h3>
+					<div class="form-block">
+						<div class="textarea-wrapper">
+							<textarea name="comment" rows="4" class="form-control" placeholder="{{ entry_fault_detail }}">{{ comment }}</textarea>
+						</div>
+					</div>
+					<div class="form-block form-radio inline df">
+						<div class="form-block-label">{{ entry_opened }}</div>
+						<div class="form-block-box df">
+							<label class="checkbox df aic">
+								<input type="radio" name="opened" value="1" checked>
+								<b></b>
+								<span>{{ text_yes }}</span>
+							</label>
+							<label class="checkbox df aic">
+								<input type="radio" name="opened" value="0">
+								<b></b>
+								<span>{{ text_no }}</span>
+							</label>
+						</div>
+					</div>
+				</form>
+				<button type="button" class="form-btn btn" onclick="saveReturn()">{{ button_submit }}</button>
+			</div>
+			{{ content_top }}
+		</div>
+		{{ content_bottom }}
+		{{ column_right }}
+	</div>
+</div>
+{{ footer }}
+<script>
+function saveReturn() {
+	$('[data-error]').removeClass('input-error').find('.form-error').text('').hide();
+	$('body').append(loader);
+	$.ajax({
+		url: 'index.php?route=account/return/nr_save',
+		type: 'post',
+		dataType: 'json',
+		data: $('#return-form').serialize(),
+		success: function(json) {
+			console.log(json)
+			$('#loader').remove();
+			checkJson(json);
+			if(json.error) {
+				$.each(json.error, function(i, v){
+					$('[data-error="'+i+'"]').addClass('input-error').find('.form-error').text(v).show();
+				});
+			}
+		},
+		error: function(data) {
+			$('#loader').remove();
+			console.log(data.responseText);
+		}
+	});
+}
+</script>
+</body>
+</html>

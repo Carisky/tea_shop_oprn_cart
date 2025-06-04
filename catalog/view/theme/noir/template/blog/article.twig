@@ -1,0 +1,122 @@
+{{ header }}
+<div class="hero-category article posr">
+	<div class="hero-image df posa pp">
+		{% if thumb %}
+		<img src="{{ thumb }}" alt="" title="{{ heading_title }}">
+		{% endif %}
+	</div>
+	<div class="container posr">
+		<div class="inner df fdc jcc">
+			<h1>{{ heading_title }}</h1>
+			<div class="desc">{{ subtitle }}</div>
+		</div>
+	</div>
+</div>
+
+<div class="container article">
+	<div class="breadcrumbs">
+	{% for breadcrumb in breadcrumbs %}
+		{% if loop.last %}
+		<span>{{ breadcrumb.text }}</span>
+		{% else %}
+		<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+		<i>/</i>
+		{% endif %}
+	{% endfor %}
+	</div>
+	<div class="content">{{ description }}</div>
+</div>
+<div class="container article-another">
+	{% if products %}
+	<div class="related-products">
+		<div class="module-top df aic">
+			<h3 class="module-title">Produkty</h3>
+		</div>
+		<div class="products-row df fww">
+		{% for product in products %}
+			<div class="product-item">
+			{%include 'noir/template/parts/product-item.twig'%}
+			</div>
+		{% endfor %}
+		</div>
+	</div>
+	{% endif %}
+	{{ content_top }}
+	{% if articles %}
+	<div class="related-articles">
+		<div class="module-top df aic jcsb">
+			<h3 class="module-title">Blog</h3>
+			<a href="{{cat_href}}" class="btn-transparent df aic ta">
+				see more
+				<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+			</a>
+		</div>
+		{% set in_article = 1 %}
+		<div class="blog-row df fww">
+			{%include 'noir/template/parts/articles.twig'%}
+		</div>
+	</div>
+	{% endif %}
+</div>
+
+<script><!--
+$('#button-cart').on('click', function() {
+	$.ajax({
+		url: 'index.php?route=checkout/cart/add',
+		type: 'post',
+		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+		dataType: 'json',
+		beforeSend: function() {
+			$('#button-cart').button('loading');
+		},
+		complete: function() {
+			$('#button-cart').button('reset');
+		},
+		success: function(json) {
+			$('.alert-dismissible, .text-danger').remove();
+			$('.form-group').removeClass('has-error');
+
+			if (json['error']) {
+				if (json['error']['option']) {
+					for (i in json['error']['option']) {
+						var element = $('#input-option' + i.replace('_', '-'));
+
+						if (element.parent().hasClass('input-group')) {
+							element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+						} else {
+							element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+						}
+					}
+				}
+
+				if (json['error']['recurring']) {
+					$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+				}
+
+				// Highlight any found errors
+				$('.text-danger').parent().addClass('has-error');
+			}
+
+			if (json['success']) {
+				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+				$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+
+				$('html, body').animate({ scrollTop: 0 }, 'slow');
+
+				$('#cart > ul').load('index.php?route=common/cart/info ul li');
+			}
+		},
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+	});
+});
+//--></script> 
+{{ content_bottom }}
+{{ column_left }}
+{{ column_right }}
+
+{{ footer }}
+</body>
+</html>

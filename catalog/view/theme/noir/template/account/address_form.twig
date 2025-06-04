@@ -1,0 +1,73 @@
+<form id="address-form">
+	<input type="hidden" name="address_id" value="{{address_info.address_id}}">
+	<input type="hidden" name="country_id" value="{{country_id}}">
+	<input type="hidden" name="address_2" value="">
+	<div class="popup-input" data-error="firstname">
+		<div class="form-block-label">{{ entry_firstname }}</div>
+		<input type="text" name="firstname" value="{{ address_info.firstname }}" placeholder="{{ entry_firstname }}"/>
+		<div class="form-error"></div>
+	</div>
+	<div class="popup-input" data-error="lastname">
+		<div class="form-block-label">{{ entry_lastname }}</div>
+		<input type="text" name="lastname" value="{{ address_info.lastname }}" placeholder="{{ entry_lastname }}" />
+		<div class="form-error"></div>
+	</div>
+	{% if bulk %}
+	<input type="hidden" name="company" value="{{ customer_company }}">
+	{% else %}
+	<div class="popup-input" data-error="company">
+		<div class="form-block-label">{{ entry_company }}</div>
+		<input type="text" name="company" value="{{ address_info.company }}" placeholder="Nazwa firmy">
+		<div class="form-error"></div>
+	</div>
+	{% endif %}
+	<div class="popup-input" data-error="address_1">
+		<div class="form-block-label">{{ entry_address_1 }}</div>
+		<input type="text" name="address_1" value="{{ address_info.address_1 }}" placeholder="{{ entry_address_1 }}">
+		<div class="form-error"></div>
+	</div>
+	<div class="popup-input" data-error="postcode">
+		<div class="form-block-label">{{ entry_postcode }}</div>
+		<input type="text" name="postcode" value="{{ address_info.postcode }}" placeholder="{{ entry_postcode }}">
+		<div class="form-error"></div>
+	</div>
+	<div class="popup-input" data-error="city">
+		<div class="form-block-label">{{ entry_city }}</div>
+		<input type="text" name="city" value="{{ address_info.city }}" placeholder="{{ entry_city }}">
+		<div class="form-error"></div>
+	</div>
+	<input type="hidden" name="zone_id" value="0">
+	<!--
+	<div class="popup-input"  data-error="zone">
+		<div class="form-block-label">{{ entry_zone }}</div>
+		<select name="zone_id" id="input-zone" data-nice-select>
+			<option value="" disabled{{ not address_info.zone_id ? ' selected'}}>{{ text_select }}</option>
+			{% for zone in zones %}
+			<option value="{{ zone.zone_id }}"{{ zone.zone_id == address_info.zone_id  ? ' selected'}}>{{ zone.name }}</option>
+			{% endfor %}
+		</select>
+		<div class="form-error"></div>
+	</div>
+	-->
+{% for custom_field in custom_fields %}
+	{% if custom_field.type == 'text' %}
+	<div class="popup-input"  data-error="custom_field_{{ custom_field.custom_field_id }}">
+		<div class="form-block-label">{{ custom_field.name }}</div>
+		<input type="text" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{{address_info.custom_field[custom_field.custom_field_id] }}" placeholder="{{ custom_field.name }}"/>
+		<div class="form-error"></div>
+	</div>
+	{% endif %}
+{% endfor %}
+	<div class="popup-input">
+		<label class="checkbox large-box df aic">
+			<input type="checkbox" name="default" value="1"{{customer_info.newsletter ? ' checked' }}>
+			<b></b>
+			<div>{{ entry_default }}</div>
+		</label>
+		
+	</div>
+</form> 
+<button type="button" class="popup-btn btn" onclick="saveAddress()">
+	Zapisz
+	<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+</button>

@@ -1,0 +1,53 @@
+{% if options or show_price %}
+<div class="ocf-offcanvas ocfilter-mobile ta">
+	<svg width="40" height="40" class="posa ta" data-filter-close><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#cross"></use></svg>
+	<div class="ocf-offcanvas-body"></div>
+</div>
+
+<div class="panel ocfilter panel-default" id="ocfilter">
+  <div class="panel-heading">{{ heading_title }}</div>
+  
+  <div class="list-group">
+    {% include 'noir/template/extension/module/ocfilter/selected_filter.twig' %}
+    {% include 'noir/template/extension/module/ocfilter/filter_price.twig' %}
+    {% include 'noir/template/extension/module/ocfilter/filter_list.twig' %}
+  </div>
+  <div class="_hidden" id="ocfilter-button">
+    <button class="btn btn-primary btn-apply-filter disabled" data-loading-text="<i class='filter-spinner'></i>"></button>
+  </div>
+</div>
+<script type="text/javascript"><!--
+$(function() {
+  $('body').append($('.ocfilter-mobile').remove().get(0).outerHTML);
+	var options = {
+    mobile: $('.ocfilter-mobile').is(':visible'),
+    php: {
+		searchButton : {{ search_button ? 'true' : 'false' }},
+		showPrice    : {{ show_price ? 'true' : 'false' }},
+	    showCounter  : {{ show_counter ? 'true' : 'false' }},
+		manualPrice  : {{ manual_price ? 'true' : 'false' }},
+      link         : '{{ link }}',
+	    path         : '{{ path }}',
+	    params       : '{{ params }}',
+	    index        : '{{ index }}'
+	  },
+    text: {
+	    show_all: '{{ text_show_all }}',
+	    hide    : '{{ text_hide }}',
+	    load    : '{{ text_load }}',
+		any     : '{{ text_any }}',
+	    select  : '{{ button_select }}'
+	  }
+	};
+
+  if (options.mobile) {
+    $('.ocf-offcanvas-body').html($('#ocfilter').remove().get(0).outerHTML);
+  }
+  
+
+  setTimeout(function() {
+    $('#ocfilter').ocfilter(options);
+  }, 1);
+});
+//--></script>
+{% endif %}

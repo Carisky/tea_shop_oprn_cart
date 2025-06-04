@@ -1,0 +1,15 @@
+{% if selecteds %}
+<div class="list-group-item selected-options df fww">
+{% for option in selecteds %}
+	{% for value in option.values %}
+    <button type="button" onclick="location = '{{ value.href }}';" class="btn-filter-option btn-xs btn-danger df aic{{loop.last ? ' last'}}">
+		{{ value.name }}
+		<svg width="22" height="22"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#cross"></use></svg>
+	</button>
+    {% endfor %}
+{% endfor %}
+{% if selecteds|length > 1 or selecteds|first.values|length > 1 %}
+	<button type="button" onclick="location = '{{link}}';" class="btn-filter-reset btn-block btn-danger">{{ text_cancel_all }}</button>
+  {% endif %}
+</div>
+{% endif %}

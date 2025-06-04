@@ -1,0 +1,111 @@
+{{ header }}
+<div id="account-order" class="page-wrapper page-account">
+	<div class="container">
+		<div class="page-title pannel-trigger df aic" data-pannel-open>
+			<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#user"></use></svg>
+			Moje konto
+		</div>
+		<div class="account-wrapper df">
+			{{ column_left }}
+			<div class="main-column">
+				<h1 class="account-title">{{ heading_title }}</h1>
+				<div class="order-list">
+				{% if orders %}
+					<div class="orders-head df aic">
+						<div class="column">Zamówienia</div>
+						<div class="column">Ilość</div>
+						<div class="column">Do zapłaty</div>
+						<div class="column">Status</div>
+					</div>
+					{% for order in orders %}
+					<div class="order-item" data-order-item>
+						<div class="inner df aic">
+							<div class="column df aic">
+								<div class="order-trigger df aic" data-order-trigger>
+									<svg width="12" height="6" class="ta"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#trigger"></use></svg>
+								</div>
+								<div>
+									<div class="order-number">№ {{ order.order_id }}</div>
+									<div class="created">{{ order.date_added }}</div>
+									<div class="amount">{{ order.total }}</div>
+								</div>
+							</div>
+							<div class="column">{{ order.products }}</div>
+							<div class="column">{{ order.total }}</div>
+							<div class="column status">
+								<span class="dif aic jcc cnt bgc{{ order.order_status_id }}">{{ order.status }}</span>
+							</div>
+						</div>
+						<div class="order-info" data-order-info>
+							<div class="order-info-head df aic">
+								<div class="column">Zamówienia</div>
+								<div class="column">Ilość</div>
+								<div class="column">Wszystko</div>
+								<div class="column">Zwrot</div>
+							</div>
+							<div class="order-products">
+								{% for product in order.products_info %}
+								<div class="order-product-item df aic">
+									<div class="column df aic wb">
+										<img src="{{ product.thumb }}" alt="">
+										<p>{{ product.name }}</p>
+									</div>
+									<div class="column df aic jcsb">
+										<label>Ilość</label>
+										<span>{{ product.quantity }}</span>
+									</div>
+									<div class="column df aic jcsb">
+										<label>Wszystko</label>
+										<span>{{ product.total }}</span>
+									</div>
+									<div class="column df aic jcsb">
+										<label>Zwrot</label>
+										<a href="{{ product.return }}">Wystawić zwrot</a>
+									</div>
+								</div>
+								{% endfor %}
+								<div class="order-products-bottom df jcsb">
+									<div class="column">
+										<label>Adres dostawy:</label>
+										<div>{{ order.address }}</div>
+									</div>
+									{% if order.shipping_method %}
+									<div class="column">
+										<label>Dostawa:</label>
+										<div>{{ order.shipping_method }}</div>
+										<div>{{order.totals[3]}}</div>
+									</div>
+									<div class="column">
+										<label>Punkty spisane:</label>
+										<div>{{order.totals[2] ? order.totals[2] : 0}}</div>
+									</div>
+									<div class="column">
+										<label>Metoda płatności:</label>
+										<div>{{ order.payment_method }}</div>
+									</div>
+									{% else %}
+									<div class="column">
+										<label>Rabat:</label>
+										<div>{{order.totals[2]}}</div>
+									</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				{% else %}
+					<p>{{ text_empty }}</p>
+				{% endif %}
+				</div>
+				{% if orders %}{{ pagination }}{% endif %}
+				{{ content_top }}
+			</div>
+		</div>
+		{{ content_bottom }}
+		{{ column_right }}
+	</div>
+</div>
+{{ footer }}
+</body>
+</html>

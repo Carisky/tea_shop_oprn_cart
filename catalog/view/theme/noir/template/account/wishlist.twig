@@ -1,0 +1,32 @@
+{{ header }}
+<div id="wishlist" class="container page-wrap">
+	<div class="breadcrumbs">
+	{% for breadcrumb in breadcrumbs %}
+		{% if loop.last %}
+		<span>{{ breadcrumb.text }}</span>
+		{% else %}
+		<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+		<i>/</i>
+		{% endif %}
+	{% endfor %}
+	</div>
+	{% if success %}
+	<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+	</div>
+	{% endif %}
+	<h1 class="page-title">Lista życzeń</h1>
+	{{ content_top }}
+	{% if products %}
+	<div class="products-row list df fww">
+		{% for product in products %}
+		<div class="product-item">{%include 'noir/template/parts/product-item.twig'%}</div>
+		{% endfor %}
+    </div>
+	{% else %}
+	<p>{{ text_empty }}</p>
+    {% endif %}
+	{{ content_bottom }}
+ </div>
+{{ column_right }}
+{{ footer }}

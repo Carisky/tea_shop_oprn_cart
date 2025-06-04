@@ -1,0 +1,9 @@
+{% if currencies|length > 1 %}
+<div class="currency-switch">
+	<select name="currency" data-nice-select data-currency-select>
+	{% for currency in currencies %}
+		<option value="{{ currency.code }}"{{currency.code == code ? ' selected'}}>{{ currency.symbol_right }}</option>
+	{% endfor %}
+	</select>
+</div>
+{% endif %}

@@ -1,0 +1,181 @@
+	<footer>
+		<div class="container df jcsb ais">
+			<div class="footer-left">
+				{% if is_home %}
+				<div class="footer-logo"><img src="{{ logo }}" alt=""></div>
+				{% else %}
+				<a class="footer-logo" href="{{ home }}"><img src="{{ logo }}" alt=""></a>
+				{% endif %}
+				<div class="footer-address">{{address}}</div>
+				<div class="footer-phone df aic">
+					<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#phone"></use></svg>
+					<span>{{phone}}</span>
+				</div>
+				<div class="footer-email">{{email}}</div>
+				<div class="footer-social  df aic">
+					<a class="social" href="{{facebook}}" target="_blank" rel="noopener nofollow noreferrer">
+						<svg width="10" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#fb"></use></svg>
+					<a class="social" href="{{instagram}}" target="_blank" rel="noopener nofollow noreferrer">
+						<svg width="19" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#inst"></use></svg>
+					</a>
+				</div>
+			</div>
+			<div class="footer-right df jcsb ais fww">
+				{% if is_home %}
+				<div class="footer-logo"><img src="{{ logo }}" alt=""></div>
+				{% else %}
+				<a class="footer-logo" href="{{ home }}"><img src="{{ logo }}" alt=""></a>
+				{% endif %}
+				<div class="footer-column catalog-column">
+					<h5 class="footer-title">Katalog</h5>
+					{{menu}}
+				</div>
+				<div class="footer-column posr"><b class="posa"></b>
+					<h5 class="footer-title posr" data-footer-menu>Warunki zakupów</h5>
+					{% if informations1 %}
+					<nav><ul>
+					{% for information in informations1 %}
+						<li{{information.active ? ' class="active"'}}><a href="{{ information.href }}">{{ information.title }}</a></li>
+					{% endfor %}
+					</ul></nav>
+					{% endif %}
+				</div>
+				<div class="footer-column posr"><b class="posa"></b>
+					<h5 class="footer-title posr" data-footer-menu>Moje konto</h5>
+					<nav>
+						<ul>
+						{% if logged %}
+							<li{{route == 'account/order' ? ' class="active"'}}><a href="{{ account_order }}">Twoje zamówienia</a>
+							<li{{route == 'account/edit' ? ' class="active"'}}><a href="{{ account_edit }}">Ustawienia konta</a>
+							
+						{% else %}
+							<li><a href="#sign-in" data-fancybox>Twoje zamówienia</a>
+							<li><a href="#sign-in" data-fancybox>Ustawienia konta</a>
+							
+						{% endif %}
+						</ul>
+					</nav>
+				</div>
+				<div class="footer-column posr"><b class="posa"></b>
+					<h5 class="footer-title posr" data-footer-menu>Informacje o sklepie</h5>
+					{% if informations %}
+					<nav><ul>
+					{% for information in informations %}
+						<li{{information.active ? ' class="active"'}}><a href="{{ information.href }}">{{ information.title }}</a></li>
+					{% endfor %}
+						<li{{route == 'information/contact' ? ' class="active"'}}><a href="{{ contact }}">Kontakty</a>
+					</ul></nav>
+					{% endif %}
+				</div>
+				
+			</div>
+		</div>
+	</footer>
+<div class="overlay pp to" id="overlay"></div>
+<div class="hidden">
+	<div class="popup" id="sign-in">
+		<div class="inner">
+			<div class="popup-title">Zaloguj się</div>
+			<form class="popup-form">
+				<div class="popup-input">
+					<input type="email" name="email" placeholder="Email">
+				</div>
+				<div class="popup-input">
+					<input type="password" name="password" placeholder="Haslo">
+					
+				</div>
+				<div class="form-error"></div>
+				<button type="button" class="popup-btn btn df aic jcc" onclick="login()">
+					Zaloguj się
+					<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+				</button>
+			</form>
+		</div>
+		<div class="popup-bottomRegister">
+			<a class="popup-bottom-btn" href="#sign-up" data-fancybox data-close-popup>zarejestruj się</a>
+		</div>
+	</div>
+	<div class="popup" id="sign-up">
+		<div class="inner">
+			<div class="popup-title">Rejestracja</div>
+			<form class="popup-form">
+				<input type="hidden" name="newsletter" value="0">
+				<input type="hidden" name="customer_group_id" value="1">
+				<div class="df jcsb fww">
+					<div class="popup-input name w50" data-error="firstname">
+						<input type="text" name="firstname" placeholder="Imię">
+						<div class="form-error"></div>
+					</div>
+					<div class="popup-input name w50" data-error="lastname">
+						<input type="text" name="lastname" placeholder="Nazwisko">
+						<div class="form-error"></div>
+					</div>
+				</div>
+				<div class="popup-input" data-error="email">
+					<input type="email" name="email" placeholder="Email">
+					<div class="form-error"></div>
+				</div>
+				<div class="popup-input" data-error="password">
+					<input type="password" name="password" placeholder="Haslo">
+					<div class="form-error"></div>
+				</div>
+				<div class="hidden" data-hidden-inputs>
+					<div class="popup-input" data-error="telephone">
+						<input type="text" name="telephone" placeholder="Telefon">
+						<div class="form-error"></div>
+					</div>
+					<div class="popup-input" data-error="custom_field_1">
+						<input type="text" name="custom_field[account][1]" placeholder="Nazwa firmy">
+						<div class="form-error"></div>
+					</div>
+					<div class="popup-input" data-error="custom_field_2">
+						<input type="text" name="custom_field[account][2]" placeholder="Numer NIP">
+						<div class="form-error"></div>
+					</div>
+					<div class="popup-input" data-error="custom_field_3">
+						<input type="text" name="custom_field[account][3]" placeholder="Pełny adres">
+						<div class="form-error"></div>
+					</div>
+				</div>
+				<div class="popup-input" data-error="agree">
+					<label class="checkbox df small-text">
+						<input type="checkbox" name="agree" value="1" checked="">
+						<b></b>
+						<span>Oświadczam, że zapoznałem się z <a href="" target="_blank">regulaminem</a> i akceptuję jego warunki.</span>
+					</label>
+					<div class="form-error"></div>
+				</div>
+				<button type="button" class="popup-btn btn df aic jcc" onclick="register()">
+					zarejestruj się
+					<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+				</button>
+			</form>
+		</div>
+		<div class="popup-bottomRegister">
+			<a class="popup-bottom-btn" href="#sign-in" data-fancybox data-close-popup>zaloguj się</a>
+		</div>
+	</div>
+	<div id="alert" class="alert posr"></div>
+</div>
+{% for style in styles %}
+<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
+{% endfor %}
+{% for script in scripts %}
+<script src="{{ script }}" type="text/javascript"></script>
+{% endfor %}
+<script src="catalog/view/theme/noir/js/fancybox.js"></script>
+<script src="catalog/view/theme/noir/js/nice-select2.js"></script>
+<script src="catalog/view/theme/noir/js/template.js"></script>
+{% if success %}
+<script>nrShowMessage('{{success}}', 1);</script>
+{% endif %}
+{% if error_warning %}
+<script>nrShowMessage('{{error_warning}}');</script>
+{% endif %}
+            {% if schemas_org %}
+            {% for schema in schemas_org %}
+            <script type="application/ld+json">
+            {{ schema }}
+            </script>
+            {% endfor %}
+            {% endif %}

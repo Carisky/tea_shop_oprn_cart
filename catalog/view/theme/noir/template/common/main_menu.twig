@@ -1,0 +1,106 @@
+<nav class="mainmenu df aic">
+	<div id="menu_ag_1" class="catalog-wrap" data-menu-parent>
+		<div class="catalog-btn df aic">
+			<svg width="21" height="22"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#catalog"></use></svg>
+			Katalog
+		</div> 
+		{% if categories %}
+		<div id="menu_panel_ag_1" class="catalog-pannel">
+			<div class="inner">
+				<div class="container">
+					<div class="menu-wrap df posr">
+						<ul class="menu-catalog">
+						{% for key1, category in categories %}
+							<li class="cat{{ key1 ? '' : ' active' }}" data-catalog-root-item="{{ category.category_id }}">
+								{% if category.children %}
+								<a class="parent df aic ta posr" href="{{ category.href }}">
+									<span>{{ category.name }}</span>
+									<i class="df aic jcc" data-item-trigger>
+										<svg class="ta2" width="7" height="12"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#menu-arrow"></use></svg>
+									</i>
+								</a>
+								{% else %}
+								<a href="{{ category.href }}">{{ category.name }}</a>
+								{% endif %}
+								<div class="menu-right-block df" data-submenu="{{ category.category_id }}">
+									<ul class="submenu">
+									{% if category.children %}
+										{% for key2, child in category.children %}
+										<li class="subcat{{ child.active ? ' active' }}">
+											<a href="{{ child.href }}">{{ child.name }}</a>
+										</li>
+										{% endfor %}
+									{% endif %}
+									</ul>
+									<div class="menu-products" data-menu-products></div>
+								</div>
+							</li>
+						{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	{% if catmenu %}
+	{% for category in catmenu %}
+	<a class="menu-item" href="{{ category.href }}">{{ category.name }}</a>
+	{% endfor %}
+	{% endif %}
+	{% if informations1 %}
+	<div id="menu_ag_2" class="menu-item" data-menu-parent>
+		Warunki zakupów
+		<svg width="7" height="12"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#menu-arrow"></use></svg>
+		<div id="menu_panel_ag_2" class="catalog-pannel">
+			<div class="inner">
+				<div class="container">
+					<div class="menu-wrap df jcsb">
+						<ul>
+						{% for information in informations1 %}
+							<li{{information.active ? ' class="active"'}}><a href="{{ information.href }}">{{ information.title }}</a></li>
+						{% endfor %}
+						</ul>
+						<div class="menu-right df aie">
+							<div class="menu-info-image" style="background-image:url('/image/catalog/mainmenu1.jpg')"></div>
+							<a class="menu-featured-link df aie link1" href="{{ informations1[6].href }}">
+								<span>{{ informations1[6].title }}</span>
+								<svg width="19" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+							</a>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+	{% if informations %}
+	<div id="menu_ag_3" class="menu-item" data-menu-parent>
+		O sklepie
+		<svg width="7" height="12"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#menu-arrow"></use></svg>
+		<div id="menu_panel_ag_3" class="catalog-pannel">
+			<div class="inner">
+				<div class="container">
+					<div class="menu-wrap df jcsb">
+						<ul>
+						{% for information in informations %}
+							<li{{information.active ? ' class="active"'}}><a href="{{ information.href }}">{{ information.title }}</a></li>
+						{% endfor %}
+							<li{{contact_active ? ' class="active"'}}><a href="{{ contact }}">Kontakt</a></li>
+							<li{{blog.active ? ' class="active"'}}><a href="{{ blog.href }}">{{ blog.title }}</a></li>
+						</ul>
+						<div class="menu-right df">
+							<div class="menu-info-image" style="background-image:url('/image/catalog/mainmenu2.jpg')"></div>
+							<a class="menu-featured-link df aie link1" href="{{ informations[2].href }}">
+								{{ informations[2].title }}
+								<svg width="19" height="19"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+</nav>

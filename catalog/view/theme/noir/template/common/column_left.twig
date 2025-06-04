@@ -1,0 +1,8 @@
+{% if modules %}
+<aside id="column-left">
+	<svg width="40" height="40" class="posa ta account-pannel-close" data-pannel-close><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#cross"></use></svg>
+	{% for module in modules %}
+  {{ module }}
+  {% endfor %}
+</aside>
+{% endif %}

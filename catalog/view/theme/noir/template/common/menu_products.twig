@@ -1,0 +1,19 @@
+{% if products %}
+<div class="menu-products-wrap df fww jcsb">
+	{% for product in products %}
+	<div class="menu-product-item posr">
+		
+			<img class="menu-product-image" src="{{product.thumb}}" alt="">
+			<div class="menu-product-title">{{product.name}}</div>
+			<div class="menu-product-price df aic jcsb posa">
+				<div class="new-price">{{ product.special ? product.special : product.price }}</div>
+				{% if product.special %}
+				<div class="old-price">{{ product.price }}</div>
+				{% endif %}
+			</div>
+			<a href="{{product.href}}" class="posa pp"></a>
+		
+	</div>
+	{% endfor %}
+</div>
+{% endif %}

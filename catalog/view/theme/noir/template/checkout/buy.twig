@@ -1,0 +1,286 @@
+{{ header }}
+<div id="checkout-checkout" class="page-wrapper container">
+	<h1 class="page-title" style="display:none;">{{heading_title}}</h1>
+	<form id="checkout">
+		<div class="checkout-cart">
+			<h2 class="checkout-block-title">{{text_cart}}</h2>
+			<table class="checkout-cart-rows">
+				<thead class="checkout-cart-header">
+					<tr>
+						<th class="header-name">Product</th>
+						<th class="header-qnt">Ilość</th>
+						<th class="header-price">Cena</th>
+						<th class="header-sum">Wartość</th>
+						<th class="header-del">Usunąć</th>
+					</tr>
+				</thead>
+				<tbody class="checkout-cart-list" data-cart>{{cart}}</tbody>
+			</table>
+		</div>
+		<div class="checkout-main df jcsb">
+			<div class="column left-col">
+				<h2 class="checkout-block-title df aic"><span>01</span>{{text_your_details}}</h2>
+				<div class="checkout-profile" data-address>{{address}}</div>
+				{% if free_shipping > 0 %}
+				<div class="shipping-header posr">
+					<h2 class="column checkout-block-title df aic"><span>02</span>{{text_shipping_method}}</h2>
+					<div class="free-shipping df">
+						<div class="description">
+							<span>Dodaj jeszcze do koszyka produkty o wartości min. {{free_shipping}}<span class="currency-symbol">{{currency_symbol}}</span>, a otrzymasz darmową dostawę</span>
+						</div>
+						<div class="value df fdc aic jcc ">
+							<div class="title">Darmowa<br>dostawa od</div>
+							<div class="sum">{{free_shipping}}<span class="currency-symbol">{{currency_symbol}}</span></div>
+						</div>
+					</div>
+				</div>
+				{% else %}
+				<h2 class="column checkout-block-title df aic"><span>02</span>{{text_shipping_method}}</h2>
+				{% endif %}
+				<div class="checkout-shipping" data-shipping>{{shipping}}</div>
+			</div>
+			<div class="column right-col">
+				
+				<h2 class="column checkout-block-title df aic"><span>03</span>{{text_payment_method}}</h2>
+				<div class="checkout-payment" data-payment>{{payment}}</div>
+				<h2 class="column checkout-block-title df aic"><span>04</span>{{text_totals}}</h2>
+				<div class="checkout-codes">
+				{{coupon}}{{reward}}
+				</div>
+				<div class="checkout-totals" data-totals>{{totals}}</div>
+				<div class="form-block" data-error="agree">
+					<label class="checkbox large-box df small-text">
+						<input type="checkbox" name="agree" value="1"{{agree ? ' checked'}}>
+						<b></b>
+						<div>Zapoznałem się i akceptuję Regulamin Sklepu Internetowego, Politykę Prywatności w celu realizacji zamówienia. *</div>
+					</label>
+					<div class="form-error"></div>
+				</div>
+				<div class="confirm df jce">
+					<button type="button" class="btn df aic jcc" onclick="save()">
+						Zamawiam
+						<svg width="24" height="27"><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#cart"></use></svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div id="payment" style="display:none;"></div>
+	<input id="inpostPointSelected" style="display:none;" type="hidden" value="0"/>
+</div>
+{{ footer }}
+
+{% if map_key %}
+<script src="catalog/view/theme/noir/js/inpost.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ map_key }}&callback=initMap"></script>
+<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+
+{% set geoWidgetToken = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIwMjI2NjIzNzEsImlhdCI6MTcwNzMwMjM3MSwianRpIjoiZWRmZjY1ODgtM2QyYi00ZjA2LTlhYTQtNzczYTAzMDhhNTVkIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpiNmY4cEM5ZXNpS1l5YzZpOS1tWHV2eXd6M2dLOURBb0xBOS1SX0t4dXVVIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiNDYwNDhlY2EtNzc3My00Yjc0LWEwNjctNWQ0OGI4NjRjNTk2Iiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjQ2MDQ4ZWNhLTc3NzMtNGI3NC1hMDY3LTVkNDhiODY0YzU5NiIsImFsbG93ZWRfcmVmZXJyZXJzIjoiamVkd2Fibnktc3psYWsucGwiLCJ1dWlkIjoiZTE2NGQ4OWYtZDJmMS00MmQwLTg3MTMtOWUwMmM1MjQ5ZTZmIn0.bwSBUWK_hTnFemY8hl_QdYD6UaG-86FF3d6JERqjgaulMOKf8KCQnjyLxrPwWOoxPJcdMud97eDmX7oinCqfexCwozik9eXpvoDfm-gSvw1KpLf7MappqP8MJuEIsSoYpOeTnkHTUhNz3l_ecNu58pfbcZy7Ycbf9GM3_-g5c65-JFS8sWcSJkX8P9_XxmDWmo8kKRO_JyY9VDPsBHF4xe9So8wzqPFYu8eXL2NFSDij1ZqlAPdiPbJji7rYtJ9J_zo-t9aJSr0rqP-fAYItOuxBCp7tH0pyvJxJLH94vnaiqwpOQlol_rn1osq4nTp3y92wgXv1uKDckPR_Z-CBVA'  %}
+
+<div class="modal fade" id="inpostGeoWidgetModal" tabindex="-1" role="dialog">
+    
+</div>
+{% if inpostSandbox %}
+    {% set geoWidgetUrl = 'https://sandbox-easy-geowidget-sdk.easypack24.net' %}
+{% else %}
+    {% set geoWidgetUrl = 'https://geowidget.inpost.pl' %}
+{% endif %}
+<link rel="stylesheet" href="{{ geoWidgetUrl }}/inpost-geowidget.css" />
+<script src="{{ geoWidgetUrl }}/inpost-geowidget.js" defer></script>
+
+{% endif %}
+
+<script>
+//$( document ).ready(function() {
+//	if ($.cookie("txtcard")!=undefined) $('textarea[name=comment]').val('Tekst do kartki: '+$.cookie("txtcard"));
+//});
+
+	function saveCoupon() {
+		$(document).find('[data-error="coupon"]').removeClass('input-error').find('.form-error').text('').hide();
+		$('body').append(loader);
+		$.ajax({
+			url: 'index.php?route=checkout/buy/save_coupon',
+			type: 'post',
+			dataType: 'json',
+			data: {
+				coupon: $(document).find('[name="coupon"]').val(),
+			},
+			success: function(json) {
+				$('#loader').remove();
+				if (json.error)  $(document).find('[data-error="coupon"]').addClass('input-error').find('.form-error').text(json.error).show();
+				if (json.success) nrShowMessage(json.success, 1);
+			},
+			error: function(data) {
+				$('#loader').remove();
+				console.log(data.responseText);
+			}
+		});
+	}
+	
+	function saveReward() {
+		$(document).find('[data-error="reward"]').removeClass('input-error').find('.form-error').text('').hide();
+		$('body').append(loader);
+		$.ajax({
+			url: 'index.php?route=checkout/buy/save_reward',
+			type: 'post',
+			dataType: 'json',
+			data: {
+				reward: $(document).find('[name="reward"]').val(),
+			},
+			success: function(json) {
+				$('#loader').remove();
+				if (json.error)  $(document).find('[data-error="reward"]').addClass('input-error').find('.form-error').text(json.error).show();
+				if (json.success) {
+					$(document).find('[data-points]').text(json.reward);
+					nrShowMessage(json.success, 1);
+				}
+			},
+			error: function(data) {
+				$('#loader').remove();
+				console.log(data.responseText);
+			}
+		});
+	}
+	
+	function cartUpdate() {
+		$('body').append(loader);
+		$.ajax({
+			url: 'index.php?route=checkout/buy/refresh_cart',
+			type: 'post',
+			dataType: 'json',
+			success: function(json) {
+				//console.log(json);
+				$('#loader').remove();
+				checkJson(json);
+				$('[data-cart]').html(json.cart);
+				$('[data-shipping]').html(json.shipping);
+				$('[data-payment]').html(json.payment);
+				$('[data-totals]').html(json.totals);
+			},
+			error: function(data) {
+				$('#loader').remove();
+				console.log(data.responseText);
+			}
+		});
+	}
+	
+	function save() {
+		$(document).find('[data-error]').removeClass('input-error').find('.form-error').text('').hide();
+		if (( $("#inpostPointSelected").val()==0 ) && ( $(document).find('[data-modal-map]').css('display')=='block' ) ) {
+			alert("Wybierz paczkomat!");
+		} else {
+			$('body').append(loader);
+			$.ajax({
+				url: 'index.php?route=checkout/buy/save_order',
+				type: 'post',
+				dataType: 'json',
+				data: $('#checkout').serialize(),
+				success: function(json) {
+					$('#loader').remove();
+					//$.removeCookie("txtcard");
+					checkJson(json);
+					if(json.error) {
+						$.each(json.error, function(i, v){
+							$('[data-error="'+i+'"]').addClass('input-error').find('.form-error').text(v).show();
+						});
+					} else if(json.payment) {
+						try { $('#payment').html(json.payment).find('#button-confirm').click(); } catch (e) {}
+						try { $('#payment').html(json.payment).find('.js-bluepayment-confirm').click(); } catch (e) {}
+						// try {
+						//  	if ($('#payment').html(json.payment).find('.js-bluepayment-confirm').length>0) {
+						// 		window.location.href = 'index.php?route=extension/payment/bluepayment/processCheckout';
+						//  	}
+						// } catch (e) {}
+					} else {
+						console.log(json);
+					}
+				},
+				error: function(data) {
+					$('#loader').remove();
+					console.log(data.responseText);
+				}
+			});
+		}
+
+	}
+	
+	$('[data-address]').on('change', '#input-address', function() {
+		$('body').append(loader);
+		$.ajax({
+			url: 'index.php?route=checkout/buy/change_address&address_id='+$(this).val(),
+			dataType: 'json',
+			success: function(json) {
+				$('#loader').remove();
+				checkJson(json);
+				$('[data-address]').html(json.address);
+				NiceSelect.bind(document.getElementById('input-address'));
+				NiceSelect.bind(document.getElementById('input-zone'));
+				$('[data-shipping]').html(json.shipping);
+				$('[data-payment]').html(json.payment);
+				$('[data-totals]').html(json.totals);
+			},
+			error: function(data) {
+				$('#loader').remove();
+				console.log(data.responseText);
+			}
+		});
+	});
+	
+	$('[data-address]').on('change', '#input-zone', function() {
+		$('[data-address]').find('[name="address[city]"]').val('');
+		$('[data-address]').find('[name="address[address_1]"]').val('');
+		$('[data-address]').find('[name="address[postcode]"]').val('');
+		$('body').append(loader);
+		$.ajax({
+			url: 'index.php?route=checkout/buy/change_zone&zone_id='+$(this).val(),
+			dataType: 'json',
+			success: function(json) {
+				$('#loader').remove();
+				checkJson(json);
+				$('[data-shipping]').html(json.shipping);
+				$('[data-payment]').html(json.payment);
+				$('[data-totals]').html(json.totals);
+			},
+			error: function(data) {
+				$('#loader').remove();
+				console.log(data.responseText);
+			}
+		});
+	});
+	
+	$('[data-shipping]').on('change', 'input', function() {
+		$('body').append(loader);
+		$.ajax({
+			url: 'index.php?route=checkout/buy/change_shipping&code='+$(this).filter(':checked').val(),
+			dataType: 'json',
+			success: function(json) {
+				$('#loader').remove();
+				checkJson(json);
+				$('[data-payment]').html(json.payment);
+				$('[data-totals]').html(json.totals);
+				$('body').append(json.s);
+			},
+			error: function(data) {
+				$('#loader').remove();
+				console.log(data.responseText);
+			}
+		});
+	});
+	
+	$('[data-payment]').on('change', 'input', function() {
+		$.ajax({
+			url: 'index.php?route=checkout/buy/change_payment&code='+$(this).filter(':checked').val(),
+			error: function(data) {
+				$('#loader').remove();
+				console.log(data.responseText);
+			}
+		});
+	});
+	
+	if(typeof(button) != 'function') {
+		$.fn.button = function(s){return;}
+	}
+	
+</script>
+</body>
+</html>

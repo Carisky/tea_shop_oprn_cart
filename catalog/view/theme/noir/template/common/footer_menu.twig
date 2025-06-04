@@ -1,0 +1,7 @@
+<nav>
+	<ul>
+	{% for category in categories %}
+	<li{{category.active ? ' class="active"'}}><a href="{{category.href}}">{{category.name}}</a></li>
+	{% endfor %}
+	</ul>
+</nav>
