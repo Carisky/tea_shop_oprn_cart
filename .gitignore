@@ -6,7 +6,10 @@
 system/storage/cache
 
 #image files
-./image/
+image/
+storage/cache
+storage/logs
+storage/session
 
 # IDE Project files
 /upload/.idea/*
