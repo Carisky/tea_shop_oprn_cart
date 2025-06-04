@@ -153,7 +153,12 @@ if ($this->request->server['HTTPS']) {
 if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
     $schema['logo'] = $this->config->get('config_logo');
 }
-$schema['contactPoint'] = array('@type' => 'ContactPoint', 'telephone' => $this->config->get('config_telephone'), 'contactType' => 'customer support', 'email' => $this->config->get('config_email'));
+$schema['contactPoint'] = array(
+    '@type'       => 'ContactPoint',
+    'telephone'   => $this->config->get('config_telephone'),
+    'contactType' => 'customer support',
+    'email'       => $this->config->get('config_email')
+);
 $this->document->setSchema($schema);
             
 		$data['footer'] = $this->load->controller('common/footer');
@@ -227,7 +232,12 @@ if ($this->request->server['HTTPS']) {
 if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
     $schema['logo'] = $this->config->get('config_logo');
 }
-$schema['contactPoint'] = array('@type' => 'ContactPoint', 'telephone' => $this->config->get('config_telephone'), 'contactType' => 'customer support', 'email' => $this->config->get('config_email'));
+$schema['contactPoint'] = array(
+    '@type'       => 'ContactPoint',
+    'telephone'   => $this->config->get('config_telephone'),
+    'contactType' => 'customer support',
+    'email'       => $this->config->get('config_email')
+);
 $this->document->setSchema($schema);
             
 		$data['footer'] = $this->load->controller('common/footer');

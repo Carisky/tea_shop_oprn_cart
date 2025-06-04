@@ -112,11 +112,9 @@ private $schemas = array();
                 public function setSchema($data) {
                     $this->schemas[] = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                 }
-
                 public function getSchema() {
                     return $this->schemas;
                 }
-
             
 	public function addLink($href, $rel) {
 		$this->links[$href] = array(

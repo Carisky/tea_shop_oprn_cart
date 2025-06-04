@@ -761,7 +761,7 @@ class ControllerProductCategory extends Controller {
 			$data['content_top'] = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 
-$schema = array('@context'=>'http://schema.org');
+$schema = array('@context' => 'http://schema.org');
 $schema['@type'] = 'BreadcrumbList';
 $number = 1;
 foreach ($data['breadcrumbs'] as $breadcrumb) {
@@ -770,7 +770,11 @@ foreach ($data['breadcrumbs'] as $breadcrumb) {
     } else {
         $text = $breadcrumb['text'];
     }
-    $schema['itemListElement'][] = array('@type' => 'ListItem', 'position' => $number, 'item' => array('@id' => $breadcrumb['href'], 'name' => $text));
+    $schema['itemListElement'][] = array(
+        '@type'    => 'ListItem',
+        'position' => $number,
+        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
+    );
     $number++;
 }
 $this->document->setSchema($schema);
@@ -831,7 +835,7 @@ $this->document->setSchema($schema);
 			$data['content_top'] = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 
-$schema = array('@context'=>'http://schema.org');
+$schema = array('@context' => 'http://schema.org');
 $schema['@type'] = 'BreadcrumbList';
 $number = 1;
 foreach ($data['breadcrumbs'] as $breadcrumb) {
@@ -840,7 +844,11 @@ foreach ($data['breadcrumbs'] as $breadcrumb) {
     } else {
         $text = $breadcrumb['text'];
     }
-    $schema['itemListElement'][] = array('@type' => 'ListItem', 'position' => $number, 'item' => array('@id' => $breadcrumb['href'], 'name' => $text));
+    $schema['itemListElement'][] = array(
+        '@type'    => 'ListItem',
+        'position' => $number,
+        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
+    );
     $number++;
 }
 $this->document->setSchema($schema);

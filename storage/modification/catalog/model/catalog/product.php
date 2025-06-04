@@ -56,7 +56,7 @@ class ModelCatalogProduct extends Model {
 				'manufacturer'     => $query->row['manufacturer'],
 				'price'            => ($query->row['discount'] ? $query->row['discount'] : $query->row['price']),
 				'special'          => $query->row['special'],
-'special_date_end'          => date('Y-m-d') ,// + $query->row['special_date_end'],
+'special_date_end'          => date('Y-m-d'),
 				'reward'           => $query->row['reward'],
 				'points'           => $query->row['points'],
 				'tax_class_id'     => $query->row['tax_class_id'],

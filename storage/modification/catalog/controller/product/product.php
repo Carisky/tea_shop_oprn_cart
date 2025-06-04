@@ -234,18 +234,19 @@ class ControllerProductProduct extends Controller {
 
 $this->load->model('tool/image');
 $this->load->model('catalog/review');
-$schema = array('@context'=>'http://schema.org');
+$schema = array('@context' => 'http://schema.org');
 $schema['@type'] = 'Product';
 $schema['name'] = $product_info['name'];
-if($product_info['meta_description']){
-$schema['description'] = $product_info['meta_description'];
+if ($product_info['meta_description']) {
+    $schema['description'] = $product_info['meta_description'];
 }
 if ($product_info['image']) {
-    $schema['image'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
-	$this->document->setOgImage($schema['image']); //AG 21.05.2024
-}
-if ($product_info['mpn']) {
-    $schema['mpn'] = $product_info['mpn'];
+    $schema['image'] = $this->model_tool_image->resize(
+        $product_info['image'],
+        $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'),
+        $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')
+    );
+    $this->document->setOgImage($schema['image']);
 }
 if ($product_info['sku']) {
     $schema['sku'] = $product_info['sku'];
@@ -256,15 +257,14 @@ if ($product_info['ean']) {
 if ($product_info['model']) {
     $schema['model'] = $product_info['model'];
 }
-$schema['offers']['@type'] = 'Offer';
+$schema['offers'] = array('@type' => 'Offer');
 if ($product_info['special']) {
-    $schema['offers']['price'] = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+    $schema['offers']['price'] = round(floatval($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'))), 2);
 } else {
-    $schema['offers']['price'] = $this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+    $schema['offers']['price'] = round(floatval($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'))), 2);
 }
-$schema['offers']['price'] = round(floatval($schema['offers']['price']),2);
 $schema['offers']['priceCurrency'] = $this->config->get('config_currency');
-$schema['offers']['url'] = $this->url->link('product/product' . '&product_id=' . $this->request->get['product_id']);
+$schema['offers']['url'] = $this->url->link('product/product', 'product_id=' . $this->request->get['product_id']);
 if ($product_info['quantity'] >= 0) {
     $schema['offers']['availability'] = 'http://schema.org/InStock';
 } else {
@@ -272,28 +272,38 @@ if ($product_info['quantity'] >= 0) {
 }
 if ($product_info['special_date_end']) {
     $schema['offers']['priceValidUntil'] = $product_info['special_date_end'];
-}else{
-	$schema['offers']['priceValidUntil'] = '3000-01-01';
+} else {
+    $schema['offers']['priceValidUntil'] = date('Y-m-d', strtotime('+1 year'));
 }
 if ((int)$product_info['reviews'] > 0) {
-    $schema['aggregateRating']['@type'] = 'AggregateRating';
-    $schema['aggregateRating']['ratingValue'] = (int)$product_info['rating'];
-    $schema['aggregateRating']['reviewCount'] = (int)$product_info['reviews'];
+    $schema['aggregateRating'] = array(
+        '@type'       => 'AggregateRating',
+        'ratingValue' => (int)$product_info['rating'],
+        'reviewCount' => (int)$product_info['reviews']
+    );
 }
 if ($product_info['manufacturer']) {
-    $schema['brand']['@type'] = 'Brand';
-    $schema['brand']['name'] = $product_info['manufacturer'];
-    $schema['brand']['url'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
+    $schema['brand'] = array(
+        '@type' => 'Brand',
+        'name'  => $product_info['manufacturer'],
+        'url'   => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id'])
+    );
 }
-$reviews = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], (1 - 1) * 5, 5);
+$reviews = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], 0, 5);
 if ($reviews) {
     foreach ($reviews as $review) {
-        $schema['review'][] = array('@type' => 'Review', 'author' => array('@type' => 'Person', 'name' => $review['author']), 'datePublished' => date($this->language->get('date_format_short'), strtotime($review['date_added'])), 'description' => strip_tags(html_entity_decode($review['text'], ENT_QUOTES, 'UTF-8')));
+        $schema['review'][] = array(
+            '@type'         => 'Review',
+            'author'        => array('@type' => 'Person', 'name' => $review['author']),
+            'datePublished' => date($this->language->get('date_format_short'), strtotime($review['date_added'])),
+            'description'   => strip_tags(html_entity_decode($review['text'], ENT_QUOTES, 'UTF-8'))
+        );
     }
 }
 $this->document->setSchema($schema);
 unset($schema);
-$schema = array('@context'=>'http://schema.org');
+
+$schema = array('@context' => 'http://schema.org');
 $schema['@type'] = 'BreadcrumbList';
 $number = 1;
 foreach ($data['breadcrumbs'] as $breadcrumb) {
@@ -302,29 +312,34 @@ foreach ($data['breadcrumbs'] as $breadcrumb) {
     } else {
         $text = $breadcrumb['text'];
     }
-    $schema['itemListElement'][] = array('@type' => 'ListItem', 'position' => $number, 'item' => array('@id' => $breadcrumb['href'], 'name' => $text));
+    $schema['itemListElement'][] = array(
+        '@type'    => 'ListItem',
+        'position' => $number,
+        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
+    );
     $number++;
 }
 $this->document->setSchema($schema);
-			
+            
 			}
 			*/
 			$data['heading_title'] = $product_info['name']; // Noir
 
 $this->load->model('tool/image');
 $this->load->model('catalog/review');
-$schema = array('@context'=>'http://schema.org');
+$schema = array('@context' => 'http://schema.org');
 $schema['@type'] = 'Product';
 $schema['name'] = $product_info['name'];
-if($product_info['meta_description']){
-$schema['description'] = $product_info['meta_description'];
+if ($product_info['meta_description']) {
+    $schema['description'] = $product_info['meta_description'];
 }
 if ($product_info['image']) {
-    $schema['image'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
-	$this->document->setOgImage($schema['image']); //AG 21.05.2024
-}
-if ($product_info['mpn']) {
-    $schema['mpn'] = $product_info['mpn'];
+    $schema['image'] = $this->model_tool_image->resize(
+        $product_info['image'],
+        $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'),
+        $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')
+    );
+    $this->document->setOgImage($schema['image']);
 }
 if ($product_info['sku']) {
     $schema['sku'] = $product_info['sku'];
@@ -335,15 +350,14 @@ if ($product_info['ean']) {
 if ($product_info['model']) {
     $schema['model'] = $product_info['model'];
 }
-$schema['offers']['@type'] = 'Offer';
+$schema['offers'] = array('@type' => 'Offer');
 if ($product_info['special']) {
-    $schema['offers']['price'] = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+    $schema['offers']['price'] = round(floatval($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'))), 2);
 } else {
-    $schema['offers']['price'] = $this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+    $schema['offers']['price'] = round(floatval($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'))), 2);
 }
-$schema['offers']['price'] = round(floatval($schema['offers']['price']),2);
 $schema['offers']['priceCurrency'] = $this->config->get('config_currency');
-$schema['offers']['url'] = $this->url->link('product/product' . '&product_id=' . $this->request->get['product_id']);
+$schema['offers']['url'] = $this->url->link('product/product', 'product_id=' . $this->request->get['product_id']);
 if ($product_info['quantity'] >= 0) {
     $schema['offers']['availability'] = 'http://schema.org/InStock';
 } else {
@@ -351,28 +365,38 @@ if ($product_info['quantity'] >= 0) {
 }
 if ($product_info['special_date_end']) {
     $schema['offers']['priceValidUntil'] = $product_info['special_date_end'];
-}else{
-	$schema['offers']['priceValidUntil'] = '3000-01-01';
+} else {
+    $schema['offers']['priceValidUntil'] = date('Y-m-d', strtotime('+1 year'));
 }
 if ((int)$product_info['reviews'] > 0) {
-    $schema['aggregateRating']['@type'] = 'AggregateRating';
-    $schema['aggregateRating']['ratingValue'] = (int)$product_info['rating'];
-    $schema['aggregateRating']['reviewCount'] = (int)$product_info['reviews'];
+    $schema['aggregateRating'] = array(
+        '@type'       => 'AggregateRating',
+        'ratingValue' => (int)$product_info['rating'],
+        'reviewCount' => (int)$product_info['reviews']
+    );
 }
 if ($product_info['manufacturer']) {
-    $schema['brand']['@type'] = 'Brand';
-    $schema['brand']['name'] = $product_info['manufacturer'];
-    $schema['brand']['url'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
+    $schema['brand'] = array(
+        '@type' => 'Brand',
+        'name'  => $product_info['manufacturer'],
+        'url'   => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id'])
+    );
 }
-$reviews = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], (1 - 1) * 5, 5);
+$reviews = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], 0, 5);
 if ($reviews) {
     foreach ($reviews as $review) {
-        $schema['review'][] = array('@type' => 'Review', 'author' => array('@type' => 'Person', 'name' => $review['author']), 'datePublished' => date($this->language->get('date_format_short'), strtotime($review['date_added'])), 'description' => strip_tags(html_entity_decode($review['text'], ENT_QUOTES, 'UTF-8')));
+        $schema['review'][] = array(
+            '@type'         => 'Review',
+            'author'        => array('@type' => 'Person', 'name' => $review['author']),
+            'datePublished' => date($this->language->get('date_format_short'), strtotime($review['date_added'])),
+            'description'   => strip_tags(html_entity_decode($review['text'], ENT_QUOTES, 'UTF-8'))
+        );
     }
 }
 $this->document->setSchema($schema);
 unset($schema);
-$schema = array('@context'=>'http://schema.org');
+
+$schema = array('@context' => 'http://schema.org');
 $schema['@type'] = 'BreadcrumbList';
 $number = 1;
 foreach ($data['breadcrumbs'] as $breadcrumb) {
@@ -381,11 +405,15 @@ foreach ($data['breadcrumbs'] as $breadcrumb) {
     } else {
         $text = $breadcrumb['text'];
     }
-    $schema['itemListElement'][] = array('@type' => 'ListItem', 'position' => $number, 'item' => array('@id' => $breadcrumb['href'], 'name' => $text));
+    $schema['itemListElement'][] = array(
+        '@type'    => 'ListItem',
+        'position' => $number,
+        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
+    );
     $number++;
 }
 $this->document->setSchema($schema);
-			
+            
 			
 			$this->document->setDescription($product_info['meta_description']);
 			$this->document->setKeywords($product_info['meta_keyword']);
