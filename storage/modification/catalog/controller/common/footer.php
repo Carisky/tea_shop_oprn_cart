@@ -125,9 +125,6 @@ class ControllerCommonFooter extends Controller {
 					$this->document->addScript('catalog/view/javascript/me_fb_events/common.js');
 				}
 			
-
-			$data['schemas_org'] = $this->document->getSchema();
-			
 		return $this->load->view('common/footer', $data);
 	}
 }

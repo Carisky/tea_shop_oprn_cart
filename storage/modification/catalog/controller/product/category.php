@@ -198,6 +198,26 @@ class ControllerProductCategory extends Controller {
 				'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'])
 			);
 
+			$schema = [
+				'@context' => 'http://schema.org',
+				'@type'    => 'BreadcrumbList',
+				'itemListElement' => []
+			];
+
+			foreach ($data['breadcrumbs'] as $i => $crumb) {
+				$schema['itemListElement'][] = [
+					'@type'    => 'ListItem',
+					'position' => $i + 1,
+					'item'     => [
+						'@id'   => $crumb['href'],
+						'name'  => $crumb['text']
+					]
+				];
+			}
+
+
+			$this->document->setSchema($schema);
+
 			if ($category_info['image']) {
 				$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
 			} else {
@@ -335,6 +355,7 @@ class ControllerProductCategory extends Controller {
 							if (!$ov['subtract'] || $ov['quantity'] > 0) {
 								$values[] = [
 									'product_option_value_id' => $ov['product_option_value_id'],
+									'product_option_id' 	  => $option['product_option_id'],
 									'name'                    => $ov['name'],
 								];
 							}
@@ -607,6 +628,10 @@ class ControllerProductCategory extends Controller {
 			}
 			unset($faq);
 
+
+
+
+
 			// дальше вы собираете HTML-шаблон
 			$data['faq'] = $this->load->view('common/faq', $data);
 			$data['sort'] = $sort;
@@ -756,35 +781,45 @@ class ControllerProductCategory extends Controller {
 
 			$data['continue'] = $this->url->link('common/home');
 
+
+            // Сбор товаров категории для JSON-LD ItemList
+            $item_List_Filter = array(
+                'filter_category_id' => $category_id,
+                'filter_filter'      => $filter,
+                'sort'               => $sort,
+                'order'              => $order,
+            );
+            $item_List_results = $this->model_catalog_product->getProducts($item_List_Filter);
+
+            $itemList = [
+                '@context'        => 'http://schema.org',
+                '@type'           => 'ItemList',
+                'itemListElement' => []
+            ];
+
+            foreach ($item_List_results as $index => $product) {
+                $itemList['itemListElement'][] = [
+                    '@type'    => 'ListItem',
+                    'position' => $index + 1,
+                    'url'      => $this->url->link(
+                        'product/product',
+                        'product_id=' . $product['product_id']
+                    )
+                ];
+            }
+
+            $this->document->setSchema($itemList);
+        
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
 			$data['content_top'] = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
-
-$schema = array('@context' => 'http://schema.org');
-$schema['@type'] = 'BreadcrumbList';
-$number = 1;
-foreach ($data['breadcrumbs'] as $breadcrumb) {
-    if ($number == 1) {
-        $text = 'Home';
-    } else {
-        $text = $breadcrumb['text'];
-    }
-    $schema['itemListElement'][] = array(
-        '@type'    => 'ListItem',
-        'position' => $number,
-        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
-    );
-    $number++;
-}
-$this->document->setSchema($schema);
-            
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 			
 			$data['wishlist'] = $this->model_catalog_product->getWishlist(); // Noir
 			$data['filter_selected'] = $this->load->controller('extension/module/ocfilter/nrGetSelection'); //Noir
-			
+
 
         /** Load Format Pagination **/
         $this->load->language('extension/module/load_format_pagination');
@@ -830,29 +865,39 @@ $this->document->setSchema($schema);
 
 			$this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
 
+
+            // Сбор товаров категории для JSON-LD ItemList
+            $item_List_Filter = array(
+                'filter_category_id' => $category_id,
+                'filter_filter'      => $filter,
+                'sort'               => $sort,
+                'order'              => $order,
+            );
+            $item_List_results = $this->model_catalog_product->getProducts($item_List_Filter);
+
+            $itemList = [
+                '@context'        => 'http://schema.org',
+                '@type'           => 'ItemList',
+                'itemListElement' => []
+            ];
+
+            foreach ($item_List_results as $index => $product) {
+                $itemList['itemListElement'][] = [
+                    '@type'    => 'ListItem',
+                    'position' => $index + 1,
+                    'url'      => $this->url->link(
+                        'product/product',
+                        'product_id=' . $product['product_id']
+                    )
+                ];
+            }
+
+            $this->document->setSchema($itemList);
+        
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
 			$data['content_top'] = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
-
-$schema = array('@context' => 'http://schema.org');
-$schema['@type'] = 'BreadcrumbList';
-$number = 1;
-foreach ($data['breadcrumbs'] as $breadcrumb) {
-    if ($number == 1) {
-        $text = 'Home';
-    } else {
-        $text = $breadcrumb['text'];
-    }
-    $schema['itemListElement'][] = array(
-        '@type'    => 'ListItem',
-        'position' => $number,
-        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
-    );
-    $number++;
-}
-$this->document->setSchema($schema);
-            
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 

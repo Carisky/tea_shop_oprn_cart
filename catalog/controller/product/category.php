@@ -183,6 +183,26 @@ class ControllerProductCategory extends Controller {
 				'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'])
 			);
 
+			$schema = [
+				'@context' => 'http://schema.org',
+				'@type'    => 'BreadcrumbList',
+				'itemListElement' => []
+			];
+
+			foreach ($data['breadcrumbs'] as $i => $crumb) {
+				$schema['itemListElement'][] = [
+					'@type'    => 'ListItem',
+					'position' => $i + 1,
+					'item'     => [
+						'@id'   => $crumb['href'],
+						'name'  => $crumb['text']
+					]
+				];
+			}
+
+
+			$this->document->setSchema($schema);
+
 			if ($category_info['image']) {
 				$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
 			} else {
@@ -287,6 +307,7 @@ class ControllerProductCategory extends Controller {
 							if (!$ov['subtract'] || $ov['quantity'] > 0) {
 								$values[] = [
 									'product_option_value_id' => $ov['product_option_value_id'],
+									'product_option_id' 	  => $option['product_option_id'],
 									'name'                    => $ov['name'],
 								];
 							}
@@ -499,6 +520,10 @@ class ControllerProductCategory extends Controller {
 			}
 			unset($faq);
 
+
+
+
+
 			// дальше вы собираете HTML-шаблон
 			$data['faq'] = $this->load->view('common/faq', $data);
 			$data['sort'] = $sort;
@@ -519,7 +544,7 @@ class ControllerProductCategory extends Controller {
 			
 			$data['wishlist'] = $this->model_catalog_product->getWishlist(); // Noir
 			$data['filter_selected'] = $this->load->controller('extension/module/ocfilter/nrGetSelection'); //Noir
-			
+
 			$this->response->setOutput($this->load->view('product/category', $data));
 		} else {
 			$url = '';

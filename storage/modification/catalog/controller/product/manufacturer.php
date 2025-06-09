@@ -48,25 +48,6 @@ class ControllerProductManufacturer extends Controller {
 		$data['column_right'] = $this->load->controller('common/column_right');
 		$data['content_top'] = $this->load->controller('common/content_top');
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
-
-$schema = array('@context' => 'http://schema.org');
-$schema['@type'] = 'BreadcrumbList';
-$number = 1;
-foreach ($data['breadcrumbs'] as $breadcrumb) {
-    if ($number == 1) {
-        $text = 'Home';
-    } else {
-        $text = $breadcrumb['text'];
-    }
-    $schema['itemListElement'][] = array(
-        '@type'    => 'ListItem',
-        'position' => $number,
-        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
-    );
-    $number++;
-}
-$this->document->setSchema($schema);
-            
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
@@ -472,25 +453,6 @@ $this->document->setSchema($schema);
 			$data['column_right'] = $this->load->controller('common/column_right');
 			$data['content_top'] = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
-
-$schema = array('@context' => 'http://schema.org');
-$schema['@type'] = 'BreadcrumbList';
-$number = 1;
-foreach ($data['breadcrumbs'] as $breadcrumb) {
-    if ($number == 1) {
-        $text = 'Home';
-    } else {
-        $text = $breadcrumb['text'];
-    }
-    $schema['itemListElement'][] = array(
-        '@type'    => 'ListItem',
-        'position' => $number,
-        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
-    );
-    $number++;
-}
-$this->document->setSchema($schema);
-            
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
 
@@ -534,25 +496,6 @@ $this->document->setSchema($schema);
 			$this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
 
 			$data['header'] = $this->load->controller('common/header');
-
-$schema = array('@context' => 'http://schema.org');
-$schema['@type'] = 'BreadcrumbList';
-$number = 1;
-foreach ($data['breadcrumbs'] as $breadcrumb) {
-    if ($number == 1) {
-        $text = 'Home';
-    } else {
-        $text = $breadcrumb['text'];
-    }
-    $schema['itemListElement'][] = array(
-        '@type'    => 'ListItem',
-        'position' => $number,
-        'item'     => array('@id' => $breadcrumb['href'], 'name' => $text)
-    );
-    $number++;
-}
-$this->document->setSchema($schema);
-            
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');

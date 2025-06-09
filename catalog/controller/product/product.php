@@ -216,7 +216,26 @@ class ControllerProductProduct extends Controller {
 				'text' => $product_info['name'],
 				'href' => $this->url->link('product/product', $url . '&product_id=' . $this->request->get['product_id'])
 			);
+			
+			$schema = [
+				'@context' => 'http://schema.org',
+				'@type'    => 'BreadcrumbList',
+				'itemListElement' => []
+			];
 
+			foreach ($data['breadcrumbs'] as $i => $crumb) {
+				$schema['itemListElement'][] = [
+					'@type'    => 'ListItem',
+					'position' => $i + 1,
+					'item'     => [
+						'@id'   => $crumb['href'],
+						'name'  => $crumb['text']
+					]
+				];
+			}
+
+			$this->document->setSchema($schema);
+			
 			if ($product_info['meta_title']) {
 				$this->document->setTitle($product_info['meta_title']);
 			} else {
@@ -498,6 +517,19 @@ class ControllerProductProduct extends Controller {
 			$data['desc_images_count'] = count($data['desc_images']);
 			$data['logged'] = $this->customer->isLogged();
 			
+			// URL для AJAX-отправки отзыва
+			$data['review_action'] = $this->url->link('product/product/nr_write', 'product_id=' . $product_id);
+
+			// Флаг включённых отзывов и данные гостя/имя
+			$data['review_status']  = $this->config->get('config_review_status');
+			$data['review_guest']   = $this->config->get('config_review_guest') || $this->customer->isLogged();
+			$data['customer_name']  = $this->customer->isLogged()
+				? $this->customer->getFirstName()
+				: '';
+				
+			// URL для подгрузки списка отзывов
+			$data['review_reload'] = $this->url->link('product/product/nr_review', 'product_id=' . $product_id);
+
 			date_default_timezone_set('Europe/Madrid');
 			$t1 = strtotime('today 15:00:00');
 			$t2 = strtotime('tomorrow 09:00:00');

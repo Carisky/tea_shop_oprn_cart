@@ -6,6 +6,13 @@
 <html dir="{{ direction }}" lang="{{ lang }}">
 <!--<![endif]-->
 <head>
+
+    {% if schemas_header %}
+        {% for schema in schemas_header %}
+            <script type="application/ld+json">{{ schema }}</script>
+        {% endfor %}
+    {% endif %}
+            
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -42,23 +49,7 @@
 	<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js" type="text/javascript"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 	<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-	<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@type": "Organization",
-		"name":      "{{ ld_org_name|e('js') }}",
-		"url":       "{{ ld_org_url|e('js') }}",
-		"logo":      "{{ ld_org_logo|e('js') }}",
-		"contactPoint": {
-		"@type":       "ContactPoint",
-		"telephone":   "{{ ld_org_telephone|e('js') }}",
-		"contactType": "customer service"
-		}
-		{% if ld_org_email %}
-		,"email":   "{{ ld_org_email|e('js') }}"
-		{% endif %}
-	}
-	</script>
+	
 
 	{% for style in styles %}
 	<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />

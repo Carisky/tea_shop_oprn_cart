@@ -6,6 +6,13 @@
 <html dir="{{ direction }}" lang="{{ lang }}">
 <!--<![endif]-->
 <head>
+
+    {% if schemas_header %}
+        {% for schema in schemas_header %}
+            <script type="application/ld+json">{{ schema }}</script>
+        {% endfor %}
+    {% endif %}
+            
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">

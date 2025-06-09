@@ -141,26 +141,6 @@ class ControllerInformationContact extends Controller {
 		$data['column_right'] = $this->load->controller('common/column_right');
 		$data['content_top'] = $this->load->controller('common/content_top');
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
-
-$schema = array('@context' => 'http://schema.org');
-$schema['@type'] = 'Organization';
-$schema['name'] = $this->config->get('config_meta_title');
-if ($this->request->server['HTTPS']) {
-    $schema['url'] = $this->config->get('config_ssl');
-} else {
-    $schema['url'] = $this->config->get('config_url');
-}
-if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
-    $schema['logo'] = $this->config->get('config_logo');
-}
-$schema['contactPoint'] = array(
-    '@type'       => 'ContactPoint',
-    'telephone'   => $this->config->get('config_telephone'),
-    'contactType' => 'customer support',
-    'email'       => $this->config->get('config_email')
-);
-$this->document->setSchema($schema);
-            
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 		$data['facebook'] = $this->config->get('config_facebook'); //Noir
@@ -220,26 +200,6 @@ $this->document->setSchema($schema);
 		$data['column_right'] = $this->load->controller('common/column_right');
 		$data['content_top'] = $this->load->controller('common/content_top');
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
-
-$schema = array('@context' => 'http://schema.org');
-$schema['@type'] = 'Organization';
-$schema['name'] = $this->config->get('config_meta_title');
-if ($this->request->server['HTTPS']) {
-    $schema['url'] = $this->config->get('config_ssl');
-} else {
-    $schema['url'] = $this->config->get('config_url');
-}
-if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
-    $schema['logo'] = $this->config->get('config_logo');
-}
-$schema['contactPoint'] = array(
-    '@type'       => 'ContactPoint',
-    'telephone'   => $this->config->get('config_telephone'),
-    'contactType' => 'customer support',
-    'email'       => $this->config->get('config_email')
-);
-$this->document->setSchema($schema);
-            
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 

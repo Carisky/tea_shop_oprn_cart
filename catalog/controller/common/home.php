@@ -13,13 +13,39 @@ class ControllerCommonHome extends Controller {
 			$this->document->addLink($canonical, 'canonical');
 		}
 
-		$data['column_left'] = $this->load->controller('common/column_left');
-		$data['column_right'] = $this->load->controller('common/column_right');
-		$data['content_top'] = $this->load->controller('common/content_top');
-		$data['content_bottom'] = $this->load->controller('common/content_bottom');
-		$data['footer'] = $this->load->controller('common/footer');
-		$data['header'] = $this->load->controller('common/header');
+		$data['breadcrumbs'] = [];
+		$data['breadcrumbs'][] = [
+			'text' => $this->language->get('text_home'),
+			'href' => $this->url->link('common/home')
+		];
+
+		$schema = [
+			'@context'        => 'http://schema.org',
+			'@type'           => 'BreadcrumbList',
+			'itemListElement' => []
+		];
+
+		foreach ($data['breadcrumbs'] as $i => $crumb) {
+			$schema['itemListElement'][] = [
+				'@type'    => 'ListItem',
+				'position' => $i + 1,
+				'item'     => [
+					'@id'  => $crumb['href'],
+					'name' => $crumb['text']
+				]
+			];
+		}
+
+		$this->document->setSchema($schema);
+
+		$data['column_left']   = $this->load->controller('common/column_left');
+		$data['column_right']  = $this->load->controller('common/column_right');
+		$data['content_top']   = $this->load->controller('common/content_top');
+		$data['content_bottom']= $this->load->controller('common/content_bottom');
+		$data['footer']        = $this->load->controller('common/footer');
+		$data['header']        = $this->load->controller('common/header');
 
 		$this->response->setOutput($this->load->view('common/home', $data));
 	}
+
 }

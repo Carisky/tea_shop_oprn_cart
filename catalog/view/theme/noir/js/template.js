@@ -641,15 +641,19 @@ $(window).on('resize', function() {
 // === Правильная отправка упаковки в корзину ===
 $(document).on('click', '.product-item-btn-option', function() {
   var $btn  = $(this),
-      block = $btn.closest('[data-product-block]'),
       pid   = $btn.data('pid'),
-      qty   = block.find('[data-input-quantity]').val() || 1,
-      ovid  = $btn.data('ovid');
+      qty   = $btn.closest('[data-product-block]')
+                .find('[data-input-quantity]').val() || 1,
+      oid   = $btn.data('oid'),
+      ovid  = $btn.data('ovid'),
+      data  = {
+        product_id: pid,
+        quantity:   qty
+      };
 
-  // Отправляем exactly { product_id, quantity, option[] }
-  cart.add({
-    product_id: pid,
-    quantity:   qty,
-    'option[236]': ovid
-  });
+  // Добавляем ключ 'option[<product_option_id>]' с нужным value
+  data['option[' + oid + ']'] = ovid;
+
+  cart.add(data);
 });
+

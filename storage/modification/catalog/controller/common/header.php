@@ -29,6 +29,88 @@ class ControllerCommonHeader extends Controller {
 
 		$data['title'] = $this->document->getTitle();
 
+    $schema = [
+        '@context' => 'http://schema.org',
+        '@type'    => 'Store',
+        'name'     => $this->config->get('config_name'),
+        'image'    => $this->config->get('config_ssl') . 'image/' . $this->config->get('config_logo'),
+        'telephone'=> array_map('trim', explode("\n", $this->config->get('config_telephone'))),
+        'priceRange'=> $this->config->get('config_price_range'),
+        'sameAs'   => $this->config->get('config_social_links'),
+        'openingHoursSpecification' => [
+            [
+                '@type'    => 'OpeningHoursSpecification',
+                'dayOfWeek'=> ['Monday','Tuesday','Wednesday','Thursday','Friday'],
+                'opens'    => $this->config->get('config_open_time'),
+                'closes'   => $this->config->get('config_close_time')
+            ]
+        ],
+        'address'  => [
+            '@type'           => 'PostalAddress',
+            'streetAddress'   => $this->config->get('config_address'),
+            'addressLocality' => $this->config->get('config_city'),
+            'addressCountry'  => [
+                '@type' => 'Country',
+                'name'  => $this->config->get('config_country')
+            ]
+        ]
+    ];
+    $this->document->setSchema($schema);
+
+    $schema = [
+        '@context' => 'http://schema.org',
+        '@type'    => 'Organization',
+        'name'     => $this->config->get('config_meta_title'),
+        'url'      => $this->request->server['HTTPS']
+                        ? $this->config->get('config_ssl')
+                        : $this->config->get('config_url'),
+        'logo'     => is_file(DIR_IMAGE . $this->config->get('config_logo'))
+                        ? $this->config->get('config_logo')
+                        : null,
+        'contactPoint' => [
+            '@type'       => 'ContactPoint',
+            'telephone'   => $this->config->get('config_telephone'),
+            'contactType' => 'customer support',
+            'email'       => $this->config->get('config_email')
+        ]
+    ];
+    $this->document->setSchema($schema);
+
+    $schemas = $this->document->getSchema();
+    $hasBreadcrumbs = false;
+
+    foreach ($schemas as $existing_schema) {
+        $decoded = json_decode($existing_schema, true);
+        if (isset($decoded['@type']) && $decoded['@type'] === 'BreadcrumbList') {
+            $hasBreadcrumbs = true;
+            break;
+        }
+    }
+
+    if (!$hasBreadcrumbs && isset($data['breadcrumbs']) && is_array($data['breadcrumbs'])) {
+        $schema = [
+            '@context' => 'http://schema.org',
+            '@type'    => 'BreadcrumbList'
+        ];
+        $position = 1;
+        foreach ($data['breadcrumbs'] as $item) {
+            $name = ($position === 1) ? 'Home' : $item['text'];
+            $schema['itemListElement'][] = [
+                '@type'    => 'ListItem',
+                'position' => $position,
+                'item'     => [
+                    '@id'   => $item['href'],
+                    'name'  => $name
+                ]
+            ];
+            $position++;
+        }
+        $this->document->setSchema($schema);
+    }
+
+    $data['schemas_header'] = $this->document->getSchema();
+        
+
         /** Load Pagination Format **/
         $data['load_format_pagination'] = $this->load->controller('common/load_format_pagination');
       
@@ -123,15 +205,47 @@ class ControllerCommonHeader extends Controller {
 		$data['instagram'] = $this->config->get('config_instagram');
 		$data['route'] = isset($this->request->get['route']) ? $this->request->get['route'] : '';
 		$data['menu'] = $this->load->controller('common/menu/mainmenu');
+
+		$telephones = array_map('trim', explode("\n", $this->config->get('config_telephone')));
+		$social    = [];
+		if ($this->config->get('config_facebook')) {
+			$social[] = $this->config->get('config_facebook');
+		}
+		if ($this->config->get('config_youtube')) {
+			$social[] = $this->config->get('config_youtube');
+		}
+		$schema = [
+			'@context' => 'http://schema.org',
+			'@type'    => 'Store',
+			'name'     => $this->config->get('config_name'),
+			'image'    => ($this->config->get('config_url')) . 'image/' . $this->config->get('config_logo'),
+			'telephone'=> $telephones,
+			'priceRange'=> $this->config->get('config_price_range'),
+			'sameAs'   => $social,
+			'openingHoursSpecification' => [[
+				'@type'    => 'OpeningHoursSpecification',
+				'dayOfWeek'=> ['Monday','Tuesday','Wednesday','Thursday','Friday'],
+				'opens'    => $this->config->get('config_open_time'),
+				'closes'   => $this->config->get('config_close_time'),
+			]],
+			'address'  => [
+				'@type'           => 'PostalAddress',
+				'streetAddress'   => $this->config->get('config_address'),
+				'addressLocality' => $this->config->get('config_city'),
+				'addressCountry'  => [
+					'@type' => 'Country',
+					'name'  => $this->config->get('config_country'),
+				],
+			],
+		];
+
+
+		$this->document->setSchema($schema);
+
 		//Noir >
 		
 		//$data['menu'] = $this->load->controller('common/menu');
-		$data['ld_org_name']    = $this->config->get('config_name');
-		$data['ld_org_url']     = $this->url->link('common/home');
-		$data['ld_org_logo']    = $data['logo'];
-		$data['ld_org_telephone'] = $this->config->get('config_telephone');
 
-		$data['ld_org_email']   = $this->config->get('config_email');
 
 				$data['me_fb_events_status'] = $this->config->get('module_me_fb_events_status');
 				$data['me_fb_events_pixel_id'] = $this->config->get('module_me_fb_events_pixel_id');

@@ -30,7 +30,7 @@
 
 	<div class="product-card-top df jcsb">
 		<div class="left">
-			<h1>{{ heading_title }} {% if options %} {{ options[0].product_option_value[0].name }} {% endif %}</h1>
+			<h1>{{ heading_title }} {% if options %} <span id="product-title-option-value">{{ options[0].product_option_value[0].name }}</span> {% endif %}</h1>
 			{% if short_desc %}
 				<div class="rating-wrap df aic">
 					<div class="product-rating df">
@@ -91,6 +91,7 @@
 											<input
 												type="radio"
 												name="option[{{ option.product_option_id }}]"
+												data-name="{{ option_value.name }}"
 												value="{{ option_value.product_option_value_id }}"
 												data-option-price="{{ option_value.price|replace({'zł': '', ',': '.', ' ': ''})|striptags|e('html_attr')|default('0') }}"
 												data-prefix="{{ option_value.price_prefix }}"
@@ -372,7 +373,7 @@
 		<div class="product-spoiler" data-spoiler>
 			<div class="product-spoiler-title posr df aic jcsb" data-spoiler-toggler>
 				Opinie
-				<div data-hidden>
+				<div >
 					<a href="#{{ review_guest ? 'add-review' : 'sign-in'}}" class="btn df aic jcc" data-fancybox data-button>dodaj opinię</a>
 				</div>
 				<span class="number posa">0{{number}}</span>
@@ -530,6 +531,11 @@
 			else if (prefix === '-') final -= delta;
 
 			priceEl.textContent = final.toFixed(2).replace('.', ',') + ' zł';
+
+			const titleSpan = document.getElementById('product-title-option-value');
+			if (titleSpan) {
+				titleSpan.textContent = this.dataset.name;
+			}
 		});
 	});
 });

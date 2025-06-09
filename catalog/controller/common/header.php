@@ -114,15 +114,47 @@ class ControllerCommonHeader extends Controller {
 		$data['instagram'] = $this->config->get('config_instagram');
 		$data['route'] = isset($this->request->get['route']) ? $this->request->get['route'] : '';
 		$data['menu'] = $this->load->controller('common/menu/mainmenu');
+
+		$telephones = array_map('trim', explode("\n", $this->config->get('config_telephone')));
+		$social    = [];
+		if ($this->config->get('config_facebook')) {
+			$social[] = $this->config->get('config_facebook');
+		}
+		if ($this->config->get('config_youtube')) {
+			$social[] = $this->config->get('config_youtube');
+		}
+		$schema = [
+			'@context' => 'http://schema.org',
+			'@type'    => 'Store',
+			'name'     => $this->config->get('config_name'),
+			'image'    => ($this->config->get('config_url')) . 'image/' . $this->config->get('config_logo'),
+			'telephone'=> $telephones,
+			'priceRange'=> $this->config->get('config_price_range'),
+			'sameAs'   => $social,
+			'openingHoursSpecification' => [[
+				'@type'    => 'OpeningHoursSpecification',
+				'dayOfWeek'=> ['Monday','Tuesday','Wednesday','Thursday','Friday'],
+				'opens'    => $this->config->get('config_open_time'),
+				'closes'   => $this->config->get('config_close_time'),
+			]],
+			'address'  => [
+				'@type'           => 'PostalAddress',
+				'streetAddress'   => $this->config->get('config_address'),
+				'addressLocality' => $this->config->get('config_city'),
+				'addressCountry'  => [
+					'@type' => 'Country',
+					'name'  => $this->config->get('config_country'),
+				],
+			],
+		];
+
+
+		$this->document->setSchema($schema);
+
 		//Noir >
 		
 		//$data['menu'] = $this->load->controller('common/menu');
-		$data['ld_org_name']    = $this->config->get('config_name');
-		$data['ld_org_url']     = $this->url->link('common/home');
-		$data['ld_org_logo']    = $data['logo'];
-		$data['ld_org_telephone'] = $this->config->get('config_telephone');
 
-		$data['ld_org_email']   = $this->config->get('config_email');
 		return $this->load->view('common/header', $data);
 	}
 }
