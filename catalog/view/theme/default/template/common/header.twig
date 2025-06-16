@@ -50,6 +50,14 @@
 {% endfor %}
 </head>
 <body>
+{% if not logged and route != 'account/login' %}
+<div id="auth-banner" class="auth-banner">
+  <div class="container">
+    <span>place for banner</span>
+    <a href="{{ login }}" class="btn btn-primary pull-right">{{ text_login }}</a>
+  </div>
+</div>
+{% endif %}
 <nav id="top">
   <div class="container">{{ currency }}
     {{ language }}
