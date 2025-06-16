@@ -13,7 +13,13 @@ class ControllerExtensionModuleNrMailDiscount extends Controller {
 		
 		$data['discount'] = (float)$data['coupon']['discount'].($data['coupon']['type'] == 'P' ? '%' : ' '.$this->session->data['currency']);
 		
-		$data['text'] = html_entity_decode(sprintf($this->config->get('module_nr_mail_discount_desc'), $data['discount']));
+               $desc = $this->config->get('module_nr_mail_discount_desc');
+
+               if (strpos($desc, '%s') !== false) {
+                       $data['text'] = html_entity_decode(sprintf($desc, $data['discount']));
+               } else {
+                       $data['text'] = html_entity_decode($desc);
+               }
 		
 		return $this->load->view('extension/module/nr_mail_discount', $data);
 	}
