@@ -58,13 +58,19 @@
 	<!-- End Google Tag Manager -->
 	{{ load_format_pagination }}
 </head>
-<body class="{{ home == og_url ? 'home' : 'page'}}">
+<body class="{{ home == og_url ? 'home' : 'page'}}{% if not logged and route != 'account/login' %} banner-visible{% endif %}">
 	<!-- Google Tag Manager (noscript) -->
 	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TBVLP4GV"
 	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-	<!-- End Google Tag Manager (noscript) -->
-	{{ cart_pannel }}
-	<header class="header">
+        <!-- End Google Tag Manager (noscript) -->
+        {% if not logged and route != 'account/login' %}
+        <div class="top-login-banner df aic jcsb">
+                <span>place for banner</span>
+                <a href="{{ login }}" class="banner-login-button">Login</a>
+        </div>
+        {% endif %}
+        {{ cart_pannel }}
+        <header class="header">
 		<div class="inner posr df aic jcsb">
 			<div class="header-left df aic">
 				{% if home == og_url %}
