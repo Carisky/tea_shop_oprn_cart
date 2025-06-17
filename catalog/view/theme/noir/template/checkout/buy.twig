@@ -72,8 +72,8 @@
 
 {% if map_key %}
 <script src="catalog/view/theme/noir/js/inpost.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ map_key }}&callback=initMap"></script>
-<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key={{ map_key }}&callback=initMap"></script> -->
+<!-- <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script> -->
 
 {% set geoWidgetToken = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjIwMjI2NjIzNzEsImlhdCI6MTcwNzMwMjM3MSwianRpIjoiZWRmZjY1ODgtM2QyYi00ZjA2LTlhYTQtNzczYTAzMDhhNTVkIiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTpiNmY4cEM5ZXNpS1l5YzZpOS1tWHV2eXd6M2dLOURBb0xBOS1SX0t4dXVVIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiNDYwNDhlY2EtNzc3My00Yjc0LWEwNjctNWQ0OGI4NjRjNTk2Iiwic2NvcGUiOiJvcGVuaWQgYXBpOmFwaXBvaW50cyIsInNpZCI6IjQ2MDQ4ZWNhLTc3NzMtNGI3NC1hMDY3LTVkNDhiODY0YzU5NiIsImFsbG93ZWRfcmVmZXJyZXJzIjoiamVkd2Fibnktc3psYWsucGwiLCJ1dWlkIjoiZTE2NGQ4OWYtZDJmMS00MmQwLTg3MTMtOWUwMmM1MjQ5ZTZmIn0.bwSBUWK_hTnFemY8hl_QdYD6UaG-86FF3d6JERqjgaulMOKf8KCQnjyLxrPwWOoxPJcdMud97eDmX7oinCqfexCwozik9eXpvoDfm-gSvw1KpLf7MappqP8MJuEIsSoYpOeTnkHTUhNz3l_ecNu58pfbcZy7Ycbf9GM3_-g5c65-JFS8sWcSJkX8P9_XxmDWmo8kKRO_JyY9VDPsBHF4xe9So8wzqPFYu8eXL2NFSDij1ZqlAPdiPbJji7rYtJ9J_zo-t9aJSr0rqP-fAYItOuxBCp7tH0pyvJxJLH94vnaiqwpOQlol_rn1osq4nTp3y92wgXv1uKDckPR_Z-CBVA'  %}
 
@@ -89,7 +89,21 @@
 <script src="{{ geoWidgetUrl }}/inpost-geowidget.js" defer></script>
 
 {% endif %}
-
+<style>
+.paypalpay {
+  display: block !important;
+  position: fixed;
+  background: white;
+  border: 1px solid black;
+  border-radius: 8px;
+  top: 20px;
+  right: 20px;
+  padding: 20px;
+  z-index: 9999;
+  overflow: scroll;
+  height: 95vh;
+}
+</style>
 <script>
 //$( document ).ready(function() {
 //	if ($.cookie("txtcard")!=undefined) $('textarea[name=comment]').val('Tekst do kartki: '+$.cookie("txtcard"));
@@ -186,6 +200,8 @@
 					} else if(json.payment) {
 						try { $('#payment').html(json.payment).find('#button-confirm').click(); } catch (e) {}
 						try { $('#payment').html(json.payment).find('.js-bluepayment-confirm').click(); } catch (e) {}
+						try { $('#payment').addClass("paypalpay"); } catch (e) {}
+
 						// try {
 						//  	if ($('#payment').html(json.payment).find('.js-bluepayment-confirm').length>0) {
 						// 		window.location.href = 'index.php?route=extension/payment/bluepayment/processCheckout';
