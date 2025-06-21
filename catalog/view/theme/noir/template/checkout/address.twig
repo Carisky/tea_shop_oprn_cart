@@ -1,69 +1,96 @@
-<h3>Podstawowe dane</h3>
-
-{% if addresses %}
-<div class="form-block">
-	<select name="address[address_id]" id="input-address" data-nice-select>
-		<option value="" disabled{{ not shipping_address.address_id ? ' selected'}}> --- Wybierz adres --- </option>
-		{% for item in addresses %}
-		<option value="{{ item.address_id }}"{{ item.address_id == shipping_address.address_id  ? ' selected'}}>{{ item.city }}, {{ item.address_1 }}</option>
-		{% endfor %}
-    </select>
-</div>
-{% endif %}
-<div class="df jcsb fww">
-	<div class="popup-input w50" data-error="firstname">
-		<input type="text" name="address[firstname]" value="{{ shipping_address.firstname }}" placeholder="{{ entry_firstname }}">
-		<div class="form-error"></div>
-	</div>
-	<div class="popup-input w50" data-error="lastname">
-		<input type="text" name="address[lastname]" value="{{shipping_address.lastname }}" placeholder="{{entry_lastname }}">
-		<div class="form-error"></div>
-	</div>
-</div>
-<div class="form-block" data-error="address_1">
-    <input type="text" name="address[address_1]" value="{{shipping_address.address_1}}" placeholder="{{ entry_address_1 }}" />
-	<div class="form-error"></div>
-</div>
-<div class="form-block" data-error="city">
-	<input type="text" name="address[city]" value="{{shipping_address.city}}" placeholder="{{ entry_city }}" />
-	<div class="form-error"></div>
-</div>
-<div class="form-block" data-error="postcode">
-	<input type="text" name="address[postcode]" value="{{shipping_address.postcode}}" placeholder="{{ entry_postcode }}" />
-	<div class="form-error"></div>
-</div>
-<input type="hidden" name="address[zone_id]" value="0">
-<!--
-<div class="form-block" data-error="zone">
-	<select name="address[zone_id]" id="input-zone" data-nice-select>
-		<option value="" disabled{{ not shipping_address.zone_id ? ' selected'}}>--- Wybierz państwo ---</option>
-		{% for zone in zones %}
-		<option value="{{ zone.zone_id }}"{{ zone.zone_id == shipping_address.zone_id  ? ' selected'}}>{{ zone.name }}</option>
-		{% endfor %}
-	</select>
-	<div class="form-error"></div>
-</div>
--->
-<div class="form-block" data-error="telephone">
-	<input type="text" name="address[telephone]" value="{{shipping_address.telephone}}"" placeholder="Telefon">
-	<div class="form-error"></div>
-</div>
-<div class="form-block" data-error="email">
-	<input type="text" name="address[email]" value="{{shipping_address.email}}" placeholder="{{ entry_email_address }}" />
-	<div class="form-error"></div>
-</div>
-{% if not logged %}
-<div class="form-block">
-	<input type="text" name="address[company]" value="{{shipping_address.company}}" placeholder="{{ entry_company }}" id="input-shipping-company" class="form-control" />
+<h3>{{ text_your_details }}</h3>
+<div class="buyer-block">
+    <div class="df jcsb fww">
+        <div class="popup-input w50" data-error="firstname">
+            <input type="text" name="buyer[firstname]" value="{{ buyer_address.firstname }}" placeholder="{{ entry_firstname }}">
+            <div class="form-error"></div>
+        </div>
+        <div class="popup-input w50" data-error="lastname">
+            <input type="text" name="buyer[lastname]" value="{{ buyer_address.lastname }}" placeholder="{{ entry_lastname }}">
+            <div class="form-error"></div>
+        </div>
+    </div>
+    <div class="form-block" data-error="address_1">
+        <input type="text" name="buyer[address_1]" value="{{ buyer_address.address_1 }}" placeholder="{{ entry_address_1 }}" />
+        <div class="form-error"></div>
+    </div>
+    <div class="form-block" data-error="city">
+        <input type="text" name="buyer[city]" value="{{ buyer_address.city }}" placeholder="{{ entry_city }}" />
+        <div class="form-error"></div>
+    </div>
+    <div class="form-block" data-error="postcode">
+        <input type="text" name="buyer[postcode]" value="{{ buyer_address.postcode }}" placeholder="{{ entry_postcode }}" />
+        <div class="form-error"></div>
+    </div>
+    <input type="hidden" name="buyer[zone_id]" value="0">
+    <div class="form-block" data-error="telephone">
+        <input type="text" name="buyer[telephone]" value="{{ buyer_address.telephone }}" placeholder="Telefon">
+        <div class="form-error"></div>
+    </div>
+    <div class="form-block" data-error="email">
+        <input type="text" name="buyer[email]" value="{{ buyer_address.email }}" placeholder="{{ entry_email_address }}" />
+        <div class="form-error"></div>
+    </div>
+    {% if not logged %}
+    <div class="form-block">
+        <input type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control" />
+    </div>
+    <div class="form-block">
+        <input type="text" name="buyer[nip]" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control" />
+    </div>
+    {% endif %}
 </div>
 <div class="form-block">
-	<input type="text" name="address[nip]" value="{{shipping_address.nip}}" placeholder="NIP" id="input-shipping-nip" class="form-control" />
+    <label class="checkbox large-box df small-text">
+        <input type="checkbox" name="recipient_same" value="1" id="recipient_same"{{ recipient_same ? ' checked' }}>
+        <b></b>
+        <div>{{ text_recipient_same }}</div>
+    </label>
 </div>
-{% endif %}
+<div id="recipient-block"{% if recipient_same %} style="display:none;"{% endif %}>
+    <h3>{{ text_recipient_details }}</h3>
+    <div class="df jcsb fww">
+        <div class="popup-input w50" data-error="r_firstname">
+            <input type="text" name="address[firstname]" value="{{ shipping_address.firstname }}" placeholder="{{ entry_firstname }}">
+            <div class="form-error"></div>
+        </div>
+        <div class="popup-input w50" data-error="r_lastname">
+            <input type="text" name="address[lastname]" value="{{ shipping_address.lastname }}" placeholder="{{ entry_lastname }}">
+            <div class="form-error"></div>
+        </div>
+    </div>
+    <div class="form-block" data-error="r_address_1">
+        <input type="text" name="address[address_1]" value="{{ shipping_address.address_1 }}" placeholder="{{ entry_address_1 }}" />
+        <div class="form-error"></div>
+    </div>
+    <div class="form-block" data-error="r_city">
+        <input type="text" name="address[city]" value="{{ shipping_address.city }}" placeholder="{{ entry_city }}" />
+        <div class="form-error"></div>
+    </div>
+    <div class="form-block" data-error="r_postcode">
+        <input type="text" name="address[postcode]" value="{{ shipping_address.postcode }}" placeholder="{{ entry_postcode }}" />
+        <div class="form-error"></div>
+    </div>
+    <input type="hidden" name="address[zone_id]" value="0">
+    <div class="form-block" data-error="r_telephone">
+        <input type="text" name="address[telephone]" value="{{ shipping_address.telephone }}" placeholder="Telefon">
+        <div class="form-error"></div>
+    </div>
+    <div class="form-block" data-error="r_email">
+        <input type="text" name="address[email]" value="{{ shipping_address.email }}" placeholder="{{ entry_email_address }}" />
+        <div class="form-error"></div>
+    </div>
+</div>
 <div class="comment-block">
-	<h3>Uwagi do zamówienia (opcjonalne)</h3>
-	<div class="textarea-wrapper">
-		<textarea name="comment" rows="4" class="form-control">{{ comment }}{{ commenta }}</textarea>
-	</div>
+    <h3>Uwagi do zamówienia (opcjonalne)</h3>
+    <div class="textarea-wrapper">
+        <textarea name="comment" rows="4" class="form-control">{{ comment }}{{ commenta }}</textarea>
+    </div>
 </div>
-<input type="hidden" name="address[country_id]" value="{{shipping_address.country_id}}">
+<input type="hidden" name="buyer[country_id]" value="{{ buyer_address.country_id }}">
+<input type="hidden" name="address[country_id]" value="{{ shipping_address.country_id }}">
+<script>
+    document.getElementById('recipient_same').addEventListener('change', function(){
+        document.getElementById('recipient-block').style.display = this.checked ? 'none' : 'block';
+    });
+</script>

@@ -5,13 +5,15 @@ $_['heading_subtitle']               = 'Tradycyjne przetwory to wymarzony upomin
 
 // Text
 $_['text_cart']                      = 'Mój koszyk';
-$_['text_your_details']              = 'DANE ODBIORCY';
+$_['text_your_details']              = 'DANE KUPUJĄCEGO';
 $_['text_shipping_method']           = 'DOSTAWA';
 $_['text_payment_method']            = 'PŁATNOŚĆ';
 $_['text_totals']            = 'PODSUMOWANIE';
 $_['text_empty']       = 'Twój koszyk jest pusty!';
 $_['text_success_coupon']  = 'Sukces: Zastosowano kupon rabatowy!';
 $_['text_success_reward']  = 'Sukces: Zastosowano rabat na podstawie punktów lojalnościowych!';
+$_['text_recipient_same'] = 'Odbiorca = kupujący';
+$_['text_recipient_details'] = 'DANE ODBIORCY';
 
 
 $_['text_checkout_option']           = 'Krok 1: Opcje zamówienia';
