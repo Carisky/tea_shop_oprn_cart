@@ -79,6 +79,7 @@ $_['entry_country']                  = 'Kraj';
 $_['entry_zone']                     = 'Województwo';
 $_['entry_newsletter']               = 'Chcę zapisać się do newslettera %s.';
 $_['entry_shipping'] 	             = 'Mój adres dostawy i adres rozliczeniowy są takie same.';
+$_['text_same_recipient'] = 'Dane odbiorcy takie same jak kupującego';
 
 // Error
 $_['error_login']                    = 'Ostrzeżenie: E-mail i/lub hasło nieprawidłowe.';
