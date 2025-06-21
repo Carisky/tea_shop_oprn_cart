@@ -105,6 +105,15 @@
 }
 </style>
 <script>
+    $(function() {
+        $('#same-recipient').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#recipient-fields').hide();
+            } else {
+                $('#recipient-fields').show();
+            }
+        }).trigger('change');
+    });
 //$( document ).ready(function() {
 //	if ($.cookie("txtcard")!=undefined) $('textarea[name=comment]').val('Tekst do kartki: '+$.cookie("txtcard"));
 //});
