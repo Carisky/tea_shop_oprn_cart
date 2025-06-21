@@ -35,8 +35,9 @@
     <div class="form-block">
         <input type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control" />
     </div>
-    <div class="form-block">
-        <input type="text" name="buyer[nip]" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control" />
+    <div class="form-block df aic">
+        <input type="text" name="buyer[nip]" id="input-nip" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control" />
+        <button type="button" class="btn" id="btn-nip" disabled>Sprawdź</button>
     </div>
     {% endif %}
 </div>
@@ -92,5 +93,40 @@
 <script>
     document.getElementById('recipient_same').addEventListener('change', function(){
         document.getElementById('recipient-block').style.display = this.checked ? 'none' : 'block';
+    });
+
+    var nipInput = document.getElementById('input-nip');
+    var nipButton = document.getElementById('btn-nip');
+
+    function toggleNipBtn() {
+        var val = nipInput.value.replace(/\D/g, '');
+        if (val.length === 10) {
+            nipButton.disabled = false;
+            nipButton.classList.remove('disabled');
+        } else {
+            nipButton.disabled = true;
+            nipButton.classList.add('disabled');
+        }
+    }
+
+    nipInput.addEventListener('input', toggleNipBtn);
+    document.addEventListener('DOMContentLoaded', toggleNipBtn);
+
+    $('#btn-nip').on('click', function(){
+        $.ajax({
+            url: 'https://wrapx.pl/getclientdatabynipex',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                scrf: 'ewerffd12sdfsr45664ff',
+                nip: nipInput.value
+            },
+            success: function(json){
+                if(json.name) $('[name="buyer[company]"]').val(json.name);
+                if(json.adress) $('[name="buyer[address_1]"]').val(json.adress);
+                if(json.city) $('[name="buyer[city]"]').val(json.city);
+                if(json.zip) $('[name="buyer[postcode]"]').val(json.zip);
+            }
+        });
     });
 </script>
