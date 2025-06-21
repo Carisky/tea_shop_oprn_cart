@@ -70,29 +70,38 @@ class ControllerCheckoutBuy extends Controller
 			$data['address_id'] = $this->customer->getAddressId();
 		}
 
-		if (isset($this->session->data['shipping_address'])) {
-			$data['shipping_address'] = $this->session->data['shipping_address'];
-		} else {
-			if (!empty($data['address_id'])) {
-				$data['shipping_address'] = $this->model_account_address->getAddress($data['address_id']);
-				$data['shipping_address']['telephone'] = empty($data['shipping_address']['custom_field'][4]) ? '' : $data['shipping_address']['custom_field'][4];
-			} else {
-				$data['shipping_address'] = [
-					'country_id' => $this->config->get('config_country_id'),
-					'zone_id' => '',
-					'address_id' => 0,
-					'postcode' => '',
-					'city' => ''
-				];
-			}
-			if ($data['logged']) {
-				if (empty($data['shipping_address']['telephone'])) $data['shipping_address']['telephone'] = $this->customer->getTelephone();
-				if (empty($data['shipping_address']['email'])) $data['shipping_address']['email'] = $this->customer->getEmail();
-				if (empty($data['shipping_address']['company']) and !empty($custom_fields[1])) $data['shipping_address']['company'] = $custom_fields[1];
-			}
-		}
+                if (isset($this->session->data['payment_address'])) {
+                        $data['buyer_address'] = $this->session->data['payment_address'];
+                } else {
+                        if ($data['logged']) {
+                                $data['buyer_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
+                                $data['buyer_address']['telephone'] = empty($data['buyer_address']['custom_field'][4]) ? '' : $data['buyer_address']['custom_field'][4];
+                        } else {
+                                $data['buyer_address'] = [
+                                        'country_id' => $this->config->get('config_country_id'),
+                                        'zone_id' => '',
+                                        'address_id' => 0,
+                                        'postcode' => '',
+                                        'city' => ''
+                                ];
+                        }
+                        if ($data['logged']) {
+                                if (empty($data['buyer_address']['telephone'])) $data['buyer_address']['telephone'] = $this->customer->getTelephone();
+                                if (empty($data['buyer_address']['email'])) $data['buyer_address']['email'] = $this->customer->getEmail();
+                                if (empty($data['buyer_address']['company']) and !empty($custom_fields[1])) $data['buyer_address']['company'] = $custom_fields[1];
+                        }
+                }
 
-		$this->session->data['shipping_address'] = $data['shipping_address'];
+                if (isset($this->session->data['shipping_address'])) {
+                        $data['shipping_address'] = $this->session->data['shipping_address'];
+                } else {
+                        $data['shipping_address'] = $data['buyer_address'];
+                }
+
+                $data['recipient_same'] = isset($this->session->data['recipient_same']) ? $this->session->data['recipient_same'] : 1;
+
+                $this->session->data['payment_address'] = $data['buyer_address'];
+                $this->session->data['shipping_address'] = $data['shipping_address'];
 		if (isset($this->session->data['comment'])) $data['comment'] = $this->session->data['comment'];
 		//AG 14.05.2024
 		if (isset($this->session->data['txtcard'])) {
@@ -234,7 +243,13 @@ class ControllerCheckoutBuy extends Controller
 			if (!empty($errors = $this->validateForm())) $json['error'] = $errors;
 		}
 
-		$this->session->data['shipping_address'] = $this->request->post['address'];
+                $this->session->data['payment_address'] = $this->request->post['buyer'];
+                $this->session->data['recipient_same'] = !empty($this->request->post['recipient_same']) ? 1 : 0;
+                if ($this->session->data['recipient_same']) {
+                        $this->session->data['shipping_address'] = $this->request->post['buyer'];
+                } else {
+                        $this->session->data['shipping_address'] = $this->request->post['address'];
+                }
 		$this->session->data['payment_method'] = $this->session->data['payment_methods'][$this->request->post['payment_method']];
 		$shipping = explode('.', $this->request->post['shipping_method']);
 		$this->session->data['shipping_method'] = $this->session->data['shipping_methods'][$shipping[0]]['quote'][$shipping[1]];
@@ -402,27 +417,29 @@ class ControllerCheckoutBuy extends Controller
 	{
 		$error = array();
 		$this->load->language('checkout/buy');
-		$group_id = $this->customer->getGroupId();
-		$post = $this->request->post['address'];
+                $group_id = $this->customer->getGroupId();
+                $buyer = $this->request->post['buyer'];
+                $recipient_same = !empty($this->request->post['recipient_same']);
+                $address = $recipient_same ? $buyer : $this->request->post['address'];
 
-		if ((utf8_strlen(trim($post['firstname'])) < 1) || (utf8_strlen(trim($post['firstname'])) > 32)) $error['firstname'] = $this->language->get('error_firstname');
-		if ((utf8_strlen(trim($post['lastname'])) < 1) || (utf8_strlen(trim($post['lastname'])) > 32)) $error['lastname'] = $this->language->get('error_lastname');
-		if ((utf8_strlen(trim($post['address_1'])) < 3) || (utf8_strlen(trim($post['address_1'])) > 128)) $error['address_1'] = $this->language->get('error_address_1');
-		$adres1 = preg_replace('/[^0-9]/', "", $post['address_1']);
-		if (utf8_strlen(trim($adres1)) < 1) $error['address_1'] = 'Uwaga: Proszę podać ulicę i numer domu!';
-		if ((utf8_strlen(trim($post['city'])) < 2) || (utf8_strlen(trim($post['city'])) > 128)) $error['city'] = $this->language->get('error_city');
-		if ((utf8_strlen($post['email']) > 96) || !filter_var($post['email'], FILTER_VALIDATE_EMAIL)) $error['email'] = $this->language->get('error_email');
+                if ((utf8_strlen(trim($buyer['firstname'])) < 1) || (utf8_strlen(trim($buyer['firstname'])) > 32)) $error['firstname'] = $this->language->get('error_firstname');
+                if ((utf8_strlen(trim($buyer['lastname'])) < 1) || (utf8_strlen(trim($buyer['lastname'])) > 32)) $error['lastname'] = $this->language->get('error_lastname');
+                if ((utf8_strlen(trim($buyer['address_1'])) < 3) || (utf8_strlen(trim($buyer['address_1'])) > 128)) $error['address_1'] = $this->language->get('error_address_1');
+                $adres1 = preg_replace('/[^0-9]/', "", $buyer['address_1']);
+                if (utf8_strlen(trim($adres1)) < 1) $error['address_1'] = 'Uwaga: Proszę podać ulicę i numer domu!';
+                if ((utf8_strlen(trim($buyer['city'])) < 2) || (utf8_strlen(trim($buyer['city'])) > 128)) $error['city'] = $this->language->get('error_city');
+                if ((utf8_strlen($buyer['email']) > 96) || !filter_var($buyer['email'], FILTER_VALIDATE_EMAIL)) $error['email'] = $this->language->get('error_email');
 
 		$this->load->model('localisation/country');
-		$country_info = $this->model_localisation_country->getCountry($post['country_id']);
-		if ($country_info and $country_info['postcode_required'] and (utf8_strlen(trim($post['postcode'])) < 2 or utf8_strlen(trim($post['postcode'])) > 10)) {
-			$error['postcode'] = $this->language->get('error_postcode');
-		}
-		if (empty($post['country_id'])) $error['country'] = $this->language->get('error_country');
+                $country_info = $this->model_localisation_country->getCountry($buyer['country_id']);
+                if ($country_info and $country_info['postcode_required'] and (utf8_strlen(trim($buyer['postcode'])) < 2 or utf8_strlen(trim($buyer['postcode'])) > 10)) {
+                        $error['postcode'] = $this->language->get('error_postcode');
+                }
+                if (empty($buyer['country_id'])) $error['country'] = $this->language->get('error_country');
 		//if (empty($post['zone_id'])) $error['zone'] = $this->language->get('error_zone');
 		//if (empty($post['telephone'])) $error['telephone'] = 'Uwaga: musisz podać swój numer telefonu!'; ////////////////
-		$phone = preg_replace('/[^0-9]/', "", $post['telephone']);
-		if (utf8_strlen(trim($phone)) < 9 || utf8_strlen(trim($post['telephone'])) != utf8_strlen(trim($phone))) $error['telephone'] = 'Uwaga: musisz podać swój numer telefonu! Minimum 9 cyfr!';
+                $phone = preg_replace('/[^0-9]/', "", $buyer['telephone']);
+                if (utf8_strlen(trim($phone)) < 9 || utf8_strlen(trim($buyer['telephone'])) != utf8_strlen(trim($phone))) $error['telephone'] = 'Uwaga: musisz podać swój numer telefonu! Minimum 9 cyfr!';
 		if (empty($this->request->post['agree'])) $error['agree'] = $this->language->get('error_agree1');
 
 		if (empty($this->request->post['shipping_method'])) {
@@ -454,9 +471,12 @@ class ControllerCheckoutBuy extends Controller
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode(['redirect' => $this->url->link('common/home')]));
 		} else {
-			$post = $this->request->post;
+                        $post = $this->request->post;
+                        $buyer = $post['buyer'];
+                        $recipient_same = !empty($post['recipient_same']);
+                        $address = $recipient_same ? $buyer : $post['address'];
 
-			$country_info = $this->model_localisation_country->getCountry($post['address']['country_id']);
+                        $country_info = $this->model_localisation_country->getCountry($buyer['country_id']);
 			//$zone_info = $this->model_localisation_zone->getZone($post['address']['zone_id']);
 
 			$order_data = array();
@@ -483,45 +503,45 @@ class ControllerCheckoutBuy extends Controller
 			} else {
 				$order_data['customer_id'] = 0;
 				$order_data['customer_group_id'] = $this->config->get('config_customer_group_id');
-				$company = $post['address']['company'];
-				$order_data['custom_field'] = [
-					2 => $post['address']['nip']
-				];
+                                $company = $buyer['company'];
+                                $order_data['custom_field'] = [
+                                        2 => $buyer['nip']
+                                ];
 			}
 			if (!isset($order_data['custom_field'])) $order_data['custom_field'] = array();
 
-			$order_data['firstname'] = $post['address']['firstname'];
-			$order_data['lastname'] = $post['address']['lastname'];
-			$order_data['email'] = $post['address']['email'];
-			$order_data['telephone'] = $post['address']['telephone'];
+                        $order_data['firstname'] = $buyer['firstname'];
+                        $order_data['lastname'] = $buyer['lastname'];
+                        $order_data['email'] = $buyer['email'];
+                        $order_data['telephone'] = $buyer['telephone'];
 			$order_data['comment'] = $post['comment'];
 
-			$order_data['payment_firstname'] = $order_data['firstname'];
-			$order_data['payment_lastname'] = $order_data['lastname'];
-			$order_data['payment_company'] =  isset($company) ? $company : '';
-			$order_data['payment_address_1'] = $post['address']['address_1'];
-			$order_data['payment_address_2'] = '';
-			$order_data['payment_city'] = $post['address']['city'];
-			$order_data['payment_postcode'] = $post['address']['postcode'];
+                        $order_data['payment_firstname'] = $order_data['firstname'];
+                        $order_data['payment_lastname'] = $order_data['lastname'];
+                        $order_data['payment_company'] =  isset($company) ? $company : '';
+                        $order_data['payment_address_1'] = $buyer['address_1'];
+                        $order_data['payment_address_2'] = '';
+                        $order_data['payment_city'] = $buyer['city'];
+                        $order_data['payment_postcode'] = $buyer['postcode'];
 			//$order_data['payment_zone'] = $zone_info['name'];
 			$order_data['payment_zone'] = '';
-			$order_data['payment_zone_id'] = $post['address']['zone_id'];
-			$order_data['payment_country'] = $country_info['name'];
-			$order_data['payment_country_id'] = $post['address']['country_id'];
+                        $order_data['payment_zone_id'] = $buyer['zone_id'];
+                        $order_data['payment_country'] = $country_info['name'];
+                        $order_data['payment_country_id'] = $buyer['country_id'];
 			$order_data['payment_address_format'] = '';
 			$order_data['payment_custom_field'] = [];
 
-			$order_data['shipping_firstname'] = $order_data['payment_firstname'];
-			$order_data['shipping_lastname'] = $order_data['payment_lastname'];
-			$order_data['shipping_company'] = $order_data['payment_company'];
-			$order_data['shipping_address_1'] = $order_data['payment_address_1'];
-			$order_data['shipping_address_2'] = $order_data['payment_address_2'];
-			$order_data['shipping_city'] = $order_data['payment_city'];
-			$order_data['shipping_postcode'] = $order_data['payment_postcode'];
-			$order_data['shipping_zone'] = $order_data['payment_zone'];
-			$order_data['shipping_zone_id'] = $order_data['payment_zone_id'];
-			$order_data['shipping_country'] = $order_data['payment_country'];
-			$order_data['shipping_country_id'] = $order_data['payment_country_id'];
+                        $order_data['shipping_firstname'] = $address['firstname'];
+                        $order_data['shipping_lastname'] = $address['lastname'];
+                        $order_data['shipping_company'] = $order_data['payment_company'];
+                        $order_data['shipping_address_1'] = $address['address_1'];
+                        $order_data['shipping_address_2'] = $order_data['payment_address_2'];
+                        $order_data['shipping_city'] = $address['city'];
+                        $order_data['shipping_postcode'] = $address['postcode'];
+                        $order_data['shipping_zone'] = $order_data['payment_zone'];
+                        $order_data['shipping_zone_id'] = $address['zone_id'];
+                        $order_data['shipping_country'] = $order_data['payment_country'];
+                        $order_data['shipping_country_id'] = $address['country_id'];
 			$order_data['shipping_address_format'] = $order_data['payment_address_format'];
 			$order_data['shipping_custom_field'] = $order_data['payment_custom_field'];
 
