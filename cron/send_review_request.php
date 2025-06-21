@@ -20,12 +20,12 @@ foreach ((array)$query->rows as $row) {
 
 // Prepare Mail object using store configuration
 $mail = new Mail($settings['config_mail_engine'] ?? 'mail');
-$mail->parameter = $settings['config_mail_parameter'] ?? '';
-$mail->smtp_hostname = $settings['config_mail_smtp_hostname'] ?? '';
-$mail->smtp_username = $settings['config_mail_smtp_username'] ?? '';
-$mail->smtp_password = isset($settings['config_mail_smtp_password']) ? html_entity_decode($settings['config_mail_smtp_password'], ENT_QUOTES, 'UTF-8') : '';
-$mail->smtp_port = $settings['config_mail_smtp_port'] ?? 25;
-$mail->smtp_timeout = $settings['config_mail_smtp_timeout'] ?? 5;
+$mail->adaptor->parameter = $settings['config_mail_parameter'] ?? '';
+$mail->adaptor->smtp_hostname = $settings['config_mail_smtp_hostname'] ?? '';
+$mail->adaptor->smtp_username = $settings['config_mail_smtp_username'] ?? '';
+$mail->adaptor->smtp_password = isset($settings['config_mail_smtp_password']) ? html_entity_decode($settings['config_mail_smtp_password'], ENT_QUOTES, 'UTF-8') : '';
+$mail->adaptor->smtp_port = $settings['config_mail_smtp_port'] ?? 25;
+$mail->adaptor->smtp_timeout = $settings['config_mail_smtp_timeout'] ?? 5;
 
 $from_email = $settings['config_email'] ?? '';
 $store_name = $settings['config_name'] ?? '';
@@ -36,7 +36,7 @@ $order_query = $db->query("SELECT order_id, firstname, email FROM `" . DB_PREFIX
 foreach ((array)$order_query->rows as $order) {
     // Get products for this order
     $product_query = $db->query("SELECT product_id, name FROM `" . DB_PREFIX . "order_product` WHERE order_id = '" . (int)$order['order_id'] . "'");
-
+    echo "ok3"; // test
     // Build HTML message
     $html  = '<h1>Jak podobał Ci się Twój zakup? Zgarnij 5% rabatu za opinię 🌟</h1>';
     $html .= '<h2>Cześć ' . htmlspecialchars($order['firstname'], ENT_QUOTES, 'UTF-8') . ',</h2>';
@@ -55,10 +55,14 @@ foreach ((array)$order_query->rows as $order) {
     $html .= '<p>Dziękujemy, że jesteś z nami!<br />Zespół Jedwabnego szlaku.</p>';
 
     // Send email
+    //$mail->setTo("egorkorsun7@gmail.com"); // your email
     $mail->setTo($order['email']);
     $mail->setFrom($from_email);
     $mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
     $mail->setSubject('Jak podobał Ci się Twój zakup? Zgarnij 5% rabatu za opinię 🌟');
     $mail->setHtml($html);
     $mail->send();
+
+    echo "sended";
+    print_r($order);
 }
