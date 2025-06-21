@@ -7,10 +7,12 @@
     </label>
 </div>
 
+<div id="recipient-fields" style="display:none;">
+
 
 {% if addresses %}
 <div class="form-block">
-	<select name="address[address_id]" id="input-address" data-nice-select>
+        <select name="recipient[address_id]" id="input-address" data-nice-select>
 		<option value="" disabled{{ not shipping_address.address_id ? ' selected'}}> --- Wybierz adres --- </option>
 		{% for item in addresses %}
 		<option value="{{ item.address_id }}"{{ item.address_id == shipping_address.address_id  ? ' selected'}}>{{ item.city }}, {{ item.address_1 }}</option>
@@ -20,27 +22,27 @@
 {% endif %}
 <div class="df jcsb fww">
 	<div class="popup-input w50" data-error="firstname">
-		<input type="text" name="address[firstname]" value="{{ shipping_address.firstname }}" placeholder="{{ entry_firstname }}">
+                <input type="text" name="recipient[firstname]" value="{{ shipping_address.firstname }}" placeholder="{{ entry_firstname }}">
 		<div class="form-error"></div>
 	</div>
 	<div class="popup-input w50" data-error="lastname">
-		<input type="text" name="address[lastname]" value="{{shipping_address.lastname }}" placeholder="{{entry_lastname }}">
+                <input type="text" name="recipient[lastname]" value="{{shipping_address.lastname }}" placeholder="{{entry_lastname }}">
 		<div class="form-error"></div>
 	</div>
 </div>
 <div class="form-block" data-error="address_1">
-    <input type="text" name="address[address_1]" value="{{shipping_address.address_1}}" placeholder="{{ entry_address_1 }}" />
+    <input type="text" name="recipient[address_1]" value="{{shipping_address.address_1}}" placeholder="{{ entry_address_1 }}" />
 	<div class="form-error"></div>
 </div>
 <div class="form-block" data-error="city">
-	<input type="text" name="address[city]" value="{{shipping_address.city}}" placeholder="{{ entry_city }}" />
+        <input type="text" name="recipient[city]" value="{{shipping_address.city}}" placeholder="{{ entry_city }}" />
 	<div class="form-error"></div>
 </div>
 <div class="form-block" data-error="postcode">
-	<input type="text" name="address[postcode]" value="{{shipping_address.postcode}}" placeholder="{{ entry_postcode }}" />
+        <input type="text" name="recipient[postcode]" value="{{shipping_address.postcode}}" placeholder="{{ entry_postcode }}" />
 	<div class="form-error"></div>
 </div>
-<input type="hidden" name="address[zone_id]" value="0">
+<input type="hidden" name="recipient[zone_id]" value="0">
 <!--
 <div class="form-block" data-error="zone">
 	<select name="address[zone_id]" id="input-zone" data-nice-select>
@@ -53,11 +55,11 @@
 </div>
 -->
 <div class="form-block" data-error="telephone">
-	<input type="text" name="address[telephone]" value="{{shipping_address.telephone}}"" placeholder="Telefon">
+        <input type="text" name="recipient[telephone]" value="{{shipping_address.telephone}}" placeholder="Telefon">
 	<div class="form-error"></div>
 </div>
 <div class="form-block" data-error="email">
-	<input type="text" name="address[email]" value="{{shipping_address.email}}" placeholder="{{ entry_email_address }}" />
+        <input type="text" name="recipient[email]" value="{{shipping_address.email}}" placeholder="{{ entry_email_address }}" />
 	<div class="form-error"></div>
 </div>
 <div id="recipient-fields" style="display:none;">
@@ -95,6 +97,7 @@
     <input type="hidden" name="recipient[country_id]" value="{{shipping_address.country_id}}">
 </div>
 
+</div>
 {% if not logged %}
 <div class="form-block">
 	<input type="text" name="address[company]" value="{{shipping_address.company}}" placeholder="{{ entry_company }}" id="input-shipping-company" class="form-control" />
@@ -109,4 +112,5 @@
 		<textarea name="comment" rows="4" class="form-control">{{ comment }}{{ commenta }}</textarea>
 	</div>
 </div>
-<input type="hidden" name="address[country_id]" value="{{shipping_address.country_id}}">
+<input type="hidden" name="recipient[country_id]" value="{{shipping_address.country_id}}">
+
