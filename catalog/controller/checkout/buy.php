@@ -47,7 +47,8 @@ class ControllerCheckoutBuy extends Controller
 		//unset($this->session->data['shipping_address']); //////
 		$this->load->language('checkout/buy');
 		$this->load->model('account/address');
-		$this->load->model('localisation/zone');
+                $this->load->model('localisation/zone');
+                $this->load->model('account/order');
 
 		$data['logged'] = $this->customer->isLogged();
 		$data['error'] = isset($this->session->data['errors']) ? $this->session->data['errors'] : [];
@@ -94,14 +95,48 @@ class ControllerCheckoutBuy extends Controller
 
                 if (isset($this->session->data['shipping_address'])) {
                         $data['shipping_address'] = $this->session->data['shipping_address'];
+                        $data['recipient_same'] = isset($this->session->data['recipient_same']) ? $this->session->data['recipient_same'] : 1;
                 } else {
+                        $data['recipient_same'] = 1;
                         $data['shipping_address'] = $data['buyer_address'];
-                }
 
-                $data['recipient_same'] = isset($this->session->data['recipient_same']) ? $this->session->data['recipient_same'] : 1;
+                        if ($data['logged']) {
+                                $orders = $this->model_account_order->getOrders(0, 1);
+                                if (!empty($orders)) {
+                                        $order = $this->model_account_order->getOrder($orders[0]['order_id']);
+                                        if ($order) {
+                                                $last_shipping = array(
+                                                        'firstname'  => $order['shipping_firstname'],
+                                                        'lastname'   => $order['shipping_lastname'],
+                                                        'company'    => $order['shipping_company'],
+                                                        'address_1'  => $order['shipping_address_1'],
+                                                        'address_2'  => $order['shipping_address_2'],
+                                                        'postcode'   => $order['shipping_postcode'],
+                                                        'city'       => $order['shipping_city'],
+                                                        'zone_id'    => $order['shipping_zone_id'],
+                                                        'country_id' => $order['shipping_country_id'],
+                                                        'address_id' => 0,
+                                                        'telephone'  => $order['telephone'],
+                                                        'email'      => $order['email'],
+                                                );
+
+                                                $data['shipping_address'] = $last_shipping;
+
+                                                if ($last_shipping['firstname'] != $data['buyer_address']['firstname'] ||
+                                                    $last_shipping['lastname'] != $data['buyer_address']['lastname'] ||
+                                                    $last_shipping['address_1'] != $data['buyer_address']['address_1'] ||
+                                                    $last_shipping['city'] != $data['buyer_address']['city'] ||
+                                                    $last_shipping['postcode'] != $data['buyer_address']['postcode']) {
+                                                        $data['recipient_same'] = 0;
+                                                }
+                                        }
+                                }
+                        }
+                }
 
                 $this->session->data['payment_address'] = $data['buyer_address'];
                 $this->session->data['shipping_address'] = $data['shipping_address'];
+                $this->session->data['recipient_same'] = $data['recipient_same'];
 		if (isset($this->session->data['comment'])) $data['comment'] = $this->session->data['comment'];
 		//AG 14.05.2024
 		if (isset($this->session->data['txtcard'])) {
