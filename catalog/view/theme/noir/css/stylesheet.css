@@ -1634,6 +1634,13 @@ body:not(.is-using-mouse) .fancybox__container :focus {box-shadow: none;}
     line-height: 1.1;
     margin: 0 0 30px;
 }
+.disabled{
+	background-color: #A8A8A8;
+	cursor: auto;
+}
+#btn-nip{
+	height: 30px;
+}
 /*.product-wrap {
 	padding-top: 54px;
 }*/
