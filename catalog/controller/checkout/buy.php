@@ -77,6 +77,7 @@ class ControllerCheckoutBuy extends Controller
                         if ($data['logged']) {
                                 $data['buyer_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
                                 $data['buyer_address']['telephone'] = empty($data['buyer_address']['custom_field'][4]) ? '' : $data['buyer_address']['custom_field'][4];
+                                $data['buyer_address']['nip'] = isset($data['buyer_address']['custom_field'][2]) ? $data['buyer_address']['custom_field'][2] : '';
                                $cf = isset($data['buyer_address']['custom_field']) ? $data['buyer_address']['custom_field'] : array();
                                if (isset($cf['shipping'])) {
                                        $saved_shipping = $cf['shipping'];
@@ -99,13 +100,15 @@ class ControllerCheckoutBuy extends Controller
                                         'zone_id' => '',
                                         'address_id' => 0,
                                         'postcode' => '',
-                                        'city' => ''
+                                        'city' => '',
+                                        'nip' => ''
                                 ];
                         }
                         if ($data['logged']) {
                                 if (empty($data['buyer_address']['telephone'])) $data['buyer_address']['telephone'] = $this->customer->getTelephone();
                                 if (empty($data['buyer_address']['email'])) $data['buyer_address']['email'] = $this->customer->getEmail();
                                 if (empty($data['buyer_address']['company']) and !empty($custom_fields[1])) $data['buyer_address']['company'] = $custom_fields[1];
+                                if (empty($data['buyer_address']['nip']) and !empty($custom_fields[2])) $data['buyer_address']['nip'] = $custom_fields[2];
                         }
                 }
 
