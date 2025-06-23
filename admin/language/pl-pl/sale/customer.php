@@ -46,6 +46,8 @@ $_['entry_postcode']        = 'Kod pocztowy';
 $_['entry_country']         = 'Kraj';
 $_['entry_zone']            = 'Województwo';
 $_['entry_default']         = 'Adres domyślny';
+$_['text_recipient_same']   = 'Odbiorca = kupujący';
+$_['entry_email_address']   = 'Adres e-mail';
 $_['entry_comment']         = 'Uwagi';
 $_['entry_description']     = 'Opis';
 $_['entry_amount']          = 'Kwota';

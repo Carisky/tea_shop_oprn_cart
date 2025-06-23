@@ -36,7 +36,52 @@
 		<input type="text" name="city" value="{{ address_info.city }}" placeholder="{{ entry_city }}">
 		<div class="form-error"></div>
 	</div>
-	<input type="hidden" name="zone_id" value="0">
+        <input type="hidden" name="zone_id" value="0">
+
+        <div class="popup-input">
+                <label class="checkbox large-box df small-text">
+                        <input type="checkbox" name="recipient_same" value="1" id="recipient_same"{{ recipient_same ? ' checked' }}>
+                        <b></b>
+                        <div>{{ text_recipient_same }}</div>
+                </label>
+        </div>
+        <div id="recipient-block"{% if recipient_same %} style="display:none;"{% endif %}>
+                <div class="popup-input" data-error="r_firstname">
+                        <div class="form-block-label">{{ entry_firstname }}</div>
+                        <input type="text" name="shipping[firstname]" value="{{ shipping.firstname }}" placeholder="{{ entry_firstname }}">
+                        <div class="form-error"></div>
+                </div>
+                <div class="popup-input" data-error="r_lastname">
+                        <div class="form-block-label">{{ entry_lastname }}</div>
+                        <input type="text" name="shipping[lastname]" value="{{ shipping.lastname }}" placeholder="{{ entry_lastname }}">
+                        <div class="form-error"></div>
+                </div>
+                <div class="popup-input" data-error="r_address_1">
+                        <div class="form-block-label">{{ entry_address_1 }}</div>
+                        <input type="text" name="shipping[address_1]" value="{{ shipping.address_1 }}" placeholder="{{ entry_address_1 }}">
+                        <div class="form-error"></div>
+                </div>
+                <div class="popup-input" data-error="r_postcode">
+                        <div class="form-block-label">{{ entry_postcode }}</div>
+                        <input type="text" name="shipping[postcode]" value="{{ shipping.postcode }}" placeholder="{{ entry_postcode }}">
+                        <div class="form-error"></div>
+                </div>
+                <div class="popup-input" data-error="r_city">
+                        <div class="form-block-label">{{ entry_city }}</div>
+                        <input type="text" name="shipping[city]" value="{{ shipping.city }}" placeholder="{{ entry_city }}">
+                        <div class="form-error"></div>
+                </div>
+                <div class="popup-input" data-error="r_telephone">
+                        <div class="form-block-label">{{ entry_telephone }}</div>
+                        <input type="text" name="shipping[telephone]" value="{{ shipping.telephone }}" placeholder="{{ entry_telephone }}">
+                        <div class="form-error"></div>
+                </div>
+                <div class="popup-input" data-error="r_email">
+                        <div class="form-block-label">{{ entry_email_address }}</div>
+                        <input type="text" name="shipping[email]" value="{{ shipping.email }}" placeholder="{{ entry_email_address }}">
+                        <div class="form-error"></div>
+                </div>
+        </div>
 	<!--
 	<div class="popup-input"  data-error="zone">
 		<div class="form-block-label">{{ entry_zone }}</div>
@@ -66,8 +111,13 @@
 		</label>
 		
 	</div>
-</form> 
+</form>
 <button type="button" class="popup-btn btn" onclick="saveAddress()">
-	Zapisz
-	<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+        Zapisz
+        <svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
 </button>
+<script>
+document.getElementById('recipient_same').addEventListener('change', function(){
+        document.getElementById('recipient-block').style.display = this.checked ? 'none' : 'block';
+});
+</script>

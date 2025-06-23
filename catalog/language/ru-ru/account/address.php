@@ -26,6 +26,10 @@ $_['entry_city']           = 'Город';
 $_['entry_country']        = 'Страна';
 $_['entry_zone']           = 'Регион / Область';
 $_['entry_default']        = 'Основной адрес';
+$_['entry_telephone']      = 'Телефон';
+$_['entry_email_address']  = 'E-Mail';
+$_['text_recipient_same']  = 'Получатель = покупатель';
+$_['text_recipient_details'] = 'Данные получателя';
 
 // Error
 $_['error_delete']         = 'У Вас должно быть не менее 1 адреса!';
