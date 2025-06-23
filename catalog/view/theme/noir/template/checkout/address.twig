@@ -31,15 +31,13 @@
 		<input type="text" name="buyer[email]" value="{{ buyer_address.email }}" placeholder="{{ entry_email_address }}"/>
 		<div class="form-error"></div>
 	</div>
-	{% if not logged %}
-		<div class="form-block">
-			<input type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control"/>
-		</div>
-		<div class="form-block df aic">
-			<input type="text" name="buyer[nip]" id="input-nip" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control"/>
-			<button type="button" class="btn" id="btn-nip" disabled>Sprawdź</button>
-		</div>
-	{% endif %}
+        <div class="form-block">
+                <input type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control"/>
+        </div>
+        <div class="form-block df aic">
+                <input type="text" name="buyer[nip]" id="input-nip" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control"/>
+                <button type="button" class="btn" id="btn-nip" disabled>Sprawdź</button>
+        </div>
 </div>
 <div class="form-block">
 	<label class="checkbox large-box df small-text">
