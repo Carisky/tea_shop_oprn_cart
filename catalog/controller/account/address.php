@@ -535,9 +535,22 @@ class ControllerAccountAddress extends Controller {
 		
                 if($address_id) {
                         $this->load->model('account/address');
-                        $data['address_info'] = $this->model_account_address->getAddress($address_id);
-                        $data['shipping'] = !empty($data['address_info']['custom_field']['shipping']) ? $data['address_info']['custom_field']['shipping'] : array();
-                        $data['recipient_same'] = isset($data['address_info']['custom_field']['recipient_same']) ? $data['address_info']['custom_field']['recipient_same'] : 1;
+                       $data['address_info'] = $this->model_account_address->getAddress($address_id);
+                       $cf = isset($data['address_info']['custom_field']) ? $data['address_info']['custom_field'] : array();
+                       if (!empty($cf['shipping'])) {
+                               $data['shipping'] = $cf['shipping'];
+                       } elseif (!empty($cf['address']['shipping'])) {
+                               $data['shipping'] = $cf['address']['shipping'];
+                       } else {
+                               $data['shipping'] = array();
+                       }
+                       if (isset($cf['recipient_same'])) {
+                               $data['recipient_same'] = $cf['recipient_same'];
+                       } elseif (isset($cf['address']['recipient_same'])) {
+                               $data['recipient_same'] = $cf['address']['recipient_same'];
+                       } else {
+                               $data['recipient_same'] = 1;
+                       }
                 } else {
                         $data['shipping'] = array();
                         $data['recipient_same'] = 1;
