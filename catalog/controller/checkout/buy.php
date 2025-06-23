@@ -77,6 +77,8 @@ class ControllerCheckoutBuy extends Controller
                         if ($data['logged']) {
                                 $data['buyer_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
                                 $data['buyer_address']['telephone'] = empty($data['buyer_address']['custom_field'][4]) ? '' : $data['buyer_address']['custom_field'][4];
+                                $saved_shipping = isset($data['buyer_address']['custom_field']['shipping']) ? $data['buyer_address']['custom_field']['shipping'] : array();
+                                $saved_recipient_same = isset($data['buyer_address']['custom_field']['recipient_same']) ? $data['buyer_address']['custom_field']['recipient_same'] : 1;
                         } else {
                                 $data['buyer_address'] = [
                                         'country_id' => $this->config->get('config_country_id'),
@@ -97,8 +99,13 @@ class ControllerCheckoutBuy extends Controller
                         $data['shipping_address'] = $this->session->data['shipping_address'];
                         $data['recipient_same'] = isset($this->session->data['recipient_same']) ? $this->session->data['recipient_same'] : 1;
                 } else {
-                        $data['recipient_same'] = 1;
+                        $data['recipient_same'] = isset($saved_recipient_same) ? $saved_recipient_same : 1;
                         $data['shipping_address'] = $data['buyer_address'];
+                        if (!empty($saved_shipping)) {
+                                foreach ($saved_shipping as $k => $v) {
+                                        $data['shipping_address'][$k] = $v;
+                                }
+                        }
 
                         if ($data['logged']) {
                                 $orders = $this->model_account_order->getOrders(0, 1);

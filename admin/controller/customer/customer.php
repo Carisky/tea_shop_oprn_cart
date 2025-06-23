@@ -625,11 +625,15 @@ class ControllerCustomerCustomer extends Controller {
 			$data['error_custom_field'] = array();
 		}
 
-		if (isset($this->error['address'])) {
-			$data['error_address'] = $this->error['address'];
-		} else {
-			$data['error_address'] = array();
-		}
+                if (isset($this->error['address'])) {
+                        $data['error_address'] = $this->error['address'];
+                } else {
+                        $data['error_address'] = array();
+                }
+
+                $data['text_recipient_same'] = $this->language->get('text_recipient_same');
+                $data['entry_email_address'] = $this->language->get('entry_email_address');
+                $data['entry_telephone'] = $this->language->get('entry_telephone');
 
 		$url = '';
 

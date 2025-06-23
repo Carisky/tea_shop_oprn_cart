@@ -24,6 +24,10 @@ $_['entry_city']         = 'City';
 $_['entry_country']      = 'Country';
 $_['entry_zone']         = 'Region / State';
 $_['entry_default']      = 'Default Address';
+$_['entry_telephone']    = 'Telephone';
+$_['entry_email_address'] = 'E-Mail';
+$_['text_recipient_same'] = 'Recipient same as buyer';
+$_['text_recipient_details'] = 'Recipient Details';
 
 // Error
 $_['error_delete']       = 'Warning: You must have at least one address!';

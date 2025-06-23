@@ -519,6 +519,57 @@
                       {% endif %}
                       {% endif %}
                       {% endfor %}
+
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label">{{ text_recipient_same }}</label>
+                        <div class="col-sm-10">
+                          <input type="checkbox" name="address[{{ address_row }}][custom_field][recipient_same]" value="1" {% if address.custom_field.recipient_same %}checked="checked"{% endif %} data-rsame="{{ address_row }}" />
+                        </div>
+                      </div>
+                      <div id="recipient-block{{ address_row }}" {% if address.custom_field.recipient_same %}style="display:none;"{% endif %}>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-r-firstname{{ address_row }}">{{ entry_firstname }}</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="address[{{ address_row }}][custom_field][shipping][firstname]" value="{{ address.custom_field.shipping.firstname }}" id="input-r-firstname{{ address_row }}" class="form-control" />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-r-lastname{{ address_row }}">{{ entry_lastname }}</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="address[{{ address_row }}][custom_field][shipping][lastname]" value="{{ address.custom_field.shipping.lastname }}" id="input-r-lastname{{ address_row }}" class="form-control" />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-r-address1{{ address_row }}">{{ entry_address_1 }}</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="address[{{ address_row }}][custom_field][shipping][address_1]" value="{{ address.custom_field.shipping.address_1 }}" id="input-r-address1{{ address_row }}" class="form-control" />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-r-postcode{{ address_row }}">{{ entry_postcode }}</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="address[{{ address_row }}][custom_field][shipping][postcode]" value="{{ address.custom_field.shipping.postcode }}" id="input-r-postcode{{ address_row }}" class="form-control" />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-r-city{{ address_row }}">{{ entry_city }}</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="address[{{ address_row }}][custom_field][shipping][city]" value="{{ address.custom_field.shipping.city }}" id="input-r-city{{ address_row }}" class="form-control" />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-r-telephone{{ address_row }}">{{ entry_telephone }}</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="address[{{ address_row }}][custom_field][shipping][telephone]" value="{{ address.custom_field.shipping.telephone }}" id="input-r-telephone{{ address_row }}" class="form-control" />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-sm-2 control-label" for="input-r-email{{ address_row }}">{{ entry_email_address }}</label>
+                          <div class="col-sm-10">
+                            <input type="text" name="address[{{ address_row }}][custom_field][shipping][email]" value="{{ address.custom_field.shipping.email }}" id="input-r-email{{ address_row }}" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
                       <div class="form-group">
                         <label class="col-sm-2 control-label">{{ entry_default }}</label>
                         <div class="col-sm-10">
@@ -1147,7 +1198,13 @@
 
     address_row++;
   }
-  //--></script> 
+  //--></script>
+  <script type="text/javascript"><!--
+  $(document).on('change', 'input[data-rsame]', function(){
+        var id = $(this).data('rsame');
+        $('#recipient-block' + id).toggle(!this.checked);
+  });
+  //--></script>
   <script type="text/javascript"><!--
   function country(element, index, zone_id) {
     $.ajax({
