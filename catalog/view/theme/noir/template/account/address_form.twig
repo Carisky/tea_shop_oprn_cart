@@ -1,73 +1,172 @@
 <form id="address-form">
-	<input type="hidden" name="address_id" value="{{address_info.address_id}}">
-	<input type="hidden" name="country_id" value="{{country_id}}">
-	<input type="hidden" name="address_2" value="">
-	<div class="popup-input" data-error="firstname">
-		<div class="form-block-label">{{ entry_firstname }}</div>
-		<input type="text" name="firstname" value="{{ address_info.firstname }}" placeholder="{{ entry_firstname }}"/>
-		<div class="form-error"></div>
-	</div>
-	<div class="popup-input" data-error="lastname">
-		<div class="form-block-label">{{ entry_lastname }}</div>
-		<input type="text" name="lastname" value="{{ address_info.lastname }}" placeholder="{{ entry_lastname }}" />
-		<div class="form-error"></div>
-	</div>
-	{% if bulk %}
-	<input type="hidden" name="company" value="{{ customer_company }}">
-	{% else %}
-	<div class="popup-input" data-error="company">
-		<div class="form-block-label">{{ entry_company }}</div>
-		<input type="text" name="company" value="{{ address_info.company }}" placeholder="Nazwa firmy">
-		<div class="form-error"></div>
-	</div>
-	{% endif %}
-	<div class="popup-input" data-error="address_1">
-		<div class="form-block-label">{{ entry_address_1 }}</div>
-		<input type="text" name="address_1" value="{{ address_info.address_1 }}" placeholder="{{ entry_address_1 }}">
-		<div class="form-error"></div>
-	</div>
-	<div class="popup-input" data-error="postcode">
-		<div class="form-block-label">{{ entry_postcode }}</div>
-		<input type="text" name="postcode" value="{{ address_info.postcode }}" placeholder="{{ entry_postcode }}">
-		<div class="form-error"></div>
-	</div>
-	<div class="popup-input" data-error="city">
-		<div class="form-block-label">{{ entry_city }}</div>
-		<input type="text" name="city" value="{{ address_info.city }}" placeholder="{{ entry_city }}">
-		<div class="form-error"></div>
-	</div>
-	<input type="hidden" name="zone_id" value="0">
-	<!--
-	<div class="popup-input"  data-error="zone">
-		<div class="form-block-label">{{ entry_zone }}</div>
-		<select name="zone_id" id="input-zone" data-nice-select>
-			<option value="" disabled{{ not address_info.zone_id ? ' selected'}}>{{ text_select }}</option>
-			{% for zone in zones %}
-			<option value="{{ zone.zone_id }}"{{ zone.zone_id == address_info.zone_id  ? ' selected'}}>{{ zone.name }}</option>
-			{% endfor %}
-		</select>
-		<div class="form-error"></div>
-	</div>
-	-->
-{% for custom_field in custom_fields %}
-	{% if custom_field.type == 'text' %}
-	<div class="popup-input"  data-error="custom_field_{{ custom_field.custom_field_id }}">
-		<div class="form-block-label">{{ custom_field.name }}</div>
-		<input type="text" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{{address_info.custom_field[custom_field.custom_field_id] }}" placeholder="{{ custom_field.name }}"/>
-		<div class="form-error"></div>
-	</div>
-	{% endif %}
-{% endfor %}
-	<div class="popup-input">
-		<label class="checkbox large-box df aic">
-			<input type="checkbox" name="default" value="1"{{customer_info.newsletter ? ' checked' }}>
-			<b></b>
-			<div>{{ entry_default }}</div>
-		</label>
-		
-	</div>
-</form> 
+    <input type="hidden" name="address_id" value="{{ address_info.address_id|default('') }}">
+    <input type="hidden" name="country_id" value="{{ country_id }}">
+    <input type="hidden" name="address_2" value="">
+
+    <div class="popup-input" data-error="firstname">
+        <div class="form-block-label">{{ entry_firstname }}</div>
+        <input type="text" name="firstname" value="{{ address_info.firstname|default('') }}" placeholder="{{ entry_firstname }}"/>
+        <div class="form-error"></div>
+    </div>
+    <div class="popup-input" data-error="lastname">
+        <div class="form-block-label">{{ entry_lastname }}</div>
+        <input type="text" name="lastname" value="{{ address_info.lastname|default('') }}" placeholder="{{ entry_lastname }}"/>
+        <div class="form-error"></div>
+    </div>
+    {% if bulk %}
+        <input type="hidden" name="company" value="{{ customer_company }}">
+    {% else %}
+        <div class="popup-input" data-error="company">
+            <div class="form-block-label">{{ entry_company }}</div>
+            <input type="text" name="company" value="{{ address_info.company|default('') }}" placeholder="{{ entry_company }}">
+            <div class="form-error"></div>
+        </div>
+    {% endif %}
+    <div class="popup-input" data-error="address_1">
+        <div class="form-block-label">{{ entry_address_1 }}</div>
+        <input type="text" name="address_1" value="{{ address_info.address_1|default('') }}" placeholder="{{ entry_address_1 }}">
+        <div class="form-error"></div>
+    </div>
+    <div class="popup-input" data-error="postcode">
+        <div class="form-block-label">{{ entry_postcode }}</div>
+        <input type="text" name="postcode" value="{{ address_info.postcode|default('') }}" placeholder="{{ entry_postcode }}">
+        <div class="form-error"></div>
+    </div>
+    <div class="popup-input" data-error="city">
+        <div class="form-block-label">{{ entry_city }}</div>
+        <input type="text" name="city" value="{{ address_info.city|default('') }}" placeholder="{{ entry_city }}">
+        <div class="form-error"></div>
+    </div>
+    <input type="hidden" name="zone_id" value="0">
+
+    {# Buyer custom fields #}
+    {% if buyer_custom_fields %}
+        {% for field in buyer_custom_fields %}
+            {% set val = buyer_values[field.custom_field_id]|default('') %}
+            {% if field.type == 'text' %}
+                <div class="popup-input" data-error="custom_field_{{ field.custom_field_id }}">
+                    <div class="form-block-label">{{ field.name }}</div>
+                    <input type="text"
+                           name="custom_field[address][{{ field.custom_field_id }}]"
+                           value="{{ val }}"
+                           placeholder="{{ field.name }}"/>
+                    <div class="form-error"></div>
+                </div>
+            {% elseif field.type == 'checkbox' %}
+                <div class="popup-input" data-error="custom_field_{{ field.custom_field_id }}">
+                    <label class="checkbox large-box df aic">
+                        <input type="checkbox"
+                               name="custom_field[address][{{ field.custom_field_id }}]"
+                               value="1"
+                               {% if val %}checked{% endif %}>
+                        <b></b><div>{{ field.name }}</div>
+                    </label>
+                    <div class="form-error"></div>
+                </div>
+            {% elseif field.type == 'radio' %}
+                <div class="popup-input" data-error="custom_field_{{ field.custom_field_id }}">
+                    <div class="form-block-label">{{ field.name }}</div>
+                    {% for opt in field.custom_field_value %}
+                        <label>
+                            <input type="radio"
+                                   name="custom_field[address][{{ field.custom_field_id }}]"
+                                   value="{{ opt.custom_field_value_id }}"
+                                   {% if val == opt.custom_field_value_id %}checked{% endif %}>
+                            {{ opt.name }}
+                        </label>
+                    {% endfor %}
+                    <div class="form-error"></div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {# Recipient custom fields #}
+    {% if recipient_custom_fields %}
+        <div class="popup-input">
+            <label class="checkbox large-box df aic">
+                <input type="checkbox" id="recipient_same" name="recipient_same" value="1" {{ recipient_same ? 'checked' : '' }}>
+                <b></b>
+                <div>Данные получателя совпадают с покупателем</div>
+            </label>
+        </div>
+
+        {# Скрытое поле вместо кастомного checkbox ID=14 #}
+        <input type="hidden" id="custom_field_14_hidden" name="custom_field[address][14]" value="{{ recipient_same ? '1' : '0' }}">
+
+        <div id="recipient-block" {% if recipient_same %}style="display:none"{% endif %}>
+            <h3>Данные получателя</h3>
+            {% for field in recipient_custom_fields %}
+                {% if field.custom_field_id != 14 %}
+                    {% set val = recipient_values[field.custom_field_id]|default('') %}
+                    {% if field.type == 'text' %}
+                        <div class="popup-input" data-error="custom_field_{{ field.custom_field_id }}">
+                            <div class="form-block-label">{{ field.name }}</div>
+                            <input type="text"
+                                   name="custom_field[address][{{ field.custom_field_id }}]"
+                                   value="{{ val }}"
+                                   placeholder="{{ field.name }}"/>
+                            <div class="form-error"></div>
+                        </div>
+                    {% elseif field.type == 'checkbox' %}
+                        <div class="popup-input" data-error="custom_field_{{ field.custom_field_id }}">
+                            <label class="checkbox large-box df aic">
+                                <input type="checkbox"
+                                       name="custom_field[address][{{ field.custom_field_id }}]"
+                                       value="1"
+                                       {% if val %}checked{% endif %}>
+                                <b></b><div>{{ field.name }}</div>
+                            </label>
+                            <div class="form-error"></div>
+                        </div>
+                    {% elseif field.type == 'radio' %}
+                        <div class="popup-input" data-error="custom_field_{{ field.custom_field_id }}">
+                            <div class="form-block-label">{{ field.name }}</div>
+                            {% for opt in field.custom_field_value %}
+                                <label>
+                                    <input type="radio"
+                                           name="custom_field[address][{{ field.custom_field_id }}]"
+                                           value="{{ opt.custom_field_value_id }}"
+                                           {% if val == opt.custom_field_value_id %}checked{% endif %}>
+                                    {{ opt.name }}
+                                </label>
+                            {% endfor %}
+                            <div class="form-error"></div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <script>
+        (function(){
+            var chkSame = document.getElementById('recipient_same');
+            var hiddenCf14 = document.getElementById('custom_field_14_hidden');
+
+            function syncCf14() {
+                hiddenCf14.value = chkSame.checked ? '1' : '0';
+            }
+
+            chkSame.addEventListener('change', function(){
+                var block = document.getElementById('recipient-block');
+                block.style.display = this.checked ? 'none' : 'block';
+                syncCf14();
+            });
+
+            document.addEventListener('DOMContentLoaded', syncCf14);
+        })();
+        </script>
+    {% endif %}
+
+    <div class="popup-input">
+        <label class="checkbox large-box df aic">
+            <input type="checkbox" name="default" value="1" {{ address_info.default ? 'checked' : '' }}>
+            <b></b>
+            <div>{{ entry_default }}</div>
+        </label>
+    </div>
+</form>
 <button type="button" class="popup-btn btn" onclick="saveAddress()">
-	Zapisz
-	<svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
+    Zapisz
+    <svg><use xlink:href="/catalog/view/theme/noir/img/sprite.svg#btn-arrow"></use></svg>
 </button>

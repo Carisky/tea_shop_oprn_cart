@@ -406,40 +406,57 @@ class ControllerAccountAddress extends Controller {
 		$data['custom_fields'] = array();
 
 		$this->load->model('account/custom_field');
+		$cg = $this->customer->isLogged()
+			? $this->customer->getGroupId()
+			: $this->config->get('config_customer_group_id');
 
-		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
+		// Получаем все поля адреса для группы
+		$all_fields = $this->model_account_custom_field->getCustomFields(['filter_customer_group_id' => $cg]);
 
-		foreach ($custom_fields as $custom_field) {
-			if ($custom_field['location'] == 'address') {
-				$data['custom_fields'][] = $custom_field;
+		// Списки ID полей recipient
+		$recipient_ids = $this->model_account_custom_field->getRecipientFieldIds();
+
+		// Инициализируем массивы
+		$data['buyer_custom_fields'] = [];
+		$data['recipient_custom_fields'] = [];
+
+		// Разделяем
+		foreach ($all_fields as $field) {
+			if ($field['location'] !== 'address') {
+				continue;
+			}
+			if (in_array((int)$field['custom_field_id'], $recipient_ids, true)) {
+				// для recipient: подтянем варианты, если нужно
+				if (in_array($field['type'], ['select','radio','checkbox','image'])) {
+					$values = $this->model_account_custom_field->getCustomFieldValues((int)$field['custom_field_id']);
+					$opts = [];
+					foreach ($values as $value_id => $val) {
+						$opts[] = ['custom_field_value_id' => $value_id, 'name' => $val['name']];
+					}
+					$field['custom_field_value'] = $opts;
+				}
+				$data['recipient_custom_fields'][] = $field;
 			}
 		}
 
+		// Значения из POST или из $address_info['custom_field']
+		$saved = [];
 		if (isset($this->request->post['custom_field']['address'])) {
-			$data['address_custom_field'] = $this->request->post['custom_field']['address'];
-		} elseif (isset($address_info['custom_field'])) {
-			$data['address_custom_field'] = $address_info['custom_field'];
-		} else {
-			$data['address_custom_field'] = array();
+			$saved = $this->request->post['custom_field']['address'];
+		} elseif (!empty($address_info['custom_field'])) {
+			$saved = $address_info['custom_field'];
 		}
 
-		if (isset($this->request->post['default'])) {
-			$data['default'] = $this->request->post['default'];
-		} elseif (isset($this->request->get['address_id'])) {
-			$data['default'] = $this->customer->getAddressId() == $this->request->get['address_id'];
-		} else {
-			$data['default'] = false;
+		$data['recipient_values'] = [];
+		foreach ($saved as $fid => $val) {
+			if (in_array((int)$fid, $recipient_ids, true)) {
+				$data['recipient_values'][(int)$fid] = $val;
+			}
 		}
 
-		$data['back'] = $this->url->link('account/address', '', true);
-
-		$data['column_left'] = $this->load->controller('common/column_left');
-		$data['column_right'] = $this->load->controller('common/column_right');
-		$data['content_top'] = $this->load->controller('common/content_top');
-		$data['content_bottom'] = $this->load->controller('common/content_bottom');
-		$data['footer'] = $this->load->controller('common/footer');
-		$data['header'] = $this->load->controller('common/header');
-				
+		// Логика чекбокса recipient_same
+		$data['recipient_same'] = $this->session->data['recipient_same'] ?? 1;
+		file_put_contents(DIR_LOGS . 'debug_address_form.log', print_r($data, true));
 		$this->response->setOutput($this->load->view('account/address_form', $data));
 	}
 
@@ -510,42 +527,87 @@ class ControllerAccountAddress extends Controller {
 	
 	//Noir
 	
-	public function nr_address_form()
-	{
-		if (!$this->customer->isLogged()) exit();
-		$address_id = empty($this->request->get['id']) ? 0 : $this->request->get['id'];
-		
-		$this->load->language('account/address');
-		
-		$data['country_id'] = $this->config->get('config_country_id'); //Noir
+public function nr_address_form()
+{
+    if (!$this->customer->isLogged()) exit();
+    $address_id = empty($this->request->get['id']) ? 0 : (int)$this->request->get['id'];
 
-		$data['custom_fields'] = array();
-		$this->load->model('account/custom_field');
-		$custom_fields = $this->model_account_custom_field->getCustomFields($this->customer->getGroupId());
+    $this->load->language('account/address');
 
-		foreach ($custom_fields as $custom_field) {
-			if ($custom_field['location'] == 'address') {
-				$data['custom_fields'][] = $custom_field;
-			}
-		}
-		
-		if($address_id) {
-			$this->load->model('account/address');
-			$data['address_info'] = $this->model_account_address->getAddress($address_id);
-		}
-		
-		$data['default'] = $this->customer->getAddressId() == $address_id;
-		$data['bulk'] = $this->customer->getGroupId() == 2;
-		if($data['bulk']) {
-			$custom_fields = $this->customer->getCustomFields();
-			$data['customer_company'] = $custom_fields[1];
-		}
-		
-		$this->load->model('localisation/zone');
-		$data['zones'] = $this->model_localisation_zone->getZonesByCountryId($data['country_id']);
+    // Базовые данные
+    $data['country_id'] = $this->config->get('config_country_id');
+    $data['zones'] = $this->load->model('localisation/zone')
+        ? $this->model_localisation_zone->getZonesByCountryId($data['country_id'])
+        : [];
 
-		$this->response->setOutput($this->load->view('account/address_form', $data));
-	}
+    // Получаем адрес, если редактируется
+    $data['address_info'] = [];
+    if ($address_id) {
+        $this->load->model('account/address');
+        $data['address_info'] = $this->model_account_address->getAddress($address_id);
+    }
+
+    // Флаги
+    $data['default'] = ($this->customer->getAddressId() == $address_id);
+    $data['bulk'] = ($this->customer->getGroupId() == 2);
+    if ($data['bulk']) {
+        $cust_fields = $this->customer->getCustomFields();
+        $data['customer_company'] = isset($cust_fields[1]) ? $cust_fields[1] : '';
+    }
+
+    // Custom fields разделяем на buyer и recipient
+    $this->load->model('account/custom_field');
+    $cg = $this->customer->getGroupId();
+    $all_fields = $this->model_account_custom_field->getCustomFields(['filter_customer_group_id' => $cg]);
+    $recipient_ids = $this->model_account_custom_field->getRecipientFieldIds();
+
+    $data['buyer_custom_fields'] = [];
+    $data['recipient_custom_fields'] = [];
+    foreach ($all_fields as $field) {
+        if ($field['location'] !== 'address') continue;
+        // подтягиваем варианты для select/radio/checkbox/image
+        if (in_array($field['type'], ['select','radio','checkbox','image'], true)) {
+            $vals = $this->model_account_custom_field->getCustomFieldValues((int)$field['custom_field_id']);
+            $opts = [];
+            foreach ($vals as $vid => $v) {
+                $opts[] = ['custom_field_value_id' => $vid, 'name' => $v['name']];
+            }
+            $field['custom_field_value'] = $opts;
+        }
+        if (in_array((int)$field['custom_field_id'], $recipient_ids, true)) {
+            $data['recipient_custom_fields'][] = $field;
+        } else {
+            $data['buyer_custom_fields'][] = $field;
+        }
+    }
+
+    // Сохраняемые значения из POST или из address_info
+    $saved = [];
+    if ($this->request->post && isset($this->request->post['custom_field']['address'])) {
+        $saved = $this->request->post['custom_field']['address'];
+    } elseif (!empty($data['address_info']['custom_field'])) {
+        $saved = $data['address_info']['custom_field'];
+    }
+    $data['buyer_values'] = [];
+    $data['recipient_values'] = [];
+    foreach ($saved as $fid => $val) {
+        $fid = (int)$fid;
+        if (in_array($fid, $recipient_ids, true)) {
+            $data['recipient_values'][$fid] = $val;
+        } else {
+            $data['buyer_values'][$fid] = $val;
+        }
+    }
+
+    // Флаг совпадения адресов: по сессии или по умолчанию = 1
+    $data['recipient_same'] = isset($this->session->data['recipient_same'])
+        ? (int)$this->session->data['recipient_same']
+        : 1;
+
+    // Передаём данные в шаблон
+    $this->response->setOutput($this->load->view('account/address_form', $data));
+}
+
 	
 	public function nr_save()
 	{
