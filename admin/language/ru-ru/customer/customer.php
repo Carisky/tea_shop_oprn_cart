@@ -51,6 +51,8 @@ $_['entry_postcode']        = 'Индекс';
 $_['entry_country']         = 'Страна';
 $_['entry_zone']            = 'Регион / Область';
 $_['entry_default']         = 'Основной адрес';
+$_['text_recipient_same']  = 'Получатель = покупатель';
+$_['entry_email_address']  = 'E-Mail';
 $_['entry_comment']         = 'Комментарий';
 $_['entry_description']     = 'Описание';
 $_['entry_amount']          = 'Итого';

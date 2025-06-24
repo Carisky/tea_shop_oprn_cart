@@ -47,7 +47,8 @@ class ControllerCheckoutBuy extends Controller
 		//unset($this->session->data['shipping_address']); //////
 		$this->load->language('checkout/buy');
 		$this->load->model('account/address');
-		$this->load->model('localisation/zone');
+                $this->load->model('localisation/zone');
+                $this->load->model('account/order');
 
 		$data['logged'] = $this->customer->isLogged();
 		$data['error'] = isset($this->session->data['errors']) ? $this->session->data['errors'] : [];
@@ -70,38 +71,118 @@ class ControllerCheckoutBuy extends Controller
 			$data['address_id'] = $this->customer->getAddressId();
 		}
 
-                if (isset($this->session->data['payment_address'])) {
-                        $data['buyer_address'] = $this->session->data['payment_address'];
-                } else {
+               if (isset($this->session->data['payment_address'])) {
+                       $data['buyer_address'] = $this->session->data['payment_address'];
+                       $saved_shipping = array();
+                       $saved_recipient_same = 1;
+                       if ($data['logged']) {
+                               $current_address = $this->model_account_address->getAddress($this->customer->getAddressId());
+                               $cf = isset($current_address['custom_field']) ? $current_address['custom_field'] : array();
+                               if (isset($cf['shipping'])) {
+                                       $saved_shipping = $cf['shipping'];
+                               } elseif (isset($cf['address']['shipping'])) {
+                                       $saved_shipping = $cf['address']['shipping'];
+                               }
+
+                               if (isset($cf['recipient_same'])) {
+                                       $saved_recipient_same = $cf['recipient_same'];
+                               } elseif (isset($cf['address']['recipient_same'])) {
+                                       $saved_recipient_same = $cf['address']['recipient_same'];
+                               }
+
+                               if (empty($data['buyer_address']['telephone'])) $data['buyer_address']['telephone'] = $this->customer->getTelephone();
+                               if (empty($data['buyer_address']['email'])) $data['buyer_address']['email'] = $this->customer->getEmail();
+                               if (empty($data['buyer_address']['company']) && !empty($custom_fields[1])) $data['buyer_address']['company'] = $custom_fields[1];
+                               if (empty($data['buyer_address']['nip']) && !empty($custom_fields[2])) $data['buyer_address']['nip'] = $custom_fields[2];
+                       }
+               } else {
                         if ($data['logged']) {
                                 $data['buyer_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
                                 $data['buyer_address']['telephone'] = empty($data['buyer_address']['custom_field'][4]) ? '' : $data['buyer_address']['custom_field'][4];
+                                $data['buyer_address']['nip'] = isset($data['buyer_address']['custom_field'][2]) ? $data['buyer_address']['custom_field'][2] : '';
+                               $cf = isset($data['buyer_address']['custom_field']) ? $data['buyer_address']['custom_field'] : array();
+                               if (isset($cf['shipping'])) {
+                                       $saved_shipping = $cf['shipping'];
+                               } elseif (isset($cf['address']['shipping'])) {
+                                       $saved_shipping = $cf['address']['shipping'];
+                               } else {
+                                       $saved_shipping = array();
+                               }
+
+                               if (isset($cf['recipient_same'])) {
+                                       $saved_recipient_same = $cf['recipient_same'];
+                               } elseif (isset($cf['address']['recipient_same'])) {
+                                       $saved_recipient_same = $cf['address']['recipient_same'];
+                               } else {
+                                       $saved_recipient_same = 1;
+                               }
                         } else {
                                 $data['buyer_address'] = [
                                         'country_id' => $this->config->get('config_country_id'),
                                         'zone_id' => '',
                                         'address_id' => 0,
                                         'postcode' => '',
-                                        'city' => ''
+                                        'city' => '',
+                                        'nip' => ''
                                 ];
                         }
                         if ($data['logged']) {
                                 if (empty($data['buyer_address']['telephone'])) $data['buyer_address']['telephone'] = $this->customer->getTelephone();
                                 if (empty($data['buyer_address']['email'])) $data['buyer_address']['email'] = $this->customer->getEmail();
                                 if (empty($data['buyer_address']['company']) and !empty($custom_fields[1])) $data['buyer_address']['company'] = $custom_fields[1];
+                                if (empty($data['buyer_address']['nip']) and !empty($custom_fields[2])) $data['buyer_address']['nip'] = $custom_fields[2];
                         }
                 }
 
                 if (isset($this->session->data['shipping_address'])) {
                         $data['shipping_address'] = $this->session->data['shipping_address'];
+                        $data['recipient_same'] = isset($this->session->data['recipient_same']) ? $this->session->data['recipient_same'] : 1;
                 } else {
+                        $data['recipient_same'] = isset($saved_recipient_same) ? $saved_recipient_same : 1;
                         $data['shipping_address'] = $data['buyer_address'];
-                }
+                        if (!empty($saved_shipping)) {
+                                foreach ($saved_shipping as $k => $v) {
+                                        $data['shipping_address'][$k] = $v;
+                                }
+                        }
 
-                $data['recipient_same'] = isset($this->session->data['recipient_same']) ? $this->session->data['recipient_same'] : 1;
+                        if ($data['logged']) {
+                                $orders = $this->model_account_order->getOrders(0, 1);
+                                if (!empty($orders)) {
+                                        $order = $this->model_account_order->getOrder($orders[0]['order_id']);
+                                        if ($order) {
+                                                $last_shipping = array(
+                                                        'firstname'  => $order['shipping_firstname'],
+                                                        'lastname'   => $order['shipping_lastname'],
+                                                        'company'    => $order['shipping_company'],
+                                                        'address_1'  => $order['shipping_address_1'],
+                                                        'address_2'  => $order['shipping_address_2'],
+                                                        'postcode'   => $order['shipping_postcode'],
+                                                        'city'       => $order['shipping_city'],
+                                                        'zone_id'    => $order['shipping_zone_id'],
+                                                        'country_id' => $order['shipping_country_id'],
+                                                        'address_id' => 0,
+                                                        'telephone'  => $order['telephone'],
+                                                        'email'      => $order['email'],
+                                                );
+
+                                                $data['shipping_address'] = $last_shipping;
+
+                                                if ($last_shipping['firstname'] != $data['buyer_address']['firstname'] ||
+                                                    $last_shipping['lastname'] != $data['buyer_address']['lastname'] ||
+                                                    $last_shipping['address_1'] != $data['buyer_address']['address_1'] ||
+                                                    $last_shipping['city'] != $data['buyer_address']['city'] ||
+                                                    $last_shipping['postcode'] != $data['buyer_address']['postcode']) {
+                                                        $data['recipient_same'] = 0;
+                                                }
+                                        }
+                                }
+                        }
+                }
 
                 $this->session->data['payment_address'] = $data['buyer_address'];
                 $this->session->data['shipping_address'] = $data['shipping_address'];
+                $this->session->data['recipient_same'] = $data['recipient_same'];
 		if (isset($this->session->data['comment'])) $data['comment'] = $this->session->data['comment'];
 		//AG 14.05.2024
 		if (isset($this->session->data['txtcard'])) {

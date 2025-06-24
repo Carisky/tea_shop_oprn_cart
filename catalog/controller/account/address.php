@@ -12,7 +12,11 @@ class ControllerAccountAddress extends Controller {
 			$this->response->redirect($this->url->link('account/login', '', true));
 		}
 
-		$this->load->language('account/address');
+                $this->load->language('account/address');
+
+                $data['text_recipient_same'] = $this->language->get('text_recipient_same');
+                $data['entry_telephone'] = $this->language->get('entry_telephone');
+                $data['entry_email_address'] = $this->language->get('entry_email_address');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 		$this->document->setRobots('noindex,follow');
@@ -529,10 +533,28 @@ class ControllerAccountAddress extends Controller {
 			}
 		}
 		
-		if($address_id) {
-			$this->load->model('account/address');
-			$data['address_info'] = $this->model_account_address->getAddress($address_id);
-		}
+                if($address_id) {
+                        $this->load->model('account/address');
+                       $data['address_info'] = $this->model_account_address->getAddress($address_id);
+                       $cf = isset($data['address_info']['custom_field']) ? $data['address_info']['custom_field'] : array();
+                       if (!empty($cf['shipping'])) {
+                               $data['shipping'] = $cf['shipping'];
+                       } elseif (!empty($cf['address']['shipping'])) {
+                               $data['shipping'] = $cf['address']['shipping'];
+                       } else {
+                               $data['shipping'] = array();
+                       }
+                       if (isset($cf['recipient_same'])) {
+                               $data['recipient_same'] = $cf['recipient_same'];
+                       } elseif (isset($cf['address']['recipient_same'])) {
+                               $data['recipient_same'] = $cf['address']['recipient_same'];
+                       } else {
+                               $data['recipient_same'] = 1;
+                       }
+                } else {
+                        $data['shipping'] = array();
+                        $data['recipient_same'] = 1;
+                }
 		
 		$data['default'] = $this->customer->getAddressId() == $address_id;
 		$data['bulk'] = $this->customer->getGroupId() == 2;
@@ -557,9 +579,13 @@ class ControllerAccountAddress extends Controller {
 		$this->load->language('account/address');
 		$this->load->model('account/address');
 		
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') and $this->validateForm()) {
-			$post = $this->request->post;
-			if(empty($post['default']) and !$this->model_account_address->getTotalAddresses()) $post['default'] = 1;
+                if (($this->request->server['REQUEST_METHOD'] == 'POST') and $this->validateForm()) {
+                        $post = $this->request->post;
+                        $post['custom_field']['address']['shipping'] = isset($post['shipping']) ? $post['shipping'] : array();
+                        $post['custom_field']['address']['recipient_same'] = !empty($post['recipient_same']) ? 1 : 0;
+                        unset($post['shipping']);
+                        unset($post['recipient_same']);
+                        if(empty($post['default']) and !$this->model_account_address->getTotalAddresses()) $post['default'] = 1;
 			
 			if($this->request->post['address_id']) {
 				$this->model_account_address->editAddress($this->request->post['address_id'], $post);

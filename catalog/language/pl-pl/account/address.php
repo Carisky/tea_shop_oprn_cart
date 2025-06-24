@@ -22,6 +22,10 @@ $_['entry_city']           = 'Miejscowość';
 $_['entry_country']        = 'Kraj';
 $_['entry_zone']           = 'Państwo';
 $_['entry_default']        = 'Adres domyślny';
+$_['entry_telephone']     = 'Telefon';
+$_['entry_email_address'] = 'Adres e-mail';
+$_['text_recipient_same'] = 'Odbiorca = kupujący';
+$_['text_recipient_details'] = 'Dane odbiorcy';
 
 // Error
 $_['error_delete']         = 'Ostrzeżenie: Musisz mieć co najmniej jeden adres!';
