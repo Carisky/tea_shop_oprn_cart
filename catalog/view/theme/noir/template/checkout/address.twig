@@ -42,12 +42,13 @@
 	{% endif %}
 </div>
 <div class="form-block">
-	<label class="checkbox large-box df small-text">
-		<input type="checkbox" name="recipient_same" value="1" id="recipient_same" {{ recipient_same ? ' checked' }}>
-		<b></b>
-		<div>{{ text_recipient_same }}</div>
-	</label>
+        <label class="checkbox large-box df small-text">
+                <input type="checkbox" name="recipient_same" value="1" id="recipient_same" {{ recipient_same ? ' checked' }}>
+                <b></b>
+                <div>{{ text_recipient_same }}</div>
+        </label>
 </div>
+<input type="hidden" id="custom_field_14_hidden" name="custom_field[address][14]" value="{{ recipient_same ? '1' : '0' }}">
 <div id="recipient-block" {% if recipient_same %} style="display:none;" {% endif %}>
 	<h3>{{ text_recipient_details }}</h3>
 	<div class="df jcsb fww">
@@ -77,10 +78,42 @@
 		<input type="text" name="address[telephone]" value="{{ shipping_address.telephone }}" placeholder="Telefon">
 		<div class="form-error"></div>
 	</div>
-	<div class="form-block" data-error="r_email">
-		<input type="text" name="address[email]" value="{{ shipping_address.email }}" placeholder="{{ entry_email_address }}"/>
-		<div class="form-error"></div>
-	</div>
+        <div class="form-block" data-error="r_email">
+                <input type="text" name="address[email]" value="{{ shipping_address.email }}" placeholder="{{ entry_email_address }}"/>
+                <div class="form-error"></div>
+        </div>
+        {% if recipient_custom_fields %}
+            {% for field in recipient_custom_fields %}
+                {% if field.custom_field_id != 14 %}
+                    {% set val = recipient_values[field.custom_field_id]|default('') %}
+                    {% if field.type == 'text' %}
+                        <div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
+                            <input type="text" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ val }}" placeholder="{{ field.name }}"/>
+                            <div class="form-error"></div>
+                        </div>
+                    {% elseif field.type == 'checkbox' %}
+                        <div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
+                            <label class="checkbox large-box df aic">
+                                <input type="checkbox" name="custom_field[address][{{ field.custom_field_id }}]" value="1" {% if val %}checked{% endif %}>
+                                <b></b><div>{{ field.name }}</div>
+                            </label>
+                            <div class="form-error"></div>
+                        </div>
+                    {% elseif field.type == 'radio' %}
+                        <div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
+                            <div class="form-block-label">{{ field.name }}</div>
+                            {% for opt in field.custom_field_value %}
+                                <label>
+                                    <input type="radio" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ opt.custom_field_value_id }}" {% if val == opt.custom_field_value_id %}checked{% endif %}>
+                                    {{ opt.name }}
+                                </label>
+                            {% endfor %}
+                            <div class="form-error"></div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 </div>
 <div class="comment-block">
 	<h3>Uwagi do zamówienia (opcjonalne)</h3>
@@ -100,9 +133,22 @@
 <input
 type="hidden" name="address[country_id]" value="{{ shipping_address.country_id }}">
  <script>
-    document.getElementById('recipient_same').addEventListener('change', function(){
-        document.getElementById('recipient-block').style.display = this.checked ? 'none' : 'block';
-    });
+    (function(){
+        var chkSame = document.getElementById('recipient_same');
+        var block = document.getElementById('recipient-block');
+        var hiddenCf14 = document.getElementById('custom_field_14_hidden');
+
+        function syncCf14() {
+            if (hiddenCf14) hiddenCf14.value = chkSame.checked ? '1' : '0';
+        }
+
+        chkSame.addEventListener('change', function(){
+            block.style.display = this.checked ? 'none' : 'block';
+            syncCf14();
+        });
+
+        document.addEventListener('DOMContentLoaded', syncCf14);
+    })();
 
     var nipInput = document.getElementById('input-nip');
     var nipButton = document.getElementById('btn-nip');

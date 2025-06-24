@@ -49,8 +49,8 @@ class ControllerCheckoutBuy extends Controller
 		$this->load->model('account/address');
 		$this->load->model('localisation/zone');
 
-		$data['logged'] = $this->customer->isLogged();
-		$data['error'] = isset($this->session->data['errors']) ? $this->session->data['errors'] : [];
+                $data['logged'] = $this->customer->isLogged();
+                $data['error'] = isset($this->session->data['errors']) ? $this->session->data['errors'] : [];
 
 		if ($data['logged']) {
 			$data['addresses'] = $this->model_account_address->getAddresses();
@@ -96,6 +96,21 @@ class ControllerCheckoutBuy extends Controller
                         $data['shipping_address'] = $this->session->data['shipping_address'];
                 } else {
                         $data['shipping_address'] = $data['buyer_address'];
+                }
+
+                $this->load->model('account/custom_field');
+                $data['recipient_custom_fields'] = $this->model_account_custom_field->getRecipientCustomFields($customer_group_id);
+
+                $recipient_ids = $this->model_account_custom_field->getRecipientFieldIds();
+                $saved = [];
+                if (!empty($data['shipping_address']['custom_field'])) {
+                        $saved = $data['shipping_address']['custom_field'];
+                }
+                $data['recipient_values'] = [];
+                foreach ($saved as $fid => $val) {
+                        if (in_array((int)$fid, $recipient_ids, true)) {
+                                $data['recipient_values'][(int)$fid] = $val;
+                        }
                 }
 
                 $data['recipient_same'] = isset($this->session->data['recipient_same']) ? $this->session->data['recipient_same'] : 1;
