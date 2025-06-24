@@ -73,6 +73,23 @@ class ControllerCheckoutBuy extends Controller
 
                 if (isset($this->session->data['payment_address'])) {
                         $data['buyer_address'] = $this->session->data['payment_address'];
+                        $saved_shipping = array();
+                        $saved_recipient_same = 1;
+                        if ($data['logged']) {
+                                $current_address = $this->model_account_address->getAddress($this->customer->getAddressId());
+                                $cf = isset($current_address['custom_field']) ? $current_address['custom_field'] : array();
+                                if (isset($cf['shipping'])) {
+                                        $saved_shipping = $cf['shipping'];
+                                } elseif (isset($cf['address']['shipping'])) {
+                                        $saved_shipping = $cf['address']['shipping'];
+                                }
+
+                                if (isset($cf['recipient_same'])) {
+                                        $saved_recipient_same = $cf['recipient_same'];
+                                } elseif (isset($cf['address']['recipient_same'])) {
+                                        $saved_recipient_same = $cf['address']['recipient_same'];
+                                }
+                        }
                 } else {
                         if ($data['logged']) {
                                 $data['buyer_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
@@ -104,12 +121,13 @@ class ControllerCheckoutBuy extends Controller
                                         'nip' => ''
                                 ];
                         }
-                        if ($data['logged']) {
-                                if (empty($data['buyer_address']['telephone'])) $data['buyer_address']['telephone'] = $this->customer->getTelephone();
-                                if (empty($data['buyer_address']['email'])) $data['buyer_address']['email'] = $this->customer->getEmail();
-                                if (empty($data['buyer_address']['company']) and !empty($custom_fields[1])) $data['buyer_address']['company'] = $custom_fields[1];
-                                if (empty($data['buyer_address']['nip']) and !empty($custom_fields[2])) $data['buyer_address']['nip'] = $custom_fields[2];
-                        }
+                }
+
+                if ($data['logged']) {
+                        if (empty($data['buyer_address']['telephone'])) $data['buyer_address']['telephone'] = $this->customer->getTelephone();
+                        if (empty($data['buyer_address']['email'])) $data['buyer_address']['email'] = $this->customer->getEmail();
+                        if (empty($data['buyer_address']['company']) and !empty($custom_fields[1])) $data['buyer_address']['company'] = $custom_fields[1];
+                        if (empty($data['buyer_address']['nip']) and !empty($custom_fields[2])) $data['buyer_address']['nip'] = $custom_fields[2];
                 }
 
                 if (isset($this->session->data['shipping_address'])) {
