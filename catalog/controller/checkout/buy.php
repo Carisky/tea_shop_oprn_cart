@@ -72,6 +72,7 @@ class ControllerCheckoutBuy extends Controller
 
                 if (isset($this->session->data['payment_address'])) {
                         $data['buyer_address'] = $this->session->data['payment_address'];
+	
                 } else {
                         if ($data['logged']) {
                                 $data['buyer_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
@@ -90,8 +91,22 @@ class ControllerCheckoutBuy extends Controller
                                 if (empty($data['buyer_address']['email'])) $data['buyer_address']['email'] = $this->customer->getEmail();
                                 if (empty($data['buyer_address']['company']) and !empty($custom_fields[1])) $data['buyer_address']['company'] = $custom_fields[1];
                         }
+	
                 }
+				// гарантируем, что в buyer_address есть email и nip
+				$data['buyer_address']['email'] = 
+					isset($data['buyer_address']['email'])
+					? $data['buyer_address']['email']
+					: ($data['logged'] ? $this->customer->getEmail() : '');
 
+				$data['buyer_address']['nip'] = 
+					// если пришло из формы (save_order сохраняет в session.payment_address весь POST['buyer'])
+					isset($data['buyer_address']['nip'])
+					// либо из custom_fields клиента (id 2)
+					? $data['buyer_address']['nip']
+					: ( !empty($custom_fields[2]) 
+						? $custom_fields[2] 
+						: '' );
                 if (isset($this->session->data['shipping_address'])) {
                         $data['shipping_address'] = $this->session->data['shipping_address'];
                 } else {

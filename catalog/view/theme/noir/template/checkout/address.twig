@@ -31,154 +31,178 @@
 		<input type="text" name="buyer[email]" value="{{ buyer_address.email }}" placeholder="{{ entry_email_address }}"/>
 		<div class="form-error"></div>
 	</div>
-		<div class="form-block">
-			<input type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control"/>
-		</div>
-		<div class="form-block df aic">
-			<input type="text" name="buyer[nip]" id="input-nip" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control"/>
-			<button type="button" class="btn" id="btn-nip" disabled>Sprawdź</button>
-		</div>
+	<div class="form-block">
+		<input type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control"/>
+	</div>
+	<div class="form-block df aic">
+		<input type="text" name="buyer[nip]" id="input-nip" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control"/>
+		<button type="button" class="btn" id="btn-nip" disabled>Sprawdź</button>
+	</div>
 </div>
 <div class="form-block">
-        <label class="checkbox large-box df small-text">
-                <input type="checkbox" name="recipient_same" value="1" id="recipient_same" {{ recipient_same ? ' checked' }}>
-                <b></b>
-                <div>{{ text_recipient_same }}</div>
-        </label>
+	<label class="checkbox large-box df small-text">
+		<input type="checkbox" name="recipient_same" value="1" id="recipient_same" {{ recipient_same ? ' checked' }}>
+		<b></b>
+		<div>{{ text_recipient_same }}</div>
+	</label>
 </div>
 <input type="hidden" id="custom_field_14_hidden" name="custom_field[address][14]" value="{{ recipient_same ? '1' : '0' }}">
 <div id="recipient-block" {% if recipient_same %} style="display:none;" {% endif %}>
 	<h3>{{ text_recipient_details }}</h3>
-	<div class="jcsb fww">
 
-        {% if recipient_custom_fields %}
-            {% for field in recipient_custom_fields %}
-                {% if field.custom_field_id != 14 %}
-                    {% set val = recipient_values[field.custom_field_id]|default('') %}
-                    {% if field.type == 'text' %}
-                        <div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
-                            <input type="text" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ val }}" placeholder="{{ field.name }}"/>
-                            <div class="form-error"></div>
-                        </div>
-                    {% elseif field.type == 'checkbox' %}
-                        <div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
-                            <label class="checkbox large-box df aic">
-                                <input type="checkbox" name="custom_field[address][{{ field.custom_field_id }}]" value="1" {% if val %}checked{% endif %}>
-                                <b></b><div>{{ field.name }}</div>
-                            </label>
-                            <div class="form-error"></div>
-                        </div>
-                    {% elseif field.type == 'radio' %}
-                        <div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
-                            <div class="form-block-label">{{ field.name }}</div>
-                            {% for opt in field.custom_field_value %}
-                                <label>
-                                    <input type="radio" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ opt.custom_field_value_id }}" {% if val == opt.custom_field_value_id %}checked{% endif %}>
-                                    {{ opt.name }}
-                                </label>
-                            {% endfor %}
-                            <div class="form-error"></div>
-                        </div>
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-</div>
-<div class="comment-block">
-	<h3>Uwagi do zamówienia (opcjonalne)</h3>
-	<div class="textarea-wrapper">
-		<textarea name="comment" rows="4" class="form-control">{{ comment }}{{ commenta }}</textarea>
+
+	<input type="hidden" name="address[zone_id]" value="0">
+
+
+	{% if recipient_custom_fields %}
+		{% for field in recipient_custom_fields %}
+			{% if field.custom_field_id != 14 %}
+				{% set val = recipient_values[field.custom_field_id]|default('') %}
+				{% if field.type == 'text' %}
+					<div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
+						<input type="text" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ val }}" placeholder="{{ field.name }}"/>
+						<div class="form-error"></div>
+					</div>
+				{% elseif field.type == 'checkbox' %}
+					<div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
+						<label class="checkbox large-box df aic">
+							<input type="checkbox" name="custom_field[address][{{ field.custom_field_id }}]" value="1" {% if val %} checked {% endif %}>
+							<b></b>
+							<div>{{ field.name }}</div>
+						</label>
+						<div class="form-error"></div>
+					</div>
+				{% elseif field.type == 'radio' %}
+					<div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
+						<div class="form-block-label">{{ field.name }}</div>
+						{% for opt in field.custom_field_value %}
+							<label>
+								<input type="radio" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ opt.custom_field_value_id }}" {% if val == opt.custom_field_value_id %} checked {% endif %}>
+								{{ opt.name }}
+							</label>
+						{% endfor %}
+						<div class="form-error"></div>
+					</div>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	{% else %}
+		<div class="popup-input w50" data-error="r_firstname">
+			<input type="text" name="address[firstname]" value="{{ shipping_address.firstname }}" placeholder="{{ entry_firstname }}">
+			<div class="form-error"></div>
+		</div>
+		<div class="popup-input w50" data-error="r_lastname">
+			<input type="text" name="address[lastname]" value="{{ shipping_address.lastname }}" placeholder="{{ entry_lastname }}">
+			<div class="form-error"></div>
+		</div>
 	</div>
-</div>
-
-<div id="nip-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-	<div style="background:#fff; max-width:400px; margin:100px auto; padding:20px; position:relative; border-radius:6px; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
-		<button id="nip-modal-close" type="button" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:18px; cursor:pointer;">&times;</button>
-		<div id="nip-modal-text" style="font-size:15px; line-height:1.5;"></div>
+	<div class="form-block" data-error="r_address_1">
+		<input type="text" name="address[address_1]" value="{{ shipping_address.address_1 }}" placeholder="{{ entry_address_1 }}"/>
+		<div class="form-error"></div>
 	</div>
-</div>
-
-<input type="hidden" name="buyer[country_id]" value="{{ buyer_address.country_id }}">
-<input
-type="hidden" name="address[country_id]" value="{{ shipping_address.country_id }}">
- <script>
-    (function(){
-        var chkSame = document.getElementById('recipient_same');
-        var block = document.getElementById('recipient-block');
-        var hiddenCf14 = document.getElementById('custom_field_14_hidden');
-
-        function syncCf14() {
-            if (hiddenCf14) hiddenCf14.value = chkSame.checked ? '1' : '0';
-        }
-
-        chkSame.addEventListener('change', function(){
-            block.style.display = this.checked ? 'none' : 'block';
-            syncCf14();
-        });
-
-        document.addEventListener('DOMContentLoaded', syncCf14);
-    })();
-
-    var nipInput = document.getElementById('input-nip');
-    var nipButton = document.getElementById('btn-nip');
-
-    function toggleNipBtn() {
-        var val = nipInput.value.replace(/\D/g, '');
-        nipInput.value = val; // автоочистка от букв
-        if (val.length === 10) {
-            nipButton.disabled = false;
-            nipButton.classList.remove('disabled');
-        } else {
-            nipButton.disabled = true;
-            nipButton.classList.add('disabled');
-        }
-    }
-
-
-    nipInput.addEventListener('input', toggleNipBtn);
-    document.addEventListener('DOMContentLoaded', toggleNipBtn);
-
-    $('#btn-nip').on('click', function() {
-        $.ajax({
-            url: 'index.php?route=checkout/nip',
-            type: 'post',
-            dataType: 'json',
-            data: {
-                nip: nipInput.value
-            },
-            success: function(json) {
-                if (json.error) {
-                    showNipError(json.error); // функция для показа ошибки
-                    return;
-                }
-
-                // заполняем поля, если ошибок нет
-                if (json.name) $('[name="buyer[company]"]').val(json.name);
-                if (json.adress) $('[name="buyer[address_1]"]').val(json.adress);
-                if (json.city) $('[name="buyer[city]"]').val(json.city);
-                if (json.zip) $('[name="buyer[postcode]"]').val(json.zip);
-            },
-            error: function(xhr) {
-                showNipError('Błąd połączenia z serwerem.');
-            }
-        });
-    });
-
-    function showNipError(msg) {
-        $('#nip-modal-text').text(msg);
-        $('#nip-modal').fadeIn(150);
-    }
-
-    $('#nip-modal-close').on('click', function() {
-        $('#nip-modal').fadeOut(150);
-    });
-
-    // Закрытие по фону
-    $('#nip-modal').on('click', function(e) {
-        if (e.target.id === 'nip-modal') {
-            $('#nip-modal').fadeOut(150);
-        }
-    });
-
-
-</script>
+	<div class="form-block" data-error="r_city">
+		<input type="text" name="address[city]" value="{{ shipping_address.city }}" placeholder="{{ entry_city }}"/>
+		<div class="form-error"></div>
+	</div>
+	<div class="form-block" data-error="r_postcode">
+		<input type="text" name="address[postcode]" value="{{ shipping_address.postcode }}" placeholder="{{ entry_postcode }}"/>
+		<div class="form-error"></div>
+	</div>
+	<input type="hidden" name="address[zone_id]" value="0">
+	<div class="form-block" data-error="r_telephone">
+		<input type="text" name="address[telephone]" value="{{ shipping_address.telephone }}" placeholder="Telefon">
+		<div class="form-error"></div>
+	</div>
+	<div class="form-block" data-error="r_email">
+		<input type="text" name="address[email]" value="{{ shipping_address.email }}" placeholder="{{ entry_email_address }}"/>
+		<div class="form-error"></div>
+	</div>
+{% endif %}</div><div class="comment-block">
+<h3>Uwagi do zamówienia (opcjonalne)</h3>
+<div class="textarea-wrapper">
+	<textarea name="comment" rows="4" class="form-control">{{ comment }}{{ commenta }}</textarea>
+</div></div><div id="nip-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+<div style="background:#fff; max-width:400px; margin:100px auto; padding:20px; position:relative; border-radius:6px; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
+	<button id="nip-modal-close" type="button" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:18px; cursor:pointer;">&times;</button>
+	<div id="nip-modal-text" style="font-size:15px; line-height:1.5;"></div>
+</div></div><input type="hidden" name="buyer[country_id]" value="{{ buyer_address.country_id }}"><inputtype="hidden" name="address[country_id]" value="{{ shipping_address.country_id }}"> <script>
+	    (function(){
+	        var chkSame = document.getElementById('recipient_same');
+	        var block = document.getElementById('recipient-block');
+	        var hiddenCf14 = document.getElementById('custom_field_14_hidden');
+	
+	        function syncCf14() {
+	            if (hiddenCf14) hiddenCf14.value = chkSame.checked ? '1' : '0';
+	        }
+	
+	        chkSame.addEventListener('change', function(){
+	            block.style.display = this.checked ? 'none' : 'block';
+	            syncCf14();
+	        });
+	
+	        document.addEventListener('DOMContentLoaded', syncCf14);
+	    })();
+	
+	    var nipInput = document.getElementById('input-nip');
+	    var nipButton = document.getElementById('btn-nip');
+	
+	    function toggleNipBtn() {
+	        var val = nipInput.value.replace(/\D/g, '');
+	        nipInput.value = val; // автоочистка от букв
+	        if (val.length === 10) {
+	            nipButton.disabled = false;
+	            nipButton.classList.remove('disabled');
+	        } else {
+	            nipButton.disabled = true;
+	            nipButton.classList.add('disabled');
+	        }
+	    }
+	
+	
+	    nipInput.addEventListener('input', toggleNipBtn);
+	    document.addEventListener('DOMContentLoaded', toggleNipBtn);
+	
+	    $('#btn-nip').on('click', function() {
+	        $.ajax({
+	            url: 'index.php?route=checkout/nip',
+	            type: 'post',
+	            dataType: 'json',
+	            data: {
+	                nip: nipInput.value
+	            },
+	            success: function(json) {
+	                if (json.error) {
+	                    showNipError(json.error); // функция для показа ошибки
+	                    return;
+	                }
+	
+	                // заполняем поля, если ошибок нет
+	                if (json.name) $('[name="buyer[company]"]').val(json.name);
+	                if (json.adress) $('[name="buyer[address_1]"]').val(json.adress);
+	                if (json.city) $('[name="buyer[city]"]').val(json.city);
+	                if (json.zip) $('[name="buyer[postcode]"]').val(json.zip);
+	            },
+	            error: function(xhr) {
+	                showNipError('Błąd połączenia z serwerem.');
+	            }
+	        });
+	    });
+	
+	    function showNipError(msg) {
+	        $('#nip-modal-text').text(msg);
+	        $('#nip-modal').fadeIn(150);
+	    }
+	
+	    $('#nip-modal-close').on('click', function() {
+	        $('#nip-modal').fadeOut(150);
+	    });
+	
+	    // Закрытие по фону
+	    $('#nip-modal').on('click', function(e) {
+	        if (e.target.id === 'nip-modal') {
+	            $('#nip-modal').fadeOut(150);
+	        }
+	    });
+	
+	
+	</script>
