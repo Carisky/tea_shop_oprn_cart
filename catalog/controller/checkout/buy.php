@@ -585,14 +585,14 @@ class ControllerCheckoutBuy extends Controller
                         $order_data['shipping_postcode'] = !empty($address['postcode']) ? $address['postcode'] : $order_data['payment_postcode'];
 
                         $shipping_zone_info = $this->model_localisation_zone->getZone($address['zone_id']);
-                        $order_data['shipping_zone'] = $shipping_zone_info ? $shipping_zone_info['name'] : $order_data['payment_zone'];
-                        $order_data['shipping_zone_id'] = !empty($address['zone_id']) ? $address['zone_id'] : $order_data['payment_zone_id'];
+                        $order_data['shipping_zone'] = $shipping_zone_info ? $shipping_zone_info['name'] : '';
+                        $order_data['shipping_zone_id'] = $address['zone_id'];
 
                         $shipping_country_info = $this->model_localisation_country->getCountry($address['country_id']);
-                        $order_data['shipping_country'] = $shipping_country_info ? $shipping_country_info['name'] : $order_data['payment_country'];
-                        $order_data['shipping_country_id'] = !empty($address['country_id']) ? $address['country_id'] : $order_data['payment_country_id'];
-                        $order_data['shipping_address_format'] = $shipping_country_info ? $shipping_country_info['address_format'] : $order_data['payment_address_format'];
-                        $order_data['shipping_custom_field'] = isset($address['custom_field']) ? $address['custom_field'] : $order_data['payment_custom_field'];
+                        $order_data['shipping_country'] = $shipping_country_info ? $shipping_country_info['name'] : '';
+                        $order_data['shipping_country_id'] = $address['country_id'];
+                        $order_data['shipping_address_format'] = $shipping_country_info ? $shipping_country_info['address_format'] : '';
+                        $order_data['shipping_custom_field'] = isset($address['custom_field']) ? $address['custom_field'] : [];
 
 			if (isset($this->session->data['shipping_method']['title'])) {
 				$order_data['shipping_method'] = $this->session->data['shipping_method']['title'];
