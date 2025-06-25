@@ -510,15 +510,31 @@ class ControllerCheckoutBuy extends Controller
 		$this->load->model('checkout/order');
 		$this->load->model('catalog/product');
 
+
 		if (empty($this->session->data['shipping_address'])) {
 			$this->session->data['error'] = $this->language->get('text_empty');
 			$this->response->addHeader('Content-Type: application/json');
 			$this->response->setOutput(json_encode(['redirect' => $this->url->link('common/home')]));
 		} else {
                         $post = $this->request->post;
-                        $buyer = $post['buyer'];
-                        $recipient_same = !empty($post['recipient_same']);
-                        $address = $recipient_same ? $buyer : $post['address'];
+						$buyer = $post['buyer'];
+						$recipient_same = isset($post['custom_field']['address'][14]) && $post['custom_field']['address'][14] == 1;
+						if ($recipient_same) {
+							$address = $buyer;
+						} else {
+							$address = [
+								'firstname'   => $post['custom_field']['address'][7] ?? '',
+								'lastname'    => $post['custom_field']['address'][8] ?? '',
+								'address_1'   => $post['custom_field']['address'][9] ?? '',
+								'city'        => $post['custom_field']['address'][10] ?? '',
+								'postcode'    => $post['custom_field']['address'][11] ?? '',
+								'telephone'   => $post['custom_field']['address'][12] ?? '',
+								'email'       => $post['custom_field']['address'][13] ?? '',
+								'zone_id'     => $post['address']['zone_id'] ?? 0,
+								'country_id'  => $post['address']['country_id'] ?? 0,
+							];
+						}
+
 
                         $country_info = $this->model_localisation_country->getCountry($buyer['country_id']);
 			//$zone_info = $this->model_localisation_zone->getZone($post['address']['zone_id']);
