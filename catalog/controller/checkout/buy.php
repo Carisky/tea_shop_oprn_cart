@@ -576,13 +576,13 @@ class ControllerCheckoutBuy extends Controller
                         $order_data['payment_address_format'] = $country_info['address_format'];
                         $order_data['payment_custom_field'] = [];
 
-                        $order_data['shipping_firstname'] = $address['firstname'];
-                        $order_data['shipping_lastname'] = $address['lastname'];
+                        $order_data['shipping_firstname'] = !empty($address['firstname']) ? $address['firstname'] : $order_data['payment_firstname'];
+                        $order_data['shipping_lastname'] = !empty($address['lastname']) ? $address['lastname'] : $order_data['payment_lastname'];
                         $order_data['shipping_company'] = $order_data['payment_company'];
-                        $order_data['shipping_address_1'] = $address['address_1'];
+                        $order_data['shipping_address_1'] = !empty($address['address_1']) ? $address['address_1'] : $order_data['payment_address_1'];
                         $order_data['shipping_address_2'] = $order_data['payment_address_2'];
-                        $order_data['shipping_city'] = $address['city'];
-                        $order_data['shipping_postcode'] = $address['postcode'];
+                        $order_data['shipping_city'] = !empty($address['city']) ? $address['city'] : $order_data['payment_city'];
+                        $order_data['shipping_postcode'] = !empty($address['postcode']) ? $address['postcode'] : $order_data['payment_postcode'];
 
                         $shipping_zone_info = $this->model_localisation_zone->getZone($address['zone_id']);
                         $order_data['shipping_zone'] = $shipping_zone_info ? $shipping_zone_info['name'] : '';
