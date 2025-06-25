@@ -342,17 +342,25 @@ class ControllerCheckoutBuy extends Controller
 
 	protected function updateShippingMethods()
 	{
-		$method_data = array();
-		$this->load->model('setting/extension');
+                $method_data = array();
+                $this->load->model('setting/extension');
 
-		$results = $this->model_setting_extension->getExtensions('shipping');
-		foreach ($results as $result) {
-			if ($this->config->get('shipping_' . $result['code'] . '_status')) {
-				$this->load->model('extension/shipping/' . $result['code']);
-				$quote = $this->{'model_extension_shipping_' . $result['code']}->getQuote($this->session->data['shipping_address']);
-				if ($quote) $method_data[$result['code']] = $quote;
-			}
-		}
+                $address = $this->session->data['shipping_address'] ?? [];
+                $address += [
+                        'country_id' => 0,
+                        'zone_id'    => 0,
+                        'city'       => '',
+                        'postcode'   => ''
+                ];
+
+                $results = $this->model_setting_extension->getExtensions('shipping');
+                foreach ($results as $result) {
+                        if ($this->config->get('shipping_' . $result['code'] . '_status')) {
+                                $this->load->model('extension/shipping/' . $result['code']);
+                                $quote = $this->{'model_extension_shipping_' . $result['code']}->getQuote($address);
+                                if ($quote) $method_data[$result['code']] = $quote;
+                        }
+                }
 
 		$sort_order = array();
 		foreach ($method_data as $key => $value) {
@@ -388,16 +396,22 @@ class ControllerCheckoutBuy extends Controller
 
 	protected function updatePaymentMethods()
 	{
-		$method_data = array();
-		$total = $this->cart->getSubTotal();
-		$this->load->model('setting/extension');
-		$recurring = $this->cart->hasRecurringProducts();
+                $method_data = array();
+                $total = $this->cart->getSubTotal();
+                $this->load->model('setting/extension');
+                $recurring = $this->cart->hasRecurringProducts();
 
-		$results = $this->model_setting_extension->getExtensions('payment');
-		foreach ($results as $result) {
-			if ($this->config->get('payment_' . $result['code'] . '_status')) {
-				$this->load->model('extension/payment/' . $result['code']);
-				$method = $this->{'model_extension_payment_' . $result['code']}->getMethod($this->session->data['shipping_address'], $total);
+                $address = $this->session->data['shipping_address'] ?? [];
+                $address += [
+                        'country_id' => 0,
+                        'zone_id'    => 0
+                ];
+
+                $results = $this->model_setting_extension->getExtensions('payment');
+                foreach ($results as $result) {
+                        if ($this->config->get('payment_' . $result['code'] . '_status')) {
+                                $this->load->model('extension/payment/' . $result['code']);
+                                $method = $this->{'model_extension_payment_' . $result['code']}->getMethod($address, $total);
 				if ($method) {
 
 					$image_path = DIR_IMAGE . 'payment/' . $result['code'] . '.png';
