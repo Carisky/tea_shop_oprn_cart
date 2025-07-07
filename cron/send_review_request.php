@@ -5,6 +5,7 @@
 define('VERSION', '3.0.2.0');
 
 // Load configuration and OpenCart startup for autoloading
+
 require_once(dirname(__FILE__) . '/../config.php');
 require_once(DIR_SYSTEM . 'startup.php');
 
@@ -36,7 +37,6 @@ $order_query = $db->query("SELECT order_id, firstname, email FROM `" . DB_PREFIX
 foreach ((array)$order_query->rows as $order) {
     // Get products for this order
     $product_query = $db->query("SELECT product_id, name FROM `" . DB_PREFIX . "order_product` WHERE order_id = '" . (int)$order['order_id'] . "'");
-    echo "ok3"; // test
     // Build HTML message
     $html  = '<h1>Jak podobał Ci się Twój zakup? Zgarnij 5% rabatu za opinię 🌟</h1>';
     $html .= '<h2>Cześć ' . htmlspecialchars($order['firstname'], ENT_QUOTES, 'UTF-8') . ',</h2>';
@@ -55,14 +55,11 @@ foreach ((array)$order_query->rows as $order) {
     $html .= '<p>Dziękujemy, że jesteś z nami!<br />Zespół Jedwabnego szlaku.</p>';
 
     // Send email
-    //$mail->setTo("egorkorsun7@gmail.com"); // your email
     $mail->setTo($order['email']);
     $mail->setFrom($from_email);
     $mail->setSender(html_entity_decode($store_name, ENT_QUOTES, 'UTF-8'));
     $mail->setSubject('Jak podobał Ci się Twój zakup? Zgarnij 5% rabatu za opinię 🌟');
     $mail->setHtml($html);
     $mail->send();
-
-    echo "sended";
-    print_r($order);
+    // print_r($order);
 }

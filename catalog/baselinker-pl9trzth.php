@@ -1079,8 +1079,8 @@ function Shop_OrdersGet($request)
 	$tpay_complete = DB_Result(DB_Query($sql));
 
 	//status zamówień opłaconych ustawiany przez moduł PayPal
-	$sql = "SELECT `value` FROM `${dbp}setting` WHERE `key` = 'pp_standard_completed_status_id'";
-	$paypal_complete = DB_Result(DB_Query($sql));
+	// AG $sql = "SELECT `value` FROM `${dbp}setting` WHERE `key` = 'pp_standard_completed_status_id'";
+	$paypal_complete = 5; //AG DB_Result(DB_Query($sql));
 
 	//status zamówień opłaconych ustawiany przez moduł CashBill
 	$sql = "SELECT GROUP_CONCAT(`value` SEPARATOR ',') FROM `${dbp}setting` WHERE `key` LIKE 'payment_cashbill_%order_status_id'";
@@ -1196,7 +1196,7 @@ function Shop_OrdersGet($request)
 			$o['transaction_id'] = $order['paynow_transaction_id'];
 		}
 		//zapłacone/nie zapłacone, na podstawie statusu zamówienia
-		elseif (preg_match('/payu|bluepayment|dotpay|tpay|pp_standard|cashbill|eway|przelewy24/i', $order['payment_code']))
+		elseif (preg_match('/payu|bluepayment|dotpay|tpay|pp_standard|paypal|cashbill|eway|przelewy24/i', $order['payment_code']))
 		{
 			$sql = "SELECT count(*) FROM `${dbp}order_history` oh
 				JOIN `${dbp}order_status` os ON oh.order_status_id = os.order_status_id
@@ -1219,6 +1219,9 @@ function Shop_OrdersGet($request)
 				$sql .= "oh.order_status_id = '$tpay_complete'";
 			}
 			elseif (preg_match('/pp_/i', $order['payment_code']) and $paypal_complete)
+			{
+				$sql .= "oh.order_status_id = '$paypal_complete'";
+			}elseif (preg_match('/paypal/i', $order['payment_code']) and $paypal_complete)
 			{
 				$sql .= "oh.order_status_id = '$paypal_complete'";
 			}
