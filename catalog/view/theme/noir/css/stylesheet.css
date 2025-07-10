@@ -2723,8 +2723,20 @@ body:not(.is-using-mouse) .fancybox__container :focus {box-shadow: none;}
 	font-size: 16px;
 }
 .order-info {
-    display: none;
+	display: none;
 }
+.order-item.active .order-info {
+	display: block;
+}
+
+.order-trigger svg {
+	transition: transform 0.3s ease;
+	cursor: pointer;
+}
+.order-item.active .order-trigger svg {
+	transform: rotate(180deg);
+}
+
 .order-info-head {
     border-top: 1px solid #ececec;
     border-bottom: 1px solid #ececec;

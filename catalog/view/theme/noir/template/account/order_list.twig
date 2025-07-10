@@ -107,5 +107,17 @@
 	</div>
 </div>
 {{ footer }}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	const triggers = document.querySelectorAll('[data-order-trigger]');
+	triggers.forEach(trigger => {
+		trigger.addEventListener('click', () => {
+			const orderItem = trigger.closest('[data-order-item]');
+			orderItem.classList.toggle('active');
+		});
+	});
+});
+</script>
+
 </body>
 </html>

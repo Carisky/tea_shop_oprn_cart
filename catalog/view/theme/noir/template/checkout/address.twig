@@ -2,43 +2,57 @@
 <div class="buyer-block">
 	<div class="df jcsb fww">
 		<div class="popup-input w50" data-error="firstname">
-			<input type="text" name="buyer[firstname]" value="{{ buyer_address.firstname }}" placeholder="{{ entry_firstname }}">
+			<label for="buyer-firstname">{{ entry_firstname }}</label>
+			<input id="buyer-firstname" type="text" name="buyer[firstname]" value="{{ buyer_address.firstname }}" placeholder="{{ entry_firstname }}">
 			<div class="form-error"></div>
 		</div>
 		<div class="popup-input w50" data-error="lastname">
-			<input type="text" name="buyer[lastname]" value="{{ buyer_address.lastname }}" placeholder="{{ entry_lastname }}">
+			<label for="buyer-lastname">{{ entry_lastname }}</label>
+			<input id="buyer-lastname" type="text" name="buyer[lastname]" value="{{ buyer_address.lastname }}" placeholder="{{ entry_lastname }}">
 			<div class="form-error"></div>
 		</div>
 	</div>
 	<div class="form-block" data-error="address_1">
-		<input type="text" name="buyer[address_1]" value="{{ buyer_address.address_1 }}" placeholder="{{ entry_address_1 }}"/>
+		<label for="buyer-address">{{ entry_address_1 }}</label>
+		<input id="buyer-address" type="text" name="buyer[address_1]" value="{{ buyer_address.address_1 }}" placeholder="{{ entry_address_1 }}">
 		<div class="form-error"></div>
 	</div>
 	<div class="form-block" data-error="city">
-		<input type="text" name="buyer[city]" value="{{ buyer_address.city }}" placeholder="{{ entry_city }}"/>
+		<label for="buyer-city">{{ entry_city }}</label>
+		<input id="buyer-city" type="text" name="buyer[city]" value="{{ buyer_address.city }}" placeholder="{{ entry_city }}">
 		<div class="form-error"></div>
 	</div>
 	<div class="form-block" data-error="postcode">
-		<input type="text" name="buyer[postcode]" value="{{ buyer_address.postcode }}" placeholder="{{ entry_postcode }}"/>
+		<label for="buyer-postcode">{{ entry_postcode }}</label>
+		<input id="buyer-postcode" type="text" name="buyer[postcode]" value="{{ buyer_address.postcode }}" placeholder="{{ entry_postcode }}">
 		<div class="form-error"></div>
 	</div>
 	<input type="hidden" name="buyer[zone_id]" value="0">
 	<div class="form-block" data-error="telephone">
-		<input type="text" name="buyer[telephone]" value="{{ buyer_address.telephone }}" placeholder="Telefon">
+		<label for="buyer-telephone">Telefon</label>
+		<input id="buyer-telephone" type="text" name="buyer[telephone]" value="{{ buyer_address.telephone }}" placeholder="Telefon">
 		<div class="form-error"></div>
 	</div>
 	<div class="form-block" data-error="email">
-		<input type="text" name="buyer[email]" value="{{ buyer_address.email }}" placeholder="{{ entry_email_address }}"/>
+		<label for="buyer-email">{{ entry_email_address }}</label>
+		<input id="buyer-email" type="text" name="buyer[email]" value="{{ buyer_address.email }}" placeholder="{{ entry_email_address }}">
 		<div class="form-error"></div>
 	</div>
 	<div class="form-block">
-		<input type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control"/>
+		<label for="buyer-company">{{ entry_company }}</label>
+		<input id="buyer-company" type="text" name="buyer[company]" value="{{ buyer_address.company }}" placeholder="{{ entry_company }}" class="form-control">
 	</div>
-	<div class="form-block df aic">
-		<input type="text" name="buyer[nip]" id="input-nip" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control"/>
-		<button type="button" class="btn" id="btn-nip" disabled>Sprawdź</button>
+	<div class="form-block" data-error="nip">
+		<label for="input-nip">NIP</label>
+		<div class="df aic">
+			<input type="text" name="buyer[nip]" id="input-nip" value="{{ buyer_address.nip }}" placeholder="NIP" class="form-control">
+			<button type="button" class="btn" id="btn-nip" disabled style="margin-left: 10px;">Sprawdź</button>
+		</div>
+		<div class="form-error"></div>
 	</div>
+
 </div>
+
 <div class="form-block">
 	<label class="checkbox large-box df small-text">
 		<input type="checkbox" name="recipient_same" value="1" id="recipient_same" {{ recipient_same ? ' checked' }}>
@@ -47,12 +61,10 @@
 	</label>
 </div>
 <input type="hidden" id="custom_field_14_hidden" name="custom_field[address][14]" value="{{ recipient_same ? '1' : '0' }}">
+
 <div id="recipient-block" {% if recipient_same %} style="display:none;" {% endif %}>
 	<h3>{{ text_recipient_details }}</h3>
-
-
 	<input type="hidden" name="address[zone_id]" value="0">
-
 
 	{% if recipient_custom_fields %}
 		{% for field in recipient_custom_fields %}
@@ -60,7 +72,8 @@
 				{% set val = recipient_values[field.custom_field_id]|default('') %}
 				{% if field.type == 'text' %}
 					<div class="form-block" data-error="custom_field_{{ field.custom_field_id }}">
-						<input type="text" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ val }}" placeholder="{{ field.name }}"/>
+						<label for="cf-{{ field.custom_field_id }}">{{ field.name }}</label>
+						<input id="cf-{{ field.custom_field_id }}" type="text" name="custom_field[address][{{ field.custom_field_id }}]" value="{{ val }}" placeholder="{{ field.name }}">
 						<div class="form-error"></div>
 					</div>
 				{% elseif field.type == 'checkbox' %}
@@ -88,121 +101,136 @@
 		{% endfor %}
 	{% else %}
 		<div class="popup-input w50" data-error="r_firstname">
-			<input type="text" name="address[firstname]" value="{{ shipping_address.firstname }}" placeholder="{{ entry_firstname }}">
+			<label for="r-firstname">{{ entry_firstname }}</label>
+			<input id="r-firstname" type="text" name="address[firstname]" value="{{ shipping_address.firstname }}" placeholder="{{ entry_firstname }}">
 			<div class="form-error"></div>
 		</div>
 		<div class="popup-input w50" data-error="r_lastname">
-			<input type="text" name="address[lastname]" value="{{ shipping_address.lastname }}" placeholder="{{ entry_lastname }}">
+			<label for="r-lastname">{{ entry_lastname }}</label>
+			<input id="r-lastname" type="text" name="address[lastname]" value="{{ shipping_address.lastname }}" placeholder="{{ entry_lastname }}">
 			<div class="form-error"></div>
 		</div>
+		<div class="form-block" data-error="r_address_1">
+			<label for="r-address">{{ entry_address_1 }}</label>
+			<input id="r-address" type="text" name="address[address_1]" value="{{ shipping_address.address_1 }}" placeholder="{{ entry_address_1 }}">
+			<div class="form-error"></div>
+		</div>
+		<div class="form-block" data-error="r_city">
+			<label for="r-city">{{ entry_city }}</label>
+			<input id="r-city" type="text" name="address[city]" value="{{ shipping_address.city }}" placeholder="{{ entry_city }}">
+			<div class="form-error"></div>
+		</div>
+		<div class="form-block" data-error="r_postcode">
+			<label for="r-postcode">{{ entry_postcode }}</label>
+			<input id="r-postcode" type="text" name="address[postcode]" value="{{ shipping_address.postcode }}" placeholder="{{ entry_postcode }}">
+			<div class="form-error"></div>
+		</div>
+		<input type="hidden" name="address[zone_id]" value="0">
+		<div class="form-block" data-error="r_telephone">
+			<label for="r-telephone">Telefon</label>
+			<input id="r-telephone" type="text" name="address[telephone]" value="{{ shipping_address.telephone }}" placeholder="Telefon">
+			<div class="form-error"></div>
+		</div>
+		<div class="form-block" data-error="r_email">
+			<label for="r-email">{{ entry_email_address }}</label>
+			<input id="r-email" type="text" name="address[email]" value="{{ shipping_address.email }}" placeholder="{{ entry_email_address }}">
+			<div class="form-error"></div>
+		</div>
+	{% endif %}
+</div>
+
+<div class="comment-block">
+	<h3>Uwagi do zamówienia (opcjonalne)</h3>
+	<div class="textarea-wrapper">
+		<label for="comment">Komentarz</label>
+		<textarea id="comment" name="comment" rows="4" class="form-control">{{ comment }}{{ commenta }}</textarea>
 	</div>
-	<div class="form-block" data-error="r_address_1">
-		<input type="text" name="address[address_1]" value="{{ shipping_address.address_1 }}" placeholder="{{ entry_address_1 }}"/>
-		<div class="form-error"></div>
+</div>
+<div id="nip-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+	<div style="background:#fff; max-width:400px; margin:100px auto; padding:20px; position:relative; border-radius:6px; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
+		<button id="nip-modal-close" type="button" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:18px; cursor:pointer;">&times;</button>
+		<div id="nip-modal-text" style="font-size:15px; line-height:1.5;"></div>
 	</div>
-	<div class="form-block" data-error="r_city">
-		<input type="text" name="address[city]" value="{{ shipping_address.city }}" placeholder="{{ entry_city }}"/>
-		<div class="form-error"></div>
-	</div>
-	<div class="form-block" data-error="r_postcode">
-		<input type="text" name="address[postcode]" value="{{ shipping_address.postcode }}" placeholder="{{ entry_postcode }}"/>
-		<div class="form-error"></div>
-	</div>
-	<input type="hidden" name="address[zone_id]" value="0">
-	<div class="form-block" data-error="r_telephone">
-		<input type="text" name="address[telephone]" value="{{ shipping_address.telephone }}" placeholder="Telefon">
-		<div class="form-error"></div>
-	</div>
-	<div class="form-block" data-error="r_email">
-		<input type="text" name="address[email]" value="{{ shipping_address.email }}" placeholder="{{ entry_email_address }}"/>
-		<div class="form-error"></div>
-	</div>
-{% endif %}</div><div class="comment-block">
-<h3>Uwagi do zamówienia (opcjonalne)</h3>
-<div class="textarea-wrapper">
-	<textarea name="comment" rows="4" class="form-control">{{ comment }}{{ commenta }}</textarea>
-</div></div><div id="nip-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-<div style="background:#fff; max-width:400px; margin:100px auto; padding:20px; position:relative; border-radius:6px; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
-	<button id="nip-modal-close" type="button" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:18px; cursor:pointer;">&times;</button>
-	<div id="nip-modal-text" style="font-size:15px; line-height:1.5;"></div>
-</div></div><input type="hidden" name="buyer[country_id]" value="{{ buyer_address.country_id }}"><input type="hidden" name="address[country_id]" value="{{ shipping_address.country_id }}"> <script>
-	    (function(){
-	        var chkSame = document.getElementById('recipient_same');
-	        var block = document.getElementById('recipient-block');
-	        var hiddenCf14 = document.getElementById('custom_field_14_hidden');
-	
-	        function syncCf14() {
-	            if (hiddenCf14) hiddenCf14.value = chkSame.checked ? '1' : '0';
-	        }
-	
-	        chkSame.addEventListener('change', function(){
-	            block.style.display = this.checked ? 'none' : 'block';
-	            syncCf14();
-	        });
-	
-	        document.addEventListener('DOMContentLoaded', syncCf14);
-	    })();
-	
-	    var nipInput = document.getElementById('input-nip');
-	    var nipButton = document.getElementById('btn-nip');
-	
-	    function toggleNipBtn() {
-	        var val = nipInput.value.replace(/\D/g, '');
-	        nipInput.value = val; // автоочистка от букв
-	        if (val.length === 10) {
-	            nipButton.disabled = false;
-	            nipButton.classList.remove('disabled');
-	        } else {
-	            nipButton.disabled = true;
-	            nipButton.classList.add('disabled');
-	        }
-	    }
-	
-	
-	    nipInput.addEventListener('input', toggleNipBtn);
-	    document.addEventListener('DOMContentLoaded', toggleNipBtn);
-	
-	    $('#btn-nip').on('click', function() {
-	        $.ajax({
-	            url: 'index.php?route=checkout/nip',
-	            type: 'post',
-	            dataType: 'json',
-	            data: {
-	                nip: nipInput.value
-	            },
-	            success: function(json) {
-	                if (json.error) {
-	                    showNipError(json.error); // функция для показа ошибки
-	                    return;
-	                }
-	
-	                // заполняем поля, если ошибок нет
-	                if (json.name) $('[name="buyer[company]"]').val(json.name);
-	                if (json.adress) $('[name="buyer[address_1]"]').val(json.adress);
-	                if (json.city) $('[name="buyer[city]"]').val(json.city);
-	                if (json.zip) $('[name="buyer[postcode]"]').val(json.zip);
-	            },
-	            error: function(xhr) {
-	                showNipError('Błąd połączenia z serwerem.');
-	            }
-	        });
-	    });
-	
-	    function showNipError(msg) {
-	        $('#nip-modal-text').text(msg);
-	        $('#nip-modal').fadeIn(150);
-	    }
-	
-	    $('#nip-modal-close').on('click', function() {
-	        $('#nip-modal').fadeOut(150);
-	    });
-	
-	    // Закрытие по фону
-	    $('#nip-modal').on('click', function(e) {
-	        if (e.target.id === 'nip-modal') {
-	            $('#nip-modal').fadeOut(150);
-	        }
-	    });
-	
-	
-	</script>
+</div><input type="hidden" name="buyer[country_id]" value="{{ buyer_address.country_id }}"><inputtype="hidden"
+	name="address[country_id]" value="{{ shipping_address.country_id }}">
+	 <script>
+				    (function(){
+				        var chkSame = document.getElementById('recipient_same');
+				        var block = document.getElementById('recipient-block');
+				        var hiddenCf14 = document.getElementById('custom_field_14_hidden');
+				
+				        function syncCf14() {
+				            if (hiddenCf14) hiddenCf14.value = chkSame.checked ? '1' : '0';
+				        }
+				
+				        chkSame.addEventListener('change', function(){
+				            block.style.display = this.checked ? 'none' : 'block';
+				            syncCf14();
+				        });
+				
+				        document.addEventListener('DOMContentLoaded', syncCf14);
+				    })();
+				
+				    var nipInput = document.getElementById('input-nip');
+				    var nipButton = document.getElementById('btn-nip');
+				
+				    function toggleNipBtn() {
+				        var val = nipInput.value.replace(/\D/g, '');
+				        nipInput.value = val; // автоочистка от букв
+				        if (val.length === 10) {
+				            nipButton.disabled = false;
+				            nipButton.classList.remove('disabled');
+				        } else {
+				            nipButton.disabled = true;
+				            nipButton.classList.add('disabled');
+				        }
+				    }
+				
+				
+				    nipInput.addEventListener('input', toggleNipBtn);
+				    document.addEventListener('DOMContentLoaded', toggleNipBtn);
+				
+				    $('#btn-nip').on('click', function() {
+				        $.ajax({
+				            url: 'index.php?route=checkout/nip',
+				            type: 'post',
+				            dataType: 'json',
+				            data: {
+				                nip: nipInput.value
+				            },
+				            success: function(json) {
+				                if (json.error) {
+				                    showNipError(json.error); // функция для показа ошибки
+				                    return;
+				                }
+				
+				                // заполняем поля, если ошибок нет
+				                if (json.name) $('[name="buyer[company]"]').val(json.name);
+				                if (json.adress) $('[name="buyer[address_1]"]').val(json.adress);
+				                if (json.city) $('[name="buyer[city]"]').val(json.city);
+				                if (json.zip) $('[name="buyer[postcode]"]').val(json.zip);
+				            },
+				            error: function(xhr) {
+				                showNipError('Błąd połączenia z serwerem.');
+				            }
+				        });
+				    });
+				
+				    function showNipError(msg) {
+				        $('#nip-modal-text').text(msg);
+				        $('#nip-modal').fadeIn(150);
+				    }
+				
+				    $('#nip-modal-close').on('click', function() {
+				        $('#nip-modal').fadeOut(150);
+				    });
+				
+				    // Закрытие по фону
+				    $('#nip-modal').on('click', function(e) {
+				        if (e.target.id === 'nip-modal') {
+				            $('#nip-modal').fadeOut(150);
+				        }
+				    });
+				
+				
+				</script>

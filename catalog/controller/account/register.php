@@ -341,12 +341,10 @@ class ControllerAccountRegister extends Controller {
 		if ((utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) < 4) || (utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) > 40)) {
 			$this->error['password'] = $this->language->get('error_password');
 		}
-		
-		if($this->request->post['customer_group_id'] == 2) {
-			if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
-				$this->error['telephone'] = $this->language->get('error_telephone');
-			}
+		if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
+			$this->error['telephone'] = $this->language->get('error_telephone');
 		}
+
 		
 		if(!isset($this->request->post['customer_group_id'])) $this->request->post['customer_group_id'] = 1;
 		$customer_group_id = $this->request->post['customer_group_id'];

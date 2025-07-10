@@ -657,3 +657,13 @@ $(document).on('click', '.product-item-btn-option', function() {
   cart.add(data);
 });
 
+function show_modal_message(text) {
+	const content = document.getElementById('popup-message-content');
+	if (content) {
+		content.innerHTML = text;
+		$.fancybox.open({
+			src: '#popup-message',
+			type: 'inline'
+		});
+	}
+}
