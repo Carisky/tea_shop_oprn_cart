@@ -109,7 +109,12 @@ function register() {
                                         }
                                 });
                         } else if(json.redirect) {
-                                $('#popup-message-content').html('Sprawdź folder <b>Spam</b> w swojej skrzynce pocztowej.');
+                                $('#popup-message-content').html(
+									'Dziękujemy za rejestrację!<br>' +
+									'Na podany przez Ciebie adres e-mail zostało wysłane potwierdzenie.<br><br>' +
+									'Jeśli go nie widzisz, sprawdź folder <b>Spam</b> w swojej skrzynce pocztowej.'
+								);
+
                                 Fancybox.show([
                                         { src: '#popup-message', type: 'inline' }
                                 ], {
