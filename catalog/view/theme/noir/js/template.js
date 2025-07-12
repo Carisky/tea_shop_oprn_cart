@@ -99,18 +99,23 @@ function register() {
 		type: 'post',
 		dataType: 'json',
 		data: m.find('form').serialize(),
-		success: function(json) {
-			checkJson(json);
-			if(json.error) {
-				$.each(json.error, function(i, v){
-					if(v == 1) {
-						m.find('[data-error="'+i+'"]').addClass('input-error');
-					} else {
-						m.find('[data-error="'+i+'"]').addClass('input-error').find('.form-error').text(v).show();
-					}
-				});
-			}
-		},
+                success: function(json) {
+                        if(json.error) {
+                                $.each(json.error, function(i, v){
+                                        if(v == 1) {
+                                                m.find('[data-error="'+i+'"]').addClass('input-error');
+                                        } else {
+                                                m.find('[data-error="'+i+'"]').addClass('input-error').find('.form-error').text(v).show();
+                                        }
+                                });
+                        } else if(json.redirect == 1) {
+                                show_modal_message('Sprawdź swoją skrzynkę e-mail oraz folder SPAM.', function(){
+                                        location.reload();
+                                });
+                        } else {
+                                checkJson(json);
+                        }
+                },
 		error: function(data) {console.log(data.responseText);}
 	});
 }
@@ -657,13 +662,16 @@ $(document).on('click', '.product-item-btn-option', function() {
   cart.add(data);
 });
 
-function show_modal_message(text) {
-	const content = document.getElementById('popup-message-content');
-	if (content) {
-		content.innerHTML = text;
-		$.fancybox.open({
-			src: '#popup-message',
-			type: 'inline'
-		});
-	}
+function show_modal_message(text, callback) {
+        const content = document.getElementById('popup-message-content');
+        if (content) {
+                content.innerHTML = text;
+                $.fancybox.open({
+                        src: '#popup-message',
+                        type: 'inline',
+                        afterClose: callback
+                });
+        } else if (typeof callback === 'function') {
+                callback();
+        }
 }
