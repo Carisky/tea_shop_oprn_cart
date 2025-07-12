@@ -25,6 +25,46 @@
 		{{ content_bottom }}
 	</div>
 	{{ column_left }}
-	{{ column_right }}
+        {{ column_right }}
+
+        <div id="checkSpamModal" class="modal-overlay" style="display:none;">
+                <div class="modal-window">
+                        <span>Если вы не получили письмо с подтверждением заказа, пожалуйста, проверьте папку «Спам» в своей почте.</span>
+                </div>
+        </div>
 </div>
-{{ footer }}</body></html>
+{{ footer }}
+
+<style>
+.modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+}
+
+.modal-window {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('checkSpamModal');
+        overlay.style.display = 'flex';
+
+        overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                        overlay.style.display = 'none';
+                }
+        });
+});
+</script>
+</body></html>
