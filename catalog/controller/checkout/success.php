@@ -62,16 +62,18 @@ class ControllerCheckoutSuccess extends Controller
 		$this->load->model('checkout/order');
 		$order_id = $this->session->data['last_order_id'];
 		$order = $this->model_checkout_order->getOrder($order_id);
-		if ($order && $order['payment_code'] == 'bank_transfer') {
-			$firstname = $order['firstname'];
-			$lastname = $order['lastname'];
-			$text = $this->language->get('text_bank_transfer_info');
+                if ($order && $order['payment_code'] == 'bank_transfer') {
+                        $firstname = $order['firstname'];
+                        $lastname = $order['lastname'];
+                        $text = $this->language->get('text_bank_transfer_info');
 			$text = str_replace('{firstname}', $firstname, $text);
 			$text = str_replace('{lastname}', $lastname, $text);
 			$data['bank_transfer_info'] = $text;
-		} else {
-			$data['bank_transfer_info'] = '';
-		}
+                } else {
+                        $data['bank_transfer_info'] = '';
+                }
+                
+                $data['text_spam_warning'] = $this->language->get('text_spam_warning');
 		// ====================================================================
 
 		$data['continue'] = $this->url->link('common/home');
