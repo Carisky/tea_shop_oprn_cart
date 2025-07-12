@@ -34,3 +34,5 @@ W przypadku braku wpłaty w podanym terminie, zamówienie może zostać anulowan
 Jeśli masz pytania dotyczące płatności przelewem, skontaktuj się z nami:<br>
 📧 biuro@jedwabny-szlak.pl | ☎️ +48 789 712 544
 HTML;
+
+$_['text_spam_warning']    = 'Jeśli nie znajdziesz wiadomości e-mail, sprawdź folder Spam.';
