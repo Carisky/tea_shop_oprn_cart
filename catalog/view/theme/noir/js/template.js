@@ -91,28 +91,40 @@ function showModal(sel) {
 }
 
 function register() {
-	var m = $('#sign-up');
-	m.find('.form-error').text('').hide();
-	m.find('.input-error').removeClass('input-error');
-	$.ajax({
-		url: 'index.php?route=account/register/nr_register',
-		type: 'post',
-		dataType: 'json',
-		data: m.find('form').serialize(),
-		success: function(json) {
-			checkJson(json);
-			if(json.error) {
-				$.each(json.error, function(i, v){
-					if(v == 1) {
-						m.find('[data-error="'+i+'"]').addClass('input-error');
-					} else {
-						m.find('[data-error="'+i+'"]').addClass('input-error').find('.form-error').text(v).show();
-					}
-				});
-			}
-		},
-		error: function(data) {console.log(data.responseText);}
-	});
+        var m = $('#sign-up');
+        m.find('.form-error').text('').hide();
+        m.find('.input-error').removeClass('input-error');
+        $.ajax({
+                url: 'index.php?route=account/register/nr_register',
+                type: 'post',
+                dataType: 'json',
+                data: m.find('form').serialize(),
+                success: function(json) {
+                        if(json.error) {
+                                $.each(json.error, function(i, v){
+                                        if(v == 1) {
+                                                m.find('[data-error="'+i+'"]').addClass('input-error');
+                                        } else {
+                                                m.find('[data-error="'+i+'"]').addClass('input-error').find('.form-error').text(v).show();
+                                        }
+                                });
+                        } else if(json.redirect) {
+                                $('#popup-message-content').html('Sprawdź folder <b>Spam</b> w swojej skrzynce pocztowej.');
+                                Fancybox.show([
+                                        { src: '#popup-message', type: 'inline' }
+                                ], {
+                                        dragToClose: false,
+                                        trapFocus: false,
+                                        placeFocusBack: false,
+                                        hideScrollbar: false,
+                                        on: { destroy: () => { checkJson(json); } }
+                                });
+                        } else {
+                                checkJson(json);
+                        }
+                },
+                error: function(data) {console.log(data.responseText);}
+        });
 }
 
 function login() {
