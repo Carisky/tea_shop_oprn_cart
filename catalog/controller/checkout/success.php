@@ -73,6 +73,7 @@ class ControllerCheckoutSuccess extends Controller
 			$data['bank_transfer_info'] = '';
 		}
 		// ====================================================================
+		$data['text_check_spam'] = $this->language->get('text_check_spam');
 
 		$data['continue'] = $this->url->link('common/home');
 
