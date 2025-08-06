@@ -121,14 +121,15 @@ class ControllerStartupSeoUrl extends Controller {
                         list($url, $data, $postfix) =  $this->seo_pro->baseRewrite($data, (int)$this->config->get('config_language_id'));
                 }
 
-                // add city keyword to url if present
-                if (isset($data['city_id'])) {
-                        $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "city WHERE city_id = '" . (int)$data['city_id'] . "'");
+                // add city keyword to url if present in data or request
+                $city_id = isset($data['city_id']) ? (int)$data['city_id'] : (isset($this->request->get['city_id']) ? (int)$this->request->get['city_id'] : 0);
+                if ($city_id) {
+                        $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "city WHERE city_id = '" . (int)$city_id . "'");
                         if ($query->num_rows && $query->row['keyword']) {
                                 $url .= '/' . $query->row['keyword'];
                         }
-                        unset($data['city_id']);
                 }
+                unset($data['city_id']);
 
                 //seo_pro baseRewrite
 
