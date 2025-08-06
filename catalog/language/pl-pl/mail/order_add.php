@@ -1,6 +1,6 @@
 <?php
 // Text
-$_['text_subject']          = '%s - zamówienie %s';
+$_['text_subject']          = 'Jedwabny szlak - Sklep z... - zamówienie %s';
 $_['text_greeting']         = 'Dziękujemy za zainteresowanie produktami %s. Twoje zamówienie zostało przyjęte i będzie realizowane po otrzymaniu potwierdzenia zapłaty.';
 $_['text_link']             = 'Aby wyświetlić zamówienie, kliknij na poniższy link:';
 $_['text_order_detail']     = 'Szczegóły zamówienia';
