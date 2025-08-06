@@ -54,8 +54,14 @@ class ControllerExtensionFeedNNGoogleSitemap extends Controller {
 
     if (!empty($catalogs) && in_array('category', $catalogs) || !isset($catalogs)) {
       $this->load->model('catalog/category');
+      $this->load->model('localisation/city');
 
       $output .= $this->getCategories(0);
+
+      $cities = $this->model_localisation_city->getCities();
+      foreach ($cities as $city) {
+        $output .= $this->getCategories(0, $city['city_id']);
+      }
     }
 
     if (!empty($catalogs) && in_array('manufacturer', $catalogs) || !isset($catalogs)) {
@@ -93,21 +99,21 @@ class ControllerExtensionFeedNNGoogleSitemap extends Controller {
     $this->response->setOutput($output);
 	}
 
-	protected function getCategories($parent_id) {
-		$output = '';
+        protected function getCategories($parent_id, $city_id = 0) {
+                $output = '';
 
-		$results = $this->model_catalog_category->getCategories($parent_id);
+                $results = $this->model_catalog_category->getCategories($parent_id);
 
-		foreach ($results as $result) {
-			$output .= '<url>';
-			$output .= '  <loc>' . $this->url->link('product/category', 'path=' . $result['category_id']) . '</loc>';
-			$output .= '  <changefreq>weekly</changefreq>';
-			$output .= '  <priority>0.7</priority>';
-			$output .= '</url>';
+                foreach ($results as $result) {
+                        $output .= '<url>';
+                        $output .= '  <loc>' . $this->url->link('product/category', 'path=' . $result['category_id'] . ($city_id ? '&city_id=' . $city_id : '')) . '</loc>';
+                        $output .= '  <changefreq>weekly</changefreq>';
+                        $output .= '  <priority>0.7</priority>';
+                        $output .= '</url>';
 
-			$output .= $this->getCategories($result['category_id']);
-		}
+                        $output .= $this->getCategories($result['category_id'], $city_id);
+                }
 
-		return $output;
-	}
+                return $output;
+        }
 }

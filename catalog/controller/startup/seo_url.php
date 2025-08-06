@@ -20,19 +20,29 @@ class ControllerStartupSeoUrl extends Controller {
 		}
 	
 		// Decode URL
-		if (isset($this->request->get['_route_'])) {
-			$parts = explode('/', $this->request->get['_route_']);
-			
-		//seopro prepare route
-		if($this->config->get('config_seo_pro')){		
-			$parts = $this->seo_pro->prepareRoute($parts);
-		}
-		//seopro prepare route end
+                if (isset($this->request->get['_route_'])) {
+                        $parts = explode('/', $this->request->get['_route_']);
 
-			// remove any empty arrays from trailing
-			if (utf8_strlen(end($parts)) == 0) {
-				array_pop($parts);
-			}
+                        // detect city keyword in first part
+                        $this->load->model('localisation/city');
+                        if (!empty($parts[0])) {
+                                $city_info = $this->model_localisation_city->getCityByKeyword($parts[0]);
+                                if ($city_info) {
+                                        $this->request->get['city_id'] = $city_info['city_id'];
+                                        array_shift($parts);
+                                }
+                        }
+
+                //seopro prepare route
+                if($this->config->get('config_seo_pro')){
+                        $parts = $this->seo_pro->prepareRoute($parts);
+                }
+                //seopro prepare route end
+
+                        // remove any empty arrays from trailing
+                        if ($parts && utf8_strlen(end($parts)) == 0) {
+                                array_pop($parts);
+                        }
 	
 			foreach ($parts as $part) {
 				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seo_url WHERE keyword = '" . $this->db->escape($part) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
@@ -106,17 +116,23 @@ class ControllerStartupSeoUrl extends Controller {
 
 		parse_str($url_info['query'], $data);
 		
-		//seo_pro baseRewrite
-		if($this->config->get('config_seo_pro')){		
-			list($url, $data, $postfix) =  $this->seo_pro->baseRewrite($data, (int)$this->config->get('config_language_id'));	
-		}
-		
-		
+                //seo_pro baseRewrite
+                if($this->config->get('config_seo_pro')){
+                        list($url, $data, $postfix) =  $this->seo_pro->baseRewrite($data, (int)$this->config->get('config_language_id'));
+                }
 
-		
-		//seo_pro baseRewrite
+                // add city keyword to url if present
+                if (isset($data['city_id'])) {
+                        $query = $this->db->query("SELECT keyword FROM " . DB_PREFIX . "city WHERE city_id = '" . (int)$data['city_id'] . "'");
+                        if ($query->num_rows && $query->row['keyword']) {
+                                $url .= '/' . $query->row['keyword'];
+                        }
+                        unset($data['city_id']);
+                }
 
-		foreach ($data as $key => $value) {
+                //seo_pro baseRewrite
+
+                foreach ($data as $key => $value) {
 			if (isset($data['route'])) {
 				if (($data['route'] == 'product/product' && $key == 'product_id') || (($data['route'] == 'product/manufacturer/info' || $data['route'] == 'product/product') && $key == 'manufacturer_id') || ($data['route'] == 'information/information' && $key == 'information_id')) {
 					$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seo_url WHERE `query` = '" . $this->db->escape($key . '=' . (int)$value) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
