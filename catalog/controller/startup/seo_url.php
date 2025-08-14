@@ -29,13 +29,23 @@ class ControllerStartupSeoUrl extends Controller {
 		}
 		//seopro prepare route end
 
-			// remove any empty arrays from trailing
-			if (utf8_strlen(end($parts)) == 0) {
-				array_pop($parts);
-			}
-	
-			foreach ($parts as $part) {
-				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seo_url WHERE keyword = '" . $this->db->escape($part) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
+                        // remove any empty arrays from trailing
+                        if (utf8_strlen(end($parts)) == 0) {
+                                array_pop($parts);
+                        }
+
+                        // Virtual city prefix: if first segment is not a known keyword
+                        // and another segment exists, treat it as a city and ignore it
+                        if ($parts) {
+                                $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seo_url WHERE keyword = '" . $this->db->escape($parts[0]) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
+
+                                if (!$query->num_rows && count($parts) > 1) {
+                                        array_shift($parts);
+                                }
+                        }
+
+                        foreach ($parts as $part) {
+                                $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seo_url WHERE keyword = '" . $this->db->escape($part) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
 
 				if ($query->num_rows) {
 					$url = explode('=', $query->row['query']);
@@ -102,14 +112,21 @@ class ControllerStartupSeoUrl extends Controller {
 		$url = '';
 		}
 
-		$data = array();
+                $data = array();
 
-		parse_str($url_info['query'], $data);
-		
-		//seo_pro baseRewrite
-		if($this->config->get('config_seo_pro')){		
-			list($url, $data, $postfix) =  $this->seo_pro->baseRewrite($data, (int)$this->config->get('config_language_id'));	
-		}
+                parse_str($url_info['query'], $data);
+
+                // Handle virtual city prefix from query parameters
+                $city = '';
+                if (isset($data['city'])) {
+                        $city = '/' . trim($data['city']);
+                        unset($data['city']);
+                }
+
+                //seo_pro baseRewrite
+                if($this->config->get('config_seo_pro')){
+                        list($url, $data, $postfix) =  $this->seo_pro->baseRewrite($data, (int)$this->config->get('config_language_id'));
+                }
 		
 		
 
@@ -176,7 +193,7 @@ class ControllerStartupSeoUrl extends Controller {
 				} 
 			}
 
-			return $url_info['scheme'] . '://' . $url_info['host'] . (isset($url_info['port']) ? ':' . $url_info['port'] : '') . str_replace('/index.php', '', $url_info['path']) . $url . $query;
+                        return $url_info['scheme'] . '://' . $url_info['host'] . (isset($url_info['port']) ? ':' . $url_info['port'] : '') . str_replace('/index.php', '', $url_info['path']) . $city . $url . $query;
 		} else {
 			return $link;
 		}
