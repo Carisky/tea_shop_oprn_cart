@@ -256,6 +256,7 @@
 						</div>
 						<div id="alert" class="alert posr"></div>
 					</div>
+					{{ cookie|raw }} 
 					{% for style in styles %}
 						<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}"/>
 					{% endfor %}
