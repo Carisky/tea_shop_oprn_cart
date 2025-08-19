@@ -23,55 +23,28 @@ class ControllerStartupSeoUrl extends Controller
 		}
 
 		if (isset($this->request->get['_route_'])) {
-			echo '<pre>_route_: ';
-			print_r($this->request->get['_route_']);
-			echo '</pre>';
 
 			$parts = explode('/', $this->request->get['_route_']);
-			echo '<pre>$parts после explode: ';
-			print_r($parts);
-			echo '</pre>';
 
 			if ($this->config->get('config_seo_pro')) {
 				//$parts = $this->seo_pro->prepareRoute($parts);
-				echo '<pre>$parts после prepareRoute: ';
-				print_r($parts);
-				echo '</pre>';
 			}
 
 			if (utf8_strlen(end($parts)) == 0) {
 				array_pop($parts);
-				echo '<pre>$parts после array_pop пустого: ';
-				print_r($parts);
-				echo '</pre>';
 			}
 
 			// Virtual city prefix
 			$city = '';
 			if ($parts) {
 				$city_query = $this->db->query("SELECT city_id FROM `" . DB_PREFIX . "city` WHERE keyword = '" . $this->db->escape($parts[0]) . "' AND status = '1'");
-				echo '<pre>$city_query: ';
-				print_r($city_query->rows);
-				echo '</pre>';
 
 				if ($city_query->num_rows) {
 					$city = $parts[0];
 					$this->request->get['city'] = $city;
 					array_shift($parts); // ← ВАЖНО: удаляем город из массива
 				}
-				echo '<pre>После парсинга parts:';
-				print_r([
-					'request' => $this->request->get
-				]);
-				echo '</pre>';
 			}
-
-			echo '<pre>Перед redirect301:';
-			print_r([
-				'city' => $city,
-				'parts' => $parts
-			]);
-			echo '</pre>';
 
 			foreach ($parts as $part) {
 				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seo_url WHERE keyword = '" . $this->db->escape($part) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "'");
@@ -214,15 +187,6 @@ class ControllerStartupSeoUrl extends Controller
 			$port = isset($url_info['port']) ? ':' . $url_info['port'] : '';
 			$path = implode('/', $parts);
 			$url = $url_info['scheme'] . '://' . $url_info['host'] . $port . '/' . $path;
-
-			echo '<pre>🔁 REDIRECT: ';
-			print_r([
-				'city' => $city,
-				'final parts' => $parts,
-				'url' => $url
-			]);
-			echo '</pre>';
-			die('🔚 redirect301 triggered');
 		}
 	}
 }
