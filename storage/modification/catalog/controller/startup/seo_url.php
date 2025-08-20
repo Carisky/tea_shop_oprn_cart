@@ -14,6 +14,13 @@ class ControllerStartupSeoUrl extends Controller
 		if ($this->config->get('config_seo_url')) {
 			$this->url->addRewrite($this);
 
+      // OCFilter start
+      if ($this->registry->has('ocfilter')) {
+  			$this->url->addRewrite($this->ocfilter);
+  		}
+      // OCFilter end
+      
+
 			// OCFilter start
 			if ($this->registry->has('ocfilter')) {
 				$this->url->addRewrite($this->ocfilter);
